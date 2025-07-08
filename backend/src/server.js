@@ -53,7 +53,7 @@ app.use("/api/", limiter);
 const corsOptions = {
   origin: [
     process.env.FRONTEND_URL || "http://localhost:3000",
-    "https://fsd-project1-frontend.netlify.app/",
+    "https://fullstack-pj1-fd.netlify.app",
     "http://localhost:5173",
     "http://localhost:3000",
   ],
