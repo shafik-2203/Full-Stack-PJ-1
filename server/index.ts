@@ -4,7 +4,6 @@ import helmet from "helmet";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-import { initializeDatabase } from "./database.js";
 
 // Import routes
 import authRoutes from "./routes/auth.js";

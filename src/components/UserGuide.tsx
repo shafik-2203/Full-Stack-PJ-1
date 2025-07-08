@@ -1,5 +1,3 @@
-import { Info, Users, ShoppingCart, Star, Zap } from "lucide-react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 
 export default function UserGuide() {
   return (

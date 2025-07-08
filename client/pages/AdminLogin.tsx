@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield, KeyIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Store } from 'lucide-react';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");

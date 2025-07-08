@@ -1,5 +1,3 @@
-import { Request, Response, NextFunction } from "express";
-import { db } from "../database";
 
 // Admin user credentials and permissions
 const ADMIN_USERS = [

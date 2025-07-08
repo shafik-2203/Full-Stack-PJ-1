@@ -1,5 +1,3 @@
-import { db } from "./database";
-import { hashPassword, comparePassword, generateToken } from "./auth";
 
 export async function resetAuthForUser(email: string) {
   try {

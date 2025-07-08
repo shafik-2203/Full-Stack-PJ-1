@@ -1,25 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Check,
-  Crown,
-  Coins,
-  Truck,
-  Clock,
-  Shield,
-  Star,
-  Gift,
-  ArrowRight,
-  ChevronRight,
-  Zap,
-  Heart,
-  Users,
-  Award,
-  Percent,
-  Calendar,
-  TrendingUp,
-  Sparkles,
-} from "lucide-react";
 
 interface PassPlan {
   id: string;

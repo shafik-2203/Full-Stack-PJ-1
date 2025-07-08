@@ -1,7 +1,3 @@
-import { RequestHandler } from "express";
-import { db } from "../database";
-import { hashPassword, comparePassword } from "../auth";
-import { AuthResponse } from "@shared/api";
 
 // Password validation function
 const validatePassword = (

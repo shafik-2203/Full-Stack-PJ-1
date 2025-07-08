@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { Info, Copy, ChevronDown, ChevronUp } from "lucide-react";
-import { toast } from "sonner";
 
 export default function DemoCredentials() {
   const [isOpen, setIsOpen] = useState(false);

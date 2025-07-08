@@ -1,7 +1,5 @@
-import { User } from "lucide-react";
+import { Store } from 'lucide-react';
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
-import { apiClient, type User } from "../lib/api";
 
 interface AuthContextType {
   user: User | null;

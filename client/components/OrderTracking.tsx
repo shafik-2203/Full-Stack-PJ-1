@@ -1,14 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {
-  MapPin,
-  Clock,
-  Phone,
-  Star,
-  Truck,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
-import { realTimeService, formatEstimatedTime } from "../lib/realtime";
 
 interface Order {
   id: string;

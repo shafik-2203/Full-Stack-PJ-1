@@ -1,11 +1,4 @@
-import { useState } from "react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
-import { useParams } from "react-router-dom";
 import BackButton from "@/components/BackButton";
-import { restaurants } from "@/data/restaurants";
-import { formatPrice } from "@/lib/utils";
-import { useCart } from "@/contexts/CartContext";
-import { toast } from "sonner";
 
 export default function Restaurant() {
   const { id } = useParams();

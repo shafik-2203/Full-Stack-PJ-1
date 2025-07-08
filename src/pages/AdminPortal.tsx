@@ -1,6 +1,3 @@
-import { UserPlus , Shield , User } from "lucide-react";
-import { Link } from "react-router-dom";
-import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 import BackButton from "@/components/BackButton";
 
 export default function AdminPortal() {

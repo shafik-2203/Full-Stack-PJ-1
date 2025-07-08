@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-import { pwaService } from "../lib/pwa";
 
 export default function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);

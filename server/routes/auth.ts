@@ -1,13 +1,4 @@
 import express from "express";
-import {
-  handleSignup,
-  handleVerifyOTP,
-  handleLogin,
-  handleResendOTP,
-  handleAdminLogin,
-  handlePasswordResetRequest,
-  handlePasswordReset,
-} from "./authHandlers.js";
 
 const router = express.Router();
 

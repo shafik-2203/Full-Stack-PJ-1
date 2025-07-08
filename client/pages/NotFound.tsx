@@ -1,5 +1,4 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Home } from 'lucide-react';
 
 const NotFound = () => {
   const location = useLocation();

@@ -1,6 +1,3 @@
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
 import Logo from "../components/Logo";
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import RealTimeDashboard from "../components/RealTimeDashboard";

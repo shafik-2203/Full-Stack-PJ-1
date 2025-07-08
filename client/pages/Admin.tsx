@@ -1,32 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-  ArrowLeft,
-  Users,
-  UserCheck,
-  UserX,
-  RefreshCw,
-  UserPlus,
-  Trash2,
-  CheckSquare,
-  XSquare,
-  Store,
-  UtensilsCrossed,
-  CreditCard,
-  BarChart3,
-  Settings,
-  Bell,
-  Truck,
-  Star,
-  TrendingUp,
-  Package,
-  DollarSign,
-  Calendar,
-  Download,
-  Plus,
-  Edit,
-  Eye,
-} from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Package } from 'lucide-react';
+import { Store } from 'lucide-react';
 
 interface User {
   id: string;

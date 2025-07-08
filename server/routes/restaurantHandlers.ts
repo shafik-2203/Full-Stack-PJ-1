@@ -1,6 +1,3 @@
-import { RequestHandler } from "express";
-import { Restaurant, MenuItem } from "../database.js";
-import { ApiResponse } from "@shared/api";
 
 // Get all restaurants
 export const getRestaurants: RequestHandler = async (req, res) => {

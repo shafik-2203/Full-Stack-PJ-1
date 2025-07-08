@@ -1,5 +1,4 @@
 import React from "react";
-import { RefreshCw } from "lucide-react";
 
 export default function TokenReset() {
   const clearAndRefresh = () => {

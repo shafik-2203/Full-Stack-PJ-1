@@ -1,9 +1,3 @@
-import { useState } from "react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
-import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
-import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
 import BackButton from "@/components/BackButton";
 import DemoCredentials from "@/components/DemoCredentials";
 

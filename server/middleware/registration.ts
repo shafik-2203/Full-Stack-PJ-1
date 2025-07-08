@@ -1,5 +1,3 @@
-import { RequestHandler } from "express";
-import { db } from "../database";
 
 // Middleware to ensure only registered users can login
 export const enforceRegistration: RequestHandler = (req, res, next) => {

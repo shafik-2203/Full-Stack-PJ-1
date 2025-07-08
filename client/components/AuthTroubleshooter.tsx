@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { AlertTriangle, RefreshCw, CheckCircle, X } from "lucide-react";
 
 interface AuthTroubleshooterProps {
   onClose: () => void;

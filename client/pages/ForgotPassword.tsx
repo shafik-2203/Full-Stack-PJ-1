@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { apiClient } from "../lib/api";
 import Logo from "../components/Logo";
 
 export default function ForgotPassword() {

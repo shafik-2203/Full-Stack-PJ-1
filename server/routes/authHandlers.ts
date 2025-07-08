@@ -1,15 +1,6 @@
-import { RequestHandler } from "express";
+import { Store } from 'lucide-react';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User, PendingSignup } from "../database.js";
-import { sendProductionOTPEmail } from "../email-production.js";
-import { sendOTPSMS } from "../email.js";
-import {
-  LoginRequest,
-  SignupRequest,
-  VerifyOTPRequest,
-  AuthResponse,
-} from "@shared/api";
 
 // Generate OTP
 const generateOTP = () => {

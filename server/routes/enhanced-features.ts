@@ -1,19 +1,3 @@
-import { RequestHandler } from "express";
-import { db } from "../database";
-import {
-  MENU_CATEGORIES,
-  ENHANCED_MENU_ITEMS,
-  FOOD_FILTERS,
-  SORT_OPTIONS,
-} from "../utils/menu-categories";
-import {
-  PASS_PLANS,
-  COINS_CONFIG,
-  CANCELLATION_CONFIG,
-  calculateCoinsEarned,
-  checkPassBenefits,
-  calculateCancellationCharge,
-} from "../utils/fastio-pass";
 
 // Get menu categories with current time suggestions
 export const handleGetMenuCategories: RequestHandler = async (req, res) => {

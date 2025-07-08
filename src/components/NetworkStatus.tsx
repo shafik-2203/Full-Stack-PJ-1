@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-import { Wifi, WifiOff } from "lucide-react";
 
 export default function NetworkStatus() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);

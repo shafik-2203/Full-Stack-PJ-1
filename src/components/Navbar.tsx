@@ -1,8 +1,6 @@
-import { ShoppingCart , User } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
-import { useAuth } from "@/contexts/AuthContext";
-import { useCart } from "@/contexts/CartContext";
+import { Package } from 'lucide-react';
+import { Store } from 'lucide-react';
+import { Home } from 'lucide-react';
 import Logo from "./Logo";
 
 export default function Navbar() {

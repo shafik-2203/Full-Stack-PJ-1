@@ -1,4 +1,3 @@
-import { loadStripe } from "@stripe/stripe-js";
 
 // Note: In production, this should be your actual Stripe publishable key
 const stripePromise = loadStripe("pk_test_your_stripe_publishable_key_here");

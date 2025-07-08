@@ -1,5 +1,4 @@
-import { Package } from "lucide-react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { Package } from 'lucide-react';
 import BackButton from "@/components/BackButton";
 
 export default function Orders() {

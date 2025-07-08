@@ -1,13 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {
-  AlertTriangle,
-  Clock,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  Coins,
-  CreditCard,
-} from "lucide-react";
 
 interface Order {
   id: string;

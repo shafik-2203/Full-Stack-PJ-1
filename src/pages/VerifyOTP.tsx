@@ -1,8 +1,3 @@
-import { useState, useEffect } from "react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
 import BackButton from "@/components/BackButton";
 import DemoCredentials from "@/components/DemoCredentials";
 

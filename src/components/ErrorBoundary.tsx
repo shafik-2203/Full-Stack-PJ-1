@@ -1,8 +1,6 @@
+import { Home } from 'lucide-react';
 /// <reference types="node" />
 declare const process: { env: { NODE_ENV: string } };
-import { Component, ReactNode, ErrorInfo } from "react";
-import { AlertTriangle, RefreshCw, Home } from "lucide-react";
-import { Link } from "react-router-dom";
 
 interface Props {
   children: ReactNode;

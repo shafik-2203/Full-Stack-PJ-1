@@ -1,16 +1,5 @@
+import { Home } from 'lucide-react';
 import React, { useState, useEffect } from "react";
-import {
-  Download,
-  Smartphone,
-  Monitor,
-  Chrome,
-  Share,
-  Plus,
-  X,
-  CheckCircle,
-  ExternalLink,
-  Zap,
-} from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];

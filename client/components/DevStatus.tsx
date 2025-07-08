@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import { AlertCircle, Wifi, WifiOff } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface HealthStatus {
   success: boolean;
