@@ -10,6 +10,10 @@ import mongoose from "mongoose";
 // Load environment variables
 dotenv.config();
 
+// ✅ Debugging .env loading
+console.log("🧪 EMAIL_USER:", process.env.EMAIL_USER);
+console.log("🧪 EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌");
+
 // Routes
 import authRoutes from "./routes/auth.js";
 import restaurantRoutes from "./routes/restaurants.js";
