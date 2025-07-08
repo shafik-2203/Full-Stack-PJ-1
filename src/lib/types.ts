@@ -1,76 +1,59 @@
+
 export interface User {
-  id: string;
-  username: string;
+  _id: string;
   name: string;
   email: string;
-  phone: string;
-  mobile?: string;
-  isVerified: boolean;
+  password?: string;
   isAdmin?: boolean;
-  isActive?: boolean;
-  role: string;
 }
-
-export interface ApiClient {
-  setToken: (token: string) => void;
-  resendOTP?: () => void;
-}
-
-export interface CartItem {
-  _id: string;
-  restaurantId?: string;
-  name: string;
-  price: number;
-  image?: string;
-  description?: string;
-  isVegetarian?: boolean;
-  quantity: number;
-}
-
-export type RestaurantStatus = "Active" | "Inactive" | "Pending" | "Suspended";
 
 export interface Restaurant {
   _id: string;
   name: string;
-  email: string;
-  phone: string;
-  cuisine: string[];
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-  description: string;
-  image: string;
-  rating: number;
+  cuisine: string;
+  address: string;
   status: RestaurantStatus;
-  isVerified: boolean;
+  rating?: number;
 }
 
-export type OrderStatus = "Pending" | "Confirmed" | "Preparing" | "Out for Delivery" | "Delivered" | "Cancelled";
+export interface Food {
+  _id: string;
+  name: string;
+  price: number;
+  description: string;
+  restaurantId: string;
+  image?: string;
+}
+
+export interface CartItem {
+  food: Food;
+  quantity: number;
+}
 
 export interface Order {
   _id: string;
-  orderId: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  restaurant: {
-    _id: string;
-    name: string;
-  };
-  items: {
-    foodItem: {
-      _id: string;
-      name: string;
-    };
-    quantity: number;
-    price: number;
-    specialInstructions: string;
-  }[];
+  userId: string;
+  items: CartItem[];
+  total: number;
   status: OrderStatus;
-  createdAt: string;
+  createdAt?: string;
+}
+
+export interface ApiClient {
+  setToken: (token: string) => void;
+  signup: (data: any) => Promise<any>;
+  login: (data: any) => Promise<any>;
+  resendOTP?: (email: string) => Promise<any>;
+}
+
+export enum OrderStatus {
+  Pending = "pending",
+  Confirmed = "confirmed",
+  Delivered = "delivered",
+  Cancelled = "cancelled"
+}
+
+export enum RestaurantStatus {
+  Active = "active",
+  Inactive = "inactive"
 }

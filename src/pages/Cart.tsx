@@ -1,5 +1,6 @@
+import { ShoppingCart , User } from "lucide-react";
 import { Link } from "react-router-dom";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 import { useCart } from "@/contexts/CartContext";
 import BackButton from "@/components/BackButton";
 import { formatPrice } from "@/lib/utils";

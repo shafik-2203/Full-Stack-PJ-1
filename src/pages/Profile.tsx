@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 import { useAuth } from "@/contexts/AuthContext";
 import BackButton from "@/components/BackButton";
 

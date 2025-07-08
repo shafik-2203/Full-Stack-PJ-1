@@ -1,5 +1,6 @@
+import { UserPlus , User } from "lucide-react";
 import { useState } from "react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import BackButton from "@/components/BackButton";

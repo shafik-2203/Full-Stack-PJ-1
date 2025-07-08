@@ -1,5 +1,6 @@
+import { Shield , User } from "lucide-react";
 import { useState } from "react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 import { useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";

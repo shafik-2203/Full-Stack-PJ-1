@@ -1,3 +1,4 @@
+import { Shield , Star } from "lucide-react";
 import { useState } from "react";
 import BackButton from "@/components/BackButton";
 import { formatPrice } from "@/lib/utils";
