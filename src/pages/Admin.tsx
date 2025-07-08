@@ -788,9 +788,9 @@ export default function Admin() {
                           }
                           className="text-xs font-semibold rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                         >
-                          <option value=OrderStatus.Active>Active</option>
-                          <option value=OrderStatus.Inactive>Inactive</option>
-                          <option value=OrderStatus.Pending>Pending</option>
+                          <option value={OrderStatus.Active}>Active</option>
+                          <option value={OrderStatus.Inactive}>Inactive</option>
+                          <option value={OrderStatus.Pending}>Pending</option>
                           <option value="Suspended">Suspended</option>
                         </select>
                       </td>
@@ -939,7 +939,7 @@ export default function Admin() {
                           }
                           className="text-xs font-semibold rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                         >
-                          <option value=OrderStatus.Pending>Pending</option>
+                          <option value={OrderStatus.Pending}>Pending</option>
                           <option value="Confirmed">Confirmed</option>
                           <option value=OrderStatus.Preparing>Preparing</option>
                           <option value="Out for Delivery">
