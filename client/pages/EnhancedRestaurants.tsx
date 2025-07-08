@@ -1,8 +1,6 @@
+import type { User, Restaurant, CartItem, Order, ApiClient, OrderStatus, RestaurantStatus } from '@/types';
 // This file has been replaced by the cleaner Restaurants.tsx
 // Redirecting to the main restaurants page
-
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function EnhancedRestaurants() {
   const navigate = useNavigate();

@@ -1,10 +1,5 @@
-import { Shield , Star } from "lucide-react";
-import { useState } from "react";
+import type { User, Restaurant, CartItem, Order, ApiClient, OrderStatus, RestaurantStatus } from '@/types';
 import BackButton from "@/components/BackButton";
-import { formatPrice } from "@/lib/utils";
-import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
-
 interface PassPlan {
   id: string;
   name: string;

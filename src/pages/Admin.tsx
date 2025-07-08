@@ -1,9 +1,4 @@
-import { UserPlus , Shield , Star , User } from "lucide-react";
-import { useState, useEffect } from "react";
-import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { apiClient } from "../lib/api";
+import type { User, Restaurant, CartItem, Order, ApiClient, OrderStatus, RestaurantStatus } from '@/types';
 import type {
   DashboardStats,
   User,
@@ -145,7 +140,7 @@ export default function Admin() {
           image: "",
           rating: 4.5,
           totalReviews: 125,
-          status: "Active",
+          status: OrderStatus.Active,
           deliveryTime: { min: 25, max: 35 },
           deliveryFee: 40,
           minimumOrder: 200,
@@ -169,7 +164,7 @@ export default function Admin() {
           image: "",
           rating: 4.2,
           totalReviews: 98,
-          status: "Active",
+          status: OrderStatus.Active,
           deliveryTime: { min: 20, max: 30 },
           deliveryFee: 35,
           minimumOrder: 150,
@@ -193,7 +188,7 @@ export default function Admin() {
           image: "",
           rating: 4.7,
           totalReviews: 210,
-          status: "Active",
+          status: OrderStatus.Active,
           deliveryTime: { min: 30, max: 45 },
           deliveryFee: 45,
           minimumOrder: 250,
@@ -217,7 +212,7 @@ export default function Admin() {
           image: "",
           rating: 4.0,
           totalReviews: 76,
-          status: "Inactive",
+          status: OrderStatus.Inactive,
           deliveryTime: { min: 15, max: 25 },
           deliveryFee: 30,
           minimumOrder: 100,
@@ -305,7 +300,7 @@ export default function Admin() {
           tax: 59.8,
           deliveryFee: 40,
           total: 697.8,
-          status: "Delivered",
+          status: OrderStatus.Delivered,
           paymentStatus: "Completed",
           paymentMethod: "UPI",
           deliveryAddress: {
@@ -376,7 +371,7 @@ export default function Admin() {
           name: "John Doe",
           phone: "+91-9876543216",
           requestType: "User",
-          status: "Pending",
+          status: OrderStatus.Pending,
           rejectionReason: "",
           processedBy: { _id: "", name: "", email: "" },
           processedAt: "",
@@ -692,7 +687,7 @@ export default function Admin() {
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {user.isActive ? "Active" : "Inactive"}
+                          {user.isActive ? OrderStatus.Active : OrderStatus.Inactive}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -793,9 +788,9 @@ export default function Admin() {
                           }
                           className="text-xs font-semibold rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                         >
-                          <option value="Active">Active</option>
-                          <option value="Inactive">Inactive</option>
-                          <option value="Pending">Pending</option>
+                          <option value=OrderStatus.Active>Active</option>
+                          <option value=OrderStatus.Inactive>Inactive</option>
+                          <option value=OrderStatus.Pending>Pending</option>
                           <option value="Suspended">Suspended</option>
                         </select>
                       </td>
@@ -944,14 +939,14 @@ export default function Admin() {
                           }
                           className="text-xs font-semibold rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                         >
-                          <option value="Pending">Pending</option>
+                          <option value=OrderStatus.Pending>Pending</option>
                           <option value="Confirmed">Confirmed</option>
-                          <option value="Preparing">Preparing</option>
+                          <option value=OrderStatus.Preparing>Preparing</option>
                           <option value="Out for Delivery">
                             Out for Delivery
                           </option>
-                          <option value="Delivered">Delivered</option>
-                          <option value="Cancelled">Cancelled</option>
+                          <option value=OrderStatus.Delivered>Delivered</option>
+                          <option value=OrderStatus.Cancelled>Cancelled</option>
                         </select>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -1110,7 +1105,7 @@ export default function Admin() {
                         {new Date(request.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        {request.status === "Pending" && (
+                        {request.status === OrderStatus.Pending && (
                           <div className="flex space-x-2">
                             <button
                               onClick={() =>
