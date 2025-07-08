@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield } from "lucide-react";
+import { ArrowLeft, Shield, KeyIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AdminLogin() {
@@ -8,7 +8,13 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setIsAnimating(true);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +43,12 @@ export default function AdminLogin() {
           sessionStorage.setItem("adminAuth", data.token);
           sessionStorage.setItem("adminUser", JSON.stringify(data.user));
         }
-        navigate("/admin");
+
+        // Show success animation before redirect
+        setIsAnimating(true);
+        setTimeout(() => {
+          navigate("/admin");
+        }, 1000);
       } else {
         setError(data.message || "Invalid admin credentials");
       }
@@ -49,84 +60,119 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
-      <div className="max-w-sm sm:max-w-md w-full space-y-6 sm:space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600 flex items-center justify-center px-4 py-8">
+      <div
+        className={`max-w-sm sm:max-w-md w-full space-y-6 sm:space-y-8 transition-all duration-1000 ${isAnimating ? "animate-fade-in" : "opacity-0"}`}
+      >
         {/* Header */}
         <div className="text-center">
           <div className="flex items-center justify-center">
-            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500" />
+            <div className="relative">
+              <Shield className="w-16 h-16 sm:w-20 sm:h-20 text-white animate-bounce-gentle" />
+              <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+            </div>
           </div>
-          <h2 className="mt-6 text-2xl sm:text-3xl font-bold text-gray-900">
-            Admin Login
+          <h2 className="mt-6 text-3xl sm:text-4xl font-bold text-white animate-slide-up">
+            Admin Portal
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-gray-600">
-            Access restricted to authorized personnel only
+          <p className="mt-2 text-sm sm:text-base text-white/90 animate-fade-in">
+            Secure access for authorized personnel
           </p>
         </div>
 
         {/* Login Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          <div className="space-y-4">
+        <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+          <form className="space-y-6" onSubmit={handleLogin}>
+            <div className="space-y-4">
+              <div className="relative">
+                <label htmlFor="email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
+                  placeholder="Admin Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="relative">
+                <label htmlFor="password" className="sr-only">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="p-4 bg-red-100/90 border-2 border-red-300 text-red-700 rounded-2xl backdrop-blur-sm animate-fade-in">
+                {error}
+              </div>
+            )}
+
             <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
-                placeholder="Admin email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center py-4 px-6 border-2 border-transparent rounded-2xl shadow-lg text-lg font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-white/50 disabled:opacity-50 transform hover:scale-105 transition-all duration-200"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Authenticating...
+                  </div>
+                ) : (
+                  "Sign in as Admin"
+                )}
+              </button>
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
-                placeholder="Admin password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+
+            {/* Forgot Password Link */}
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(!showForgotPassword)}
+                className="flex items-center justify-center gap-2 text-white/90 hover:text-white text-sm transition-colors"
+              >
+                <KeyIcon className="w-4 h-4" />
+                Forgot Password?
+              </button>
             </div>
-          </div>
 
-          {error && (
-            <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
+            {showForgotPassword && (
+              <div className="bg-white/20 rounded-2xl p-4 animate-fade-in">
+                <p className="text-white text-sm text-center">
+                  Please contact your system administrator for password reset
+                  assistance.
+                </p>
+              </div>
+            )}
+
+            <div className="text-center">
+              <Link
+                to="/admin-portal"
+                className="flex items-center justify-center gap-2 text-white/80 hover:text-white text-sm transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Admin Portal
+              </Link>
             </div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
-            >
-              {loading ? "Authenticating..." : "Sign in as Admin"}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <Link
-              to="/"
-              className="flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to App
-            </Link>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

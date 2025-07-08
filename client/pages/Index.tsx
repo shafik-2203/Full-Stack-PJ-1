@@ -10,23 +10,46 @@ export default function Index() {
         <Logo size={130} className="hidden sm:block" />
       </div>
 
-      {/* Header */}
-      <header className="absolute top-2 right-2 sm:top-7 sm:right-9 flex items-center gap-2 sm:gap-4 md:gap-6 z-10">
+      {/* Header Navigation */}
+      <header className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-1 sm:gap-2 md:gap-3 z-10 max-w-xs sm:max-w-none">
+        <Link
+          to="/dashboard"
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
+        >
+          📊 Dashboard
+        </Link>
+        <Link
+          to="/data-export"
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-green-600 to-green-500 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
+          style={{ animationDelay: "0.1s" }}
+        >
+          📤 Export
+        </Link>
+        <Link
+          to="/fastio-pass"
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
+          style={{ animationDelay: "0.2s" }}
+        >
+          🎫 Pass
+        </Link>
         <Link
           to="/admin-portal"
-          className="flex items-center justify-center w-20 h-10 px-2 py-1 sm:w-32 sm:h-12 sm:px-4 sm:py-2 md:w-40 md:h-15 md:px-6 md:py-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium text-sm sm:text-base md:text-lg transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
+          style={{ animationDelay: "0.3s" }}
         >
-          Admin
+          🔐 Admin
         </Link>
         <Link
           to="/login"
-          className="flex items-center justify-center w-20 h-10 px-2 py-1 sm:w-32 sm:h-12 sm:px-4 sm:py-2 md:w-40 md:h-15 md:px-6 md:py-3 rounded-full bg-gradient-to-r from-orange-500 to-orange-400 text-white font-medium text-sm sm:text-base md:text-lg transition-all hover:scale-105"
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-400 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 animate-fade-in"
+          style={{ animationDelay: "0.4s" }}
         >
           Login
         </Link>
         <Link
           to="/signup"
-          className="flex items-center justify-center w-20 h-10 px-2 py-1 sm:w-32 sm:h-12 sm:px-4 sm:py-2 md:w-40 md:h-15 md:px-6 md:py-3 rounded-full border border-orange-500 bg-white text-orange-500 font-medium text-sm sm:text-base md:text-lg transition-all hover:scale-105"
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full border border-orange-500 bg-white text-orange-500 font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 animate-fade-in"
+          style={{ animationDelay: "0.5s" }}
         >
           Sign up
         </Link>
@@ -35,33 +58,51 @@ export default function Index() {
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 sm:pt-0">
         {/* Hero Content */}
-        <div className="flex flex-col items-center gap-3 sm:gap-5 max-w-xs sm:max-w-md md:max-w-lg text-center">
-          {/* Brand Name */}
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide">
+        <div className="flex flex-col items-center gap-3 sm:gap-5 max-w-xs sm:max-w-md md:max-w-lg text-center animate-fade-in">
+          {/* Brand Name with Animation */}
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide animate-slide-up">
             FASTIO
           </h1>
 
-          {/* Divider Line */}
-          <div className="w-32 sm:w-64 md:w-88 h-px bg-black"></div>
+          {/* Animated Divider Line */}
+          <div
+            className="w-32 sm:w-64 md:w-88 h-px bg-black animate-fade-in"
+            style={{ animationDelay: "0.5s" }}
+          ></div>
 
-          {/* Tagline */}
-          <p className="text-lg sm:text-xl md:text-2xl font-medium text-black">
+          {/* Tagline with Delayed Animation */}
+          <p
+            className="text-lg sm:text-xl md:text-2xl font-medium text-black animate-fade-in"
+            style={{ animationDelay: "0.8s" }}
+          >
             Fast Moves, Fresh Choices.
+          </p>
+
+          {/* Additional animated tagline */}
+          <p
+            className="text-sm sm:text-base md:text-lg text-black/80 animate-fade-in"
+            style={{ animationDelay: "1s" }}
+          >
+            🚀 Experience lightning-fast food delivery
           </p>
         </div>
 
-        {/* App Download Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20">
+        {/* App Download Buttons with Enhanced Animations */}
+        <div
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20 animate-fade-in"
+          style={{ animationDelay: "1.2s" }}
+        >
           <a
             href="https://apps.apple.com/app/zomato-food-delivery-dining/id434613896"
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition-transform hover:scale-105"
+            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl animate-slide-in-left"
+            style={{ animationDelay: "1.4s" }}
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/c341f6a999ef369acd139927b58eea53c555c282?width=400"
               alt="Download on App Store"
-              className="h-10 sm:h-12 w-auto flex-shrink-0"
+              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110"
             />
           </a>
 
@@ -69,13 +110,14 @@ export default function Index() {
             href="https://play.google.com/store/apps/details?id=com.application.zomato"
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition-transform hover:scale-105"
+            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl animate-slide-in-right"
+            style={{ animationDelay: "1.6s" }}
           >
             <svg
               viewBox="0 0 200 60"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="h-10 sm:h-12 w-auto flex-shrink-0"
+              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110"
             >
               <path
                 d="M192.593 60H7.40741C3.33519 60 0 56.6231 0 52.5V7.5C0 3.37687 3.33519 0 7.40741 0H192.593C196.665 0 200 3.37687 200 7.5V52.5C200 56.6231 196.665 60 192.593 60Z"

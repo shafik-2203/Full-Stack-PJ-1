@@ -20,7 +20,7 @@ export default function Home() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-500 to-primary-600">
+      <div className="min-h-screen bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="text-center text-white max-w-4xl mx-auto">
             <div className="flex justify-center mb-6 sm:mb-8">
@@ -114,7 +114,7 @@ export default function Home() {
         />
       )}
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-500 to-primary-600 text-white py-8 sm:py-12 lg:py-16">
+      <div className="bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 text-white py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 leading-tight">

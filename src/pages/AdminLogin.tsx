@@ -17,20 +17,17 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // Use the API client for consistency
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/admin-login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-          }),
+      // Use relative API path for admin login
+      const response = await fetch("/api/auth/admin-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
 
       const data = await response.json();
 
@@ -55,17 +52,17 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center px-4 py-8">
       <div className="max-w-sm sm:max-w-md w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex items-center justify-center">
-            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-primary-500" />
+            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
           </div>
-          <h2 className="mt-6 text-2xl sm:text-3xl font-bold text-gray-900">
+          <h2 className="mt-6 text-2xl sm:text-3xl font-bold text-white">
             Admin Login
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-gray-600">
+          <p className="mt-2 text-xs sm:text-sm text-white/80">
             Access restricted to authorized personnel only
           </p>
         </div>

@@ -91,10 +91,7 @@ export default function Admin() {
 
       // Try to fetch real data if available
       try {
-        const usersResponse = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/debug/users`,
-          { headers },
-        );
+        const usersResponse = await fetch("/api/debug/users", { headers });
         if (usersResponse.ok) {
           const usersData = await usersResponse.json();
           if (usersData.success && usersData.users) {
@@ -134,13 +131,10 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/users/all`,
-        {
-          method: "DELETE",
-          headers,
-        },
-      );
+      const response = await fetch("/api/admin/users/all", {
+        method: "DELETE",
+        headers,
+      });
       const data = await response.json();
 
       if (data.success) {
@@ -165,17 +159,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/permissions`,
-        {
-          method: "POST",
-          headers: {
-            ...headers,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: newAdminEmail }),
+      const response = await fetch("/api/admin/permissions", {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ email: newAdminEmail }),
+      });
       const data = await response.json();
 
       if (data.success) {
@@ -210,7 +201,7 @@ export default function Admin() {
       if (!headers.Authorization) return;
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/users/${encodeURIComponent(userId)}`,
+        `/api/admin/users/${encodeURIComponent(userId)}`,
         {
           method: "DELETE",
           headers,
