@@ -941,12 +941,10 @@ export default function Admin() {
                         >
                           <option value={OrderStatus.Pending}>Pending</option>
                           <option value="Confirmed">Confirmed</option>
-                          <option value=OrderStatus.Preparing>Preparing</option>
-                          <option value="Out for Delivery">
-                            Out for Delivery
-                          </option>
-                          <option value=OrderStatus.Delivered>Delivered</option>
-                          <option value=OrderStatus.Cancelled>Cancelled</option>
+                          <option value={OrderStatus.Preparing}>Preparing</option>
+                          <option value="Out for Delivery">Out for Delivery</option>
+                           <option value={OrderStatus.Delivered}>Delivered</option>
+                           <option value={OrderStatus.Cancelled}>Cancelled</option>
                         </select>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
