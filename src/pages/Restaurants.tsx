@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 import { Link } from "react-router-dom";
-import { Search, Star, Clock, Truck, Filter } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import { restaurants, foodCategories } from "@/data/restaurants";
 import { formatPrice } from "@/lib/utils";

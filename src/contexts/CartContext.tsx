@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 import type { MenuItem } from "@/lib/api";
 
 export interface CartItem extends MenuItem {

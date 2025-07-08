@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 import { useCart } from "@/contexts/CartContext";
 import BackButton from "@/components/BackButton";
 import { formatPrice } from "@/lib/utils";

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock, Shield, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import Logo from "@/components/Logo";
 import WelcomeAnimation from "@/components/WelcomeAnimation";

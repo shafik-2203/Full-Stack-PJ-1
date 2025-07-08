@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Check, Star, Zap, Shield, Clock } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import { formatPrice } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";

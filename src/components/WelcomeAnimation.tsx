@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 import { Utensils, ShoppingCart, Star } from "lucide-react";
 
 interface WelcomeAnimationProps {

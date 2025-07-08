@@ -1,4 +1,5 @@
 import axios from "axios";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 
 const API_BASE_URL = "/api";
 

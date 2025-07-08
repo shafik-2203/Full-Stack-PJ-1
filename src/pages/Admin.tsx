@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { apiClient } from "../lib/api";
@@ -11,33 +12,6 @@ import type {
   Payment,
   SignupRequest,
 } from "../lib/api";
-import {
-  Users,
-  UserCheck,
-  UserX,
-  RefreshCw,
-  UserPlus,
-  Trash2,
-  Shield,
-  Store,
-  UtensilsCrossed,
-  CreditCard,
-  BarChart3,
-  Settings,
-  Bell,
-  Truck,
-  Star,
-  TrendingUp,
-  Package,
-  DollarSign,
-  Calendar,
-  Download,
-  Plus,
-  Edit,
-  Eye,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
 
 export default function Admin() {
   const navigate = useNavigate();
