@@ -1,4 +1,6 @@
-import { Home } from 'lucide-react';
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 import Logo from "../components/Logo";
 
 export default function Cart() {

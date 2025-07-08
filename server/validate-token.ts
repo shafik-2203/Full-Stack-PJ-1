@@ -1,3 +1,4 @@
+import { verifyToken } from "./auth";
 
 export function validateTokenEndpoint(req: any, res: any) {
   try {

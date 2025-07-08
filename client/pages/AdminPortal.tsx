@@ -1,4 +1,5 @@
-import { Home } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { ArrowLeft, Shield, UserPlus, LogIn } from "lucide-react";
 
 export default function AdminPortal() {
   return (

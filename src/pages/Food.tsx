@@ -1,4 +1,10 @@
+import { useState } from "react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { Search, Filter, Star, Clock, MapPin } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { restaurants, foodCategories } from "@/data/restaurants";
+import { formatPrice } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 export default function Food() {
   const [selectedCategory, setSelectedCategory] = useState("All");

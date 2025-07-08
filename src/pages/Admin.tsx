@@ -1,5 +1,9 @@
-import { Package } from 'lucide-react';
-import { Store } from 'lucide-react';
+import { UserPlus , Shield , Star , User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { apiClient } from "../lib/api";
 import type {
   DashboardStats,
   User,

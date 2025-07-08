@@ -1,4 +1,16 @@
 import React, { useState, useEffect } from "react";
+import {
+  Zap,
+  Clock,
+  Star,
+  Truck,
+  MapPin,
+  Percent,
+  TrendingUp,
+  Bell,
+  Users,
+} from "lucide-react";
+import { realTimeService, estimateDeliveryTime } from "../lib/realtime";
 
 interface RealTimeStats {
   activeOrders: number;

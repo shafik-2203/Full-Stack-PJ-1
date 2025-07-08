@@ -1,4 +1,7 @@
-import { Package } from 'lucide-react';
+import { useAuth } from "@/contexts/AuthContext";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { Package, TrendingUp, Users, DollarSign } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import BackButton from "@/components/BackButton";
 
 export default function Dashboard() {

@@ -1,4 +1,6 @@
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { User } from "../database.js";
 
 // Extend Request interface to include adminUser
 declare global {

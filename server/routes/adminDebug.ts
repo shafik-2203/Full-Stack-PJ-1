@@ -1,4 +1,6 @@
 import express from "express";
+import { User, Restaurant, Order } from "../database.js";
+import { requireAdminAuth } from "../middleware/admin-auth-mongo.js";
 
 const router = express.Router();
 

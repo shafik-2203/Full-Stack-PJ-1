@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { MenuItem } from "@shared/api";
 
 export interface CartItem {
   id: string;

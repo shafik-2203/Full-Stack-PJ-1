@@ -1,4 +1,5 @@
 import express from "express";
+import { Order, Restaurant } from "../database.js";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();

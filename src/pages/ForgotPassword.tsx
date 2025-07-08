@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Mail, ArrowLeft, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 import BackButton from "@/components/BackButton";
 
 export default function ForgotPassword() {

@@ -1,3 +1,5 @@
+import { db } from "./database";
+import { comparePassword } from "./auth";
 
 export async function testLogin(username: string, password: string) {
   console.log(`🧪 Testing login: "${username}" with password: "${password}"`);

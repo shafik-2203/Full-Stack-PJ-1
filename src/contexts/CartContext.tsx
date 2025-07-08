@@ -1,4 +1,6 @@
+import { User } from "lucide-react";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 import type { MenuItem } from "@/lib/api";
 
 export interface CartItem extends MenuItem {

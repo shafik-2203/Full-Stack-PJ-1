@@ -1,3 +1,6 @@
+import { User } from "lucide-react";
+import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
+import { useAuth } from "@/contexts/AuthContext";
 import BackButton from "@/components/BackButton";
 
 export default function Profile() {

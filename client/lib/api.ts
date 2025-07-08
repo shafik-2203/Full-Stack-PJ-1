@@ -1,3 +1,14 @@
+import {
+  AuthResponse,
+  LoginRequest,
+  SignupRequest,
+  VerifyOTPRequest,
+  ApiResponse,
+  Restaurant,
+  MenuItem,
+  Order,
+  CreateOrderRequest,
+} from "@shared/api";
 
 // Use environment variable if available, fallback to local API for development
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";

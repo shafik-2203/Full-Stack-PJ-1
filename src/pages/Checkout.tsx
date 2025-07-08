@@ -1,4 +1,16 @@
+import { useState } from "react";
+import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import {
+  CreditCard,
+  Smartphone,
+  Wallet,
+  MapPin,
+  Clock,
+  CheckCircle,
+} from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
   const [selectedPayment, setSelectedPayment] = useState("card");

@@ -1,4 +1,4 @@
-import { Home } from 'lucide-react';
+import { useState, useEffect } from "react";
 
 export default function Debug() {
   const [apiStatus, setApiStatus] = useState("Testing...");

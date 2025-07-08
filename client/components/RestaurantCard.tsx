@@ -1,3 +1,12 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Restaurant } from "@shared/api";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Heart, Clock, Star, Truck, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface RestaurantCardProps {
   restaurant: Restaurant;

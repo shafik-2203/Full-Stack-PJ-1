@@ -1,3 +1,4 @@
+import { Code } from "lucide-react";
 
 export default function DevModeIndicator() {
   if (!import.meta.env.DEV) return null;

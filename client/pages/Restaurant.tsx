@@ -1,4 +1,9 @@
-import { Home } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { apiClient } from "../lib/api";
+import { Restaurant as RestaurantType, MenuItem } from "@shared/api";
 import Logo from "../components/Logo";
 
 export default function Restaurant() {

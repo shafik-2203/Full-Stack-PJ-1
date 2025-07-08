@@ -1,4 +1,11 @@
 import express from "express";
+import {
+  getRestaurants,
+  searchRestaurants,
+  getCategories,
+  getRestaurant,
+  getRestaurantMenu,
+} from "./restaurantHandlers.js";
 
 const router = express.Router();
 
