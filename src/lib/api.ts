@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import { User, Restaurant, Order, CartItem, OrderStatus, RestaurantStatus, DashboardStats } from "@/types";
 import axios from "axios";
 import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 
@@ -43,29 +43,9 @@ export interface AuthResponse extends ApiResponse {
   token?: string;
 }
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  phone: string;
-  isAdmin: boolean;
-  isActive: boolean;
-  lastLogin: string;
-  totalOrders: number;
-  totalSpent: number;
-}
+export 
 
-export interface Restaurant {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
+export ;
   cuisine: string[];
   description: string;
   image: string;
@@ -107,14 +87,7 @@ export interface FoodItem {
   emoji: string;
 }
 
-export interface Order {
-  _id: string;
-  orderId: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-  };
+export ;
   restaurant: {
     _id: string;
     name: string;
