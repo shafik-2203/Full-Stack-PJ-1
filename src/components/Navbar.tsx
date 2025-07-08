@@ -66,16 +66,6 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Admin Button */}
-            <Link
-              to="/admin-portal"
-              className="p-2 sm:p-2 text-gray-600 hover:text-primary-600 transition-colors touch-manipulation"
-              title="Admin Portal"
-              style={{ minHeight: "44px", minWidth: "44px" }}
-            >
-              <Shield size={20} className="sm:w-6 sm:h-6" />
-            </Link>
-
             {/* Cart */}
             <Link
               to="/cart"

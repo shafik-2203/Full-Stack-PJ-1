@@ -1,7 +1,34 @@
-// Modern API client for FASTIO
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import axios from "axios";
 
-// Types for API responses
+const API_BASE_URL = "/api";
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
+);
+
 export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
@@ -16,236 +43,298 @@ export interface AuthResponse extends ApiResponse {
 
 export interface User {
   id: string;
-  username: string;
   email: string;
-  mobile: string;
-  isVerified: boolean;
-  role?: string;
+  name: string;
+  phone: string;
+  isAdmin: boolean;
+  isActive: boolean;
+  lastLogin: string;
+  totalOrders: number;
+  totalSpent: number;
 }
 
 export interface Restaurant {
   _id: string;
   name: string;
+  email: string;
+  phone: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  cuisine: string[];
   description: string;
   image: string;
   rating: number;
-  deliveryTime: string;
+  totalReviews: number;
+  status: "Active" | "Inactive" | "Pending" | "Suspended";
+  deliveryTime: {
+    min: number;
+    max: number;
+  };
   deliveryFee: number;
   minimumOrder: number;
-  cuisine: string[];
-  isOpen: boolean;
-  location: {
-    address: string;
-    coordinates: [number, number];
-  };
+  totalOrders: number;
+  totalRevenue: number;
+  isVerified: boolean;
 }
 
-export interface MenuItem {
+export interface FoodItem {
   _id: string;
   name: string;
   description: string;
   price: number;
-  image: string;
   category: string;
+  restaurant: {
+    _id: string;
+    name: string;
+  };
+  image: string;
+  ingredients: string[];
+  allergens: string[];
   isVegetarian: boolean;
+  isVegan: boolean;
+  isGlutenFree: boolean;
+  spiceLevel: string;
   isAvailable: boolean;
-  restaurantId: string;
+  preparationTime: number;
+  rating: number;
+  totalOrders: number;
+  emoji: string;
 }
 
 export interface Order {
   _id: string;
-  userId: string;
-  restaurantId: string;
-  items: OrderItem[];
-  totalAmount: number;
+  orderId: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  restaurant: {
+    _id: string;
+    name: string;
+  };
+  items: {
+    foodItem: {
+      _id: string;
+      name: string;
+    };
+    quantity: number;
+    price: number;
+    specialInstructions: string;
+  }[];
+  subtotal: number;
+  tax: number;
+  deliveryFee: number;
+  total: number;
   status:
-    | "pending"
-    | "confirmed"
-    | "preparing"
-    | "out_for_delivery"
-    | "delivered"
-    | "cancelled";
-  deliveryAddress: string;
-  paymentMethod: string;
-  createdAt: string;
+    | "Pending"
+    | "Confirmed"
+    | "Preparing"
+    | "Out for Delivery"
+    | "Delivered"
+    | "Cancelled";
+  paymentStatus: "Pending" | "Completed" | "Failed" | "Refunded";
+  paymentMethod: "UPI" | "Card" | "Wallet" | "Cash on Delivery";
+  deliveryAddress: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    phone: string;
+  };
   estimatedDeliveryTime: string;
+  actualDeliveryTime: string;
+  notes: string;
+  rating: number;
+  review: string;
+  createdAt: string;
 }
 
-export interface OrderItem {
-  menuItemId: string;
+export interface Payment {
+  _id: string;
+  transactionId: string;
+  order: {
+    _id: string;
+    orderId: string;
+    total: number;
+  };
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  amount: number;
+  method: "UPI" | "Card" | "Wallet" | "Cash on Delivery";
+  status: "Pending" | "Completed" | "Failed" | "Refunded" | "Cancelled";
+  gateway: string;
+  gatewayTransactionId: string;
+  currency: string;
+  refundAmount: number;
+  refundReason: string;
+  failureReason: string;
+  processedAt: string;
+  refundedAt: string;
+  createdAt: string;
+}
+
+export interface SignupRequest {
+  _id: string;
+  email: string;
   name: string;
-  price: number;
-  quantity: number;
-  image: string;
+  phone: string;
+  requestType: "User" | "Restaurant";
+  status: "Pending" | "Approved" | "Rejected";
+  restaurantInfo?: {
+    name: string;
+    cuisine: string[];
+    address: {
+      street: string;
+      city: string;
+      state: string;
+      zipCode: string;
+    };
+    description: string;
+  };
+  rejectionReason: string;
+  processedBy: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  processedAt: string;
+  notes: string;
+  createdAt: string;
+}
+
+export interface DashboardStats {
+  totalUsers: number;
+  totalRestaurants: number;
+  totalOrders: number;
+  totalRevenue: number;
+  pendingSignups: number;
+  activeRestaurants: number;
 }
 
 class ApiClient {
-  private token: string | null = null;
-
-  constructor() {
-    // Load token from localStorage
-    if (typeof window !== "undefined") {
-      this.token = localStorage.getItem("fastio_token");
-    }
-  }
-
-  setToken(token: string | null) {
-    this.token = token;
-    if (typeof window !== "undefined") {
-      if (token) {
-        localStorage.setItem("fastio_token", token);
-      } else {
-        localStorage.removeItem("fastio_token");
-      }
-    }
-  }
-
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {},
-  ): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
-
-    const config: RequestInit = {
-      headers: {
-        "Content-Type": "application/json",
-        ...(this.token && { Authorization: `Bearer ${this.token}` }),
-        ...options.headers,
-      },
-      mode: "cors",
-      credentials: "omit",
-      ...options,
-    };
-
-    console.log(`🔄 API Request: ${config.method || "GET"} ${url}`);
-
-    try {
-      const response = await fetch(url, config);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = `HTTP ${response.status}`;
-
-        try {
-          const errorData = JSON.parse(errorText);
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          errorMessage = errorText || errorMessage;
-        }
-
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-      console.log(`✅ API Success: ${url}`);
-      return data;
-    } catch (error) {
-      console.error(`❌ API Error: ${url}`, error);
-
-      // Handle specific network errors
-      if (
-        error instanceof TypeError &&
-        error.message.includes("Failed to fetch")
-      ) {
-        throw new Error(
-          "Network error: Unable to connect to server. Please check your internet connection or try again later.",
-        );
-      }
-
-      throw error;
-    }
-  }
-
-  // Auth endpoints
-  async signup(userData: {
-    username: string;
-    email: string;
-    password: string;
-    mobile: string;
-  }): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/auth/signup", {
-      method: "POST",
-      body: JSON.stringify(userData),
-    });
-  }
-
   async login(credentials: {
-    username: string;
+    email: string;
     password: string;
   }): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
-    });
+    const response = await api.post("/auth/login", credentials);
+    if (response.data.success && response.data.token) {
+      localStorage.setItem("authToken", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+    }
+    return response.data;
   }
 
-  async verifyOTP(data: { email: string; otp: string }): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/auth/verify-otp", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  async resendOTP(email: string): Promise<ApiResponse> {
-    return this.request<ApiResponse>("/auth/resend-otp", {
-      method: "POST",
-      body: JSON.stringify({ email }),
-    });
-  }
-
-  // Restaurant endpoints
-  async getRestaurants(): Promise<ApiResponse<Restaurant[]>> {
-    return this.request<ApiResponse<Restaurant[]>>("/restaurants");
-  }
-
-  async getRestaurant(id: string): Promise<ApiResponse<Restaurant>> {
-    return this.request<ApiResponse<Restaurant>>(`/restaurants/${id}`);
-  }
-
-  async getMenuItems(restaurantId: string): Promise<ApiResponse<MenuItem[]>> {
-    return this.request<ApiResponse<MenuItem[]>>(
-      `/restaurants/${restaurantId}/menu`,
-    );
-  }
-
-  async searchRestaurants(query: string): Promise<ApiResponse<Restaurant[]>> {
-    return this.request<ApiResponse<Restaurant[]>>(
-      `/restaurants/search?q=${encodeURIComponent(query)}`,
-    );
-  }
-
-  // Order endpoints
-  async createOrder(orderData: {
-    restaurantId: string;
-    items: { menuItemId: string; quantity: number }[];
-    deliveryAddress: string;
-    paymentMethod: string;
-  }): Promise<ApiResponse<Order>> {
-    return this.request<ApiResponse<Order>>("/orders", {
-      method: "POST",
-      body: JSON.stringify(orderData),
-    });
-  }
-
-  async getUserOrders(): Promise<ApiResponse<Order[]>> {
-    return this.request<ApiResponse<Order[]>>("/orders");
-  }
-
-  async getOrder(id: string): Promise<ApiResponse<Order>> {
-    return this.request<ApiResponse<Order>>(`/orders/${id}`);
-  }
-
-  // User endpoints
-  async updateProfile(data: {
-    username: string;
+  async register(userData: {
     email: string;
-    mobile: string;
+    password: string;
+    name: string;
+    phone: string;
   }): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/user/profile", {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
+    const response = await api.post("/auth/register", userData);
+    if (response.data.success && response.data.token) {
+      localStorage.setItem("authToken", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+    }
+    return response.data;
+  }
+
+  async getDashboardStats(): Promise<ApiResponse<DashboardStats>> {
+    const response = await api.get("/admin/dashboard");
+    return response.data;
+  }
+
+  async getUsers(): Promise<ApiResponse<User[]>> {
+    const response = await api.get("/admin/users");
+    return response.data;
+  }
+
+  async updateUser(
+    id: string,
+    data: Partial<User>,
+  ): Promise<ApiResponse<User>> {
+    const response = await api.put(`/admin/users/${id}`, data);
+    return response.data;
+  }
+
+  async getRestaurants(): Promise<ApiResponse<Restaurant[]>> {
+    const response = await api.get("/admin/restaurants");
+    return response.data;
+  }
+
+  async createRestaurant(
+    data: Partial<Restaurant>,
+  ): Promise<ApiResponse<Restaurant>> {
+    const response = await api.post("/admin/restaurants", data);
+    return response.data;
+  }
+
+  async updateRestaurant(
+    id: string,
+    data: Partial<Restaurant>,
+  ): Promise<ApiResponse<Restaurant>> {
+    const response = await api.put(`/admin/restaurants/${id}`, data);
+    return response.data;
+  }
+
+  async getFoodItems(): Promise<ApiResponse<FoodItem[]>> {
+    const response = await api.get("/admin/food-items");
+    return response.data;
+  }
+
+  async createFoodItem(
+    data: Partial<FoodItem>,
+  ): Promise<ApiResponse<FoodItem>> {
+    const response = await api.post("/admin/food-items", data);
+    return response.data;
+  }
+
+  async updateFoodItem(
+    id: string,
+    data: Partial<FoodItem>,
+  ): Promise<ApiResponse<FoodItem>> {
+    const response = await api.put(`/admin/food-items/${id}`, data);
+    return response.data;
+  }
+
+  async getOrders(): Promise<ApiResponse<Order[]>> {
+    const response = await api.get("/admin/orders");
+    return response.data;
+  }
+
+  async updateOrder(
+    id: string,
+    data: Partial<Order>,
+  ): Promise<ApiResponse<Order>> {
+    const response = await api.put(`/admin/orders/${id}`, data);
+    return response.data;
+  }
+
+  async getPayments(): Promise<ApiResponse<Payment[]>> {
+    const response = await api.get("/admin/payments");
+    return response.data;
+  }
+
+  async getSignupRequests(): Promise<ApiResponse<SignupRequest[]>> {
+    const response = await api.get("/admin/signup-requests");
+    return response.data;
+  }
+
+  async updateSignupRequest(
+    id: string,
+    data: { status: string; rejectionReason?: string },
+  ): Promise<ApiResponse<SignupRequest>> {
+    const response = await api.put(`/admin/signup-requests/${id}`, data);
+    return response.data;
   }
 }
 
 export const apiClient = new ApiClient();
+export default api;

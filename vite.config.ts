@@ -10,25 +10,12 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
-    host: true,
-    strictPort: true,
-  },
-  build: {
-    outDir: "dist/spa",
-    sourcemap: false,
-    minify: "esbuild",
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ["react", "react-dom", "react-router-dom"],
-          query: ["@tanstack/react-query"],
-        },
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+        secure: false,
       },
     },
-  },
-  preview: {
-    port: 3000,
-    host: true,
   },
 });

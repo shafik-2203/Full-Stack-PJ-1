@@ -64,7 +64,7 @@ export default function Login() {
           <p className="text-primary-100">Sign in to your FASTIO account</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 animate-fade-in">
           <DemoCredentials />
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
@@ -80,7 +80,7 @@ export default function Login() {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className="input w-full"
+                className="input w-full transform transition-all duration-300 focus:scale-105 focus:shadow-lg"
                 placeholder="Enter your email or username"
                 required
               />
@@ -100,7 +100,7 @@ export default function Login() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="input w-full pr-10"
+                  className="input w-full pr-10 transform transition-all duration-300 focus:scale-105 focus:shadow-lg"
                   placeholder="Enter your password"
                   required
                 />
@@ -121,7 +121,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn-primary w-full py-3 text-lg font-semibold disabled:opacity-50"
+              className="btn-primary w-full py-3 text-lg font-semibold disabled:opacity-50 transform transition-all duration-300 hover:scale-105 hover:shadow-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
             >
               {isLoading ? (
                 <span className="loading-dots">Signing In</span>
@@ -130,6 +130,19 @@ export default function Login() {
               )}
             </button>
           </form>
+
+          {/* Forgot Password Link */}
+          <div
+            className="mt-4 text-center animate-fade-in"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <Link
+              to="/forgot-password"
+              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-orange-600 transition-all duration-200 hover:underline hover:scale-105 transform"
+            >
+              🔑 Forgot your password?
+            </Link>
+          </div>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
