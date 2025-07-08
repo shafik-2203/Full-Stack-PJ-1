@@ -1,4 +1,3 @@
-import { User, Restaurant, Order, CartItem, OrderStatus, RestaurantStatus, DashboardStats } from "@/types";
 import { UserPlus , Shield , Star , User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
