@@ -65,35 +65,14 @@ export default function RealTimeDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Mock data for demonstration - in real app this would come from API
-      const mockStats: RealTimeStats = {
-        activeOrders: Math.floor(Math.random() * 50) + 100,
-        avgDeliveryTime: Math.floor(Math.random() * 10) + 20,
-        topRestaurants: [
-          { id: "1", name: "Pizza Palace", orders: 45, rating: 4.8 },
-          { id: "2", name: "Burger Barn", orders: 38, rating: 4.6 },
-          { id: "3", name: "Taco Town", orders: 32, rating: 4.7 },
-        ],
-        deliveryPartners: Math.floor(Math.random() * 20) + 15,
-        promotions: [
-          {
-            id: "1",
-            title: "50% OFF Pizza",
-            discount: 50,
-            restaurant: "Pizza Palace",
-            expiresIn: 1800, // 30 minutes
-          },
-          {
-            id: "2",
-            title: "Free Delivery",
-            discount: 100,
-            restaurant: "Burger Barn",
-            expiresIn: 3600, // 1 hour
-          },
-        ],
-      };
-
-      setStats(mockStats);
+      // Initialize with empty data - in real app this would come from API
+      setStats({
+        activeOrders: 0,
+        avgDeliveryTime: 0,
+        topRestaurants: [],
+        deliveryPartners: 0,
+        promotions: [],
+      });
     } catch (error) {
       console.error("Error loading dashboard data:", error);
     }

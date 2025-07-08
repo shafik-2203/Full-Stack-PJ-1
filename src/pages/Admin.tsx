@@ -8,7 +8,7 @@ import {
   Trash2,
   Shield,
 } from "lucide-react";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import BackButton from "@/components/BackButton";
 
@@ -85,37 +85,9 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      // For now, simulate admin data since backend might not be fully set up
-      // In a real app, these would be actual API calls
-      const mockUsers: User[] = [
-        {
-          id: "1",
-          email: "user1@example.com",
-          username: "John Doe",
-          mobile: "1234567890",
-          is_verified: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          email: "user2@example.com",
-          username: "Jane Smith",
-          mobile: "9876543210",
-          is_verified: false,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ];
-
-      const mockStats: UserStats = {
-        total: mockUsers.length,
-        verified: mockUsers.filter((u) => u.is_verified).length,
-        unverified: mockUsers.filter((u) => !u.is_verified).length,
-      };
-
-      setUsers(mockUsers);
-      setStats(mockStats);
+      // Initialize with empty data
+      setUsers([]);
+      setStats({ total: 0, verified: 0, unverified: 0 });
 
       // Try to fetch real data if available
       try {
@@ -130,7 +102,8 @@ export default function Admin() {
           }
         }
       } catch (err) {
-        console.log("Using mock data - backend not available");
+        console.error("Failed to fetch admin data:", err);
+        toast.error("Failed to load admin data. Please try again later.");
       }
     } catch (err) {
       toast.error("Failed to fetch user data");

@@ -179,12 +179,12 @@ export default function FastioPass() {
         setUserCoins(coinsData.data);
       }
 
-      // Mock user stats for demo
+      // Initialize with default values - in real app this would come from API
       setUserStats({
-        totalOrders: 47,
-        totalSpent: 12450,
-        averageOrderValue: 265,
-        favoriteRestaurant: "The Great Kitchen",
+        totalOrders: 0,
+        totalSpent: 0,
+        averageOrderValue: 0,
+        favoriteRestaurant: "No orders yet",
       });
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -312,7 +312,7 @@ export default function FastioPass() {
               <span className="text-white font-semibold">Total Spent</span>
             </div>
             <div className="text-3xl font-bold text-white">
-              ₹{userStats?.totalSpent || 0}
+              ���{userStats?.totalSpent || 0}
             </div>
           </div>
 

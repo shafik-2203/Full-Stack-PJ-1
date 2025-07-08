@@ -1,12 +1,7 @@
 // Modern API client for FASTIO
-import mockApiService from "./mockApi";
-
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "https://fsd-project1-backend.onrender.com/api";
-
-// Feature flag to use mock API (can be controlled via environment)
-const USE_MOCK_API = true; // Set to false to use real backend
 
 // Types for API responses
 export interface ApiResponse<T = any> {
@@ -170,9 +165,6 @@ class ApiClient {
     password: string;
     mobile: string;
   }): Promise<AuthResponse> {
-    if (USE_MOCK_API) {
-      return mockApiService.signup(userData);
-    }
     return this.request<AuthResponse>("/auth/signup", {
       method: "POST",
       body: JSON.stringify(userData),
@@ -183,9 +175,6 @@ class ApiClient {
     username: string;
     password: string;
   }): Promise<AuthResponse> {
-    if (USE_MOCK_API) {
-      return mockApiService.login(credentials);
-    }
     return this.request<AuthResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify(credentials),
@@ -193,9 +182,6 @@ class ApiClient {
   }
 
   async verifyOTP(data: { email: string; otp: string }): Promise<AuthResponse> {
-    if (USE_MOCK_API) {
-      return mockApiService.verifyOTP(data);
-    }
     return this.request<AuthResponse>("/auth/verify-otp", {
       method: "POST",
       body: JSON.stringify(data),
@@ -203,9 +189,6 @@ class ApiClient {
   }
 
   async resendOTP(email: string): Promise<ApiResponse> {
-    if (USE_MOCK_API) {
-      return mockApiService.resendOTP(email);
-    }
     return this.request<ApiResponse>("/auth/resend-otp", {
       method: "POST",
       body: JSON.stringify({ email }),
@@ -214,26 +197,14 @@ class ApiClient {
 
   // Restaurant endpoints
   async getRestaurants(): Promise<ApiResponse<Restaurant[]>> {
-    if (USE_MOCK_API) {
-      const response = await mockApiService.getRestaurants();
-      return { ...response, message: "Fetched restaurants" };
-    }
     return this.request<ApiResponse<Restaurant[]>>("/restaurants");
   }
 
   async getRestaurant(id: string): Promise<ApiResponse<Restaurant>> {
-    if (USE_MOCK_API) {
-      const response = await mockApiService.getRestaurant(id);
-      return { ...response, message: "Fetched restaurant" };
-    }
     return this.request<ApiResponse<Restaurant>>(`/restaurants/${id}`);
   }
 
   async getMenuItems(restaurantId: string): Promise<ApiResponse<MenuItem[]>> {
-    if (USE_MOCK_API) {
-      const response = await mockApiService.getMenuItems(restaurantId);
-      return { ...response, message: "Fetched menu items" };
-    }
     return this.request<ApiResponse<MenuItem[]>>(
       `/restaurants/${restaurantId}/menu`,
     );
