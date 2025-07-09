@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { apiClient } from "../lib/api";
 import Logo from "../components/Logo";
 import WelcomeAnimation from "../components/WelcomeAnimation";
