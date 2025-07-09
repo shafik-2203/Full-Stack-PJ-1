@@ -1,26 +1,51 @@
-
-import { useEffect, useState } from "react";
-import { Wifi } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Wifi, WifiOff } from "lucide-react";
 
 export default function NetworkStatus() {
-  const [online, setOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [showOffline, setShowOffline] = useState(false);
 
   useEffect(() => {
-    const updateStatus = () => setOnline(navigator.onLine);
-    window.addEventListener("online", updateStatus);
-    window.addEventListener("offline", updateStatus);
-    updateStatus();
+    const handleOnline = () => {
+      setIsOnline(true);
+      setShowOffline(false);
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      setShowOffline(true);
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Show offline indicator if offline
+    if (!navigator.onLine) {
+      setShowOffline(true);
+    }
+
     return () => {
-      window.removeEventListener("online", updateStatus);
-      window.removeEventListener("offline", updateStatus);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
-  if (online) return null;
+  if (!showOffline) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 bg-red-100 text-red-800 px-4 py-2 rounded shadow">
-      <Wifi className="inline-block mr-2" /> You are offline
+    <div className="fixed top-16 left-4 right-4 z-50 md:left-auto md:right-4 md:w-80">
+      <div
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg transition-all ${
+          isOnline
+            ? "bg-green-500 text-white"
+            : "bg-red-500 text-white animate-pulse"
+        }`}
+      >
+        {isOnline ? <Wifi size={16} /> : <WifiOff size={16} />}
+        <span className="text-sm font-medium">
+          {isOnline ? "Back online!" : "No internet connection"}
+        </span>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,7 @@
-import type { User, Restaurant, CartItem, Order, ApiClient, OrderStatus, RestaurantStatus } from '@/types';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { UserPlus, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 import BackButton from "@/components/BackButton";
 
 export default function AdminSignup() {

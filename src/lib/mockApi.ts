@@ -2,7 +2,6 @@
 /*
 // Mock API service to simulate backend responses
 import type { AuthResponse, User, Restaurant, MenuItem, Order } from "./api";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 
 // Mock database
 const mockUsers = new Map<string, any>();

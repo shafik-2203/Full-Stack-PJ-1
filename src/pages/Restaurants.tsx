@@ -1,5 +1,10 @@
-import type { User, Restaurant, CartItem, Order, ApiClient, OrderStatus, RestaurantStatus } from '@/types';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Search, Star, Clock, Truck, Filter } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { restaurants, foodCategories } from "@/data/restaurants";
+import { formatPrice } from "@/lib/utils";
+
 export default function Restaurants() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");

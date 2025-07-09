@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
 import { Search, Filter, Star, Clock, MapPin } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import { restaurants, foodCategories } from "@/data/restaurants";

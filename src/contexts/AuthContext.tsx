@@ -1,7 +1,21 @@
-import { User } from "lucide-react";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
-import { apiClient, type User } from "../lib/api";
+import { apiClient } from "../lib/api";
+
+interface User {
+  id: string;
+  username?: string;
+  name?: string;
+  email: string;
+  mobile?: string;
+  phone?: string;
+  isVerified?: boolean;
+  role?: string;
+  isAdmin?: boolean;
+  isActive?: boolean;
+  lastLogin?: string;
+  totalOrders?: number;
+  totalSpent?: number;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -22,35 +36,49 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Start with false loading
 
   useEffect(() => {
     // Check if user is logged in on app start
     const checkAuth = () => {
-      const token = localStorage.getItem("fastio_token");
-      const userData = localStorage.getItem("fastio_user");
+      try {
+        const token =
+          localStorage.getItem("fastio_token") ||
+          localStorage.getItem("authToken");
+        const userData =
+          localStorage.getItem("fastio_user") || localStorage.getItem("user");
 
-      if (token && userData) {
-        try {
-          const parsedUser = JSON.parse(userData);
-          setUser(parsedUser);
-          apiClient.setToken(token);
-        } catch (error) {
-          console.error("Failed to parse user data:", error);
-          localStorage.removeItem("fastio_token");
-          localStorage.removeItem("fastio_user");
+        if (token && userData) {
+          try {
+            const parsedUser = JSON.parse(userData);
+            setUser(parsedUser);
+            if (apiClient.setToken) {
+              apiClient.setToken(token);
+            }
+          } catch (error) {
+            console.error("Failed to parse user data:", error);
+            localStorage.removeItem("fastio_token");
+            localStorage.removeItem("fastio_user");
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("user");
+          }
         }
+      } catch (error) {
+        console.error("Auth check error:", error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
-    checkAuth();
+    // Small delay to ensure localStorage is available
+    setTimeout(checkAuth, 100);
   }, []);
 
   const login = async (username: string, password: string) => {
     try {
       // Try MongoDB backend first
       try {
+        console.log("Attempting login with backend API...");
         const response = await apiClient.login({
           email: username.includes("@") ? username : "",
           password,
@@ -61,6 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             id: response.user.id,
             username: response.user.name,
             email: response.user.email,
+            mobile: response.user.phone || "",
             isVerified: true,
             role: response.user.isAdmin ? "admin" : "user",
           };
@@ -112,6 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: user.id,
           username: user.username,
           email: user.email,
+          mobile: user.phone || "",
           isVerified: user.isVerified,
           role: user.role,
         };
@@ -154,7 +184,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const verifyOTP = async (email: string, otp: string) => {
+  const verifyOTP = async (_email: string, otp: string) => {
     try {
       // Local OTP verification - accept any 6-digit OTP
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -174,6 +204,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         id: `user_${Date.now()}`,
         username: userData.username,
         email: userData.email,
+        mobile: userData.mobile,
         isVerified: true,
         role: "user",
       };

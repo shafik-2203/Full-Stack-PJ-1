@@ -22,17 +22,8 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AuthProvider>
-            <CartProvider>
-              <App />
-              <Toaster position="top-center" richColors />
-            </CartProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>,
 );

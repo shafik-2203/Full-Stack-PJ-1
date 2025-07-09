@@ -1,5 +1,12 @@
-import type { User, Restaurant, CartItem, Order, ApiClient, OrderStatus, RestaurantStatus } from '@/types';
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { Star, Clock, Truck, MapPin, Plus, Minus } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { restaurants } from "@/data/restaurants";
+import { formatPrice } from "@/lib/utils";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
+
 export default function Restaurant() {
   const { id } = useParams();
   const { addItem, items, updateQuantity } = useCart();

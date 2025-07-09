@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, CartItem, ApiClient, Restaurant, Order } from "@/lib/types";
+import { Download, Calendar, FileText, Database } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import { toast } from "sonner";
 

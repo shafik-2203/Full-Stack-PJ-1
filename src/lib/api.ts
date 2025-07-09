@@ -1,8 +1,16 @@
-import { User } from "lucide-react";
 import axios from "axios";
-import { User, CartItem, Restaurant, Order, ApiClient, OrderStatus, RestaurantStatus } from "@/lib/types";
 
-const API_BASE_URL = "/api";
+// Determine API base URL based on environment
+const getApiBaseUrl = () => {
+  if (import.meta.env.PROD) {
+    // In production, use the deployed backend URL
+    return import.meta.env.VITE_API_URL || "https://your-backend.onrender.com";
+  }
+  // In development, use proxy
+  return "";
+};
+
+const API_BASE_URL = `${getApiBaseUrl()}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -105,6 +113,17 @@ export interface FoodItem {
   rating: number;
   totalOrders: number;
   emoji: string;
+}
+
+export interface MenuItem {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  image?: string;
+  category?: string;
+  restaurantId?: string;
+  isVegetarian?: boolean;
 }
 
 export interface Order {
@@ -222,13 +241,26 @@ export interface DashboardStats {
 }
 
 class ApiClient {
+  private token: string | null = null;
+
+  setToken(token: string | null) {
+    this.token = token;
+    if (typeof window !== "undefined") {
+      if (token) {
+        localStorage.setItem("authToken", token);
+      } else {
+        localStorage.removeItem("authToken");
+      }
+    }
+  }
+
   async login(credentials: {
     email: string;
     password: string;
   }): Promise<AuthResponse> {
     const response = await api.post("/auth/login", credentials);
     if (response.data.success && response.data.token) {
-      localStorage.setItem("authToken", response.data.token);
+      this.setToken(response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
     }
     return response.data;
@@ -335,6 +367,14 @@ class ApiClient {
   ): Promise<ApiResponse<SignupRequest>> {
     const response = await api.put(`/admin/signup-requests/${id}`, data);
     return response.data;
+  }
+
+  async resendOTP(_email: string): Promise<ApiResponse> {
+    // Mock implementation for compatibility
+    return Promise.resolve({
+      success: true,
+      message: "OTP resent successfully",
+    });
   }
 }
 
