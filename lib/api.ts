@@ -929,68 +929,7 @@ class ApiClient {
   }
 
   async getUserOrders(): Promise<ApiResponse<Order[]>> {
-    try {
-      return await this.request<ApiResponse<Order[]>>("/orders");
-    } catch (error) {
-      // Catch any network-related error and provide fallback
-      console.log("🔄 getUserOrders: Caught error:", error);
-      console.log("🔄 Backend unavailable, using fallback user orders");
-
-      return {
-        success: true,
-        message: "Orders loaded (offline mode)",
-        data: [
-          {
-            id: "order-1",
-            userId: "user-1",
-            restaurantId: "rest-1",
-            status: "delivered",
-            totalAmount: 650,
-            deliveryAddress: "123 Main Street, Mumbai, Maharashtra 400001",
-            paymentMethod: "UPI",
-            paymentStatus: "completed",
-            estimatedDeliveryTime: 30,
-            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          },
-          {
-            id: "order-2",
-            userId: "user-1",
-            restaurantId: "rest-2",
-            status: "out_for_delivery",
-            totalAmount: 450,
-            deliveryAddress: "456 Park Avenue, Delhi, Delhi 110001",
-            paymentMethod: "Credit Card",
-            paymentStatus: "completed",
-            estimatedDeliveryTime: 15,
-            createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-          },
-          {
-            id: "order-3",
-            userId: "user-1",
-            restaurantId: "rest-3",
-            status: "preparing",
-            totalAmount: 890,
-            deliveryAddress: "789 Beach Road, Chennai, Tamil Nadu 600001",
-            paymentMethod: "UPI",
-            paymentStatus: "completed",
-            estimatedDeliveryTime: 25,
-            createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-          },
-          {
-            id: "order-4",
-            userId: "user-1",
-            restaurantId: "rest-1",
-            status: "delivered",
-            totalAmount: 320,
-            deliveryAddress: "321 Garden Street, Bangalore, Karnataka 560001",
-            paymentMethod: "Cash on Delivery",
-            paymentStatus: "completed",
-            estimatedDeliveryTime: 35,
-            createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          },
-        ],
-      };
-    }
+    return this.request<ApiResponse<Order[]>>("/orders");
   }
 
   async getOrder(id: string): Promise<ApiResponse<Order>> {
