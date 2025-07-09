@@ -52,53 +52,322 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Mock auth route
+// Temporary storage for OTPs (in production, use Redis or database)
+const otpStorage = new Map();
+
+// Helper function to generate OTP
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Mock users database
+const mockUsers = new Map([
+  [
+    "fastio121299@gmail.com",
+    {
+      id: "admin-1",
+      email: "fastio121299@gmail.com",
+      name: "FastIO Admin",
+      phone: "+91-9876543210",
+      password: "fastio1212",
+      isAdmin: true,
+      isActive: true,
+      isVerified: true,
+      totalOrders: 0,
+      totalSpent: 0,
+    },
+  ],
+  [
+    "mohamedshafik2526@gmail.com",
+    {
+      id: "user-1",
+      email: "mohamedshafik2526@gmail.com",
+      name: "Mohamed Shafik",
+      phone: "+91-9876543211",
+      password: "Shafik1212@",
+      isAdmin: false,
+      isActive: true,
+      isVerified: true,
+      totalOrders: 5,
+      totalSpent: 2450,
+    },
+  ],
+]);
+
+// Mock auth routes
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
 
-  // Check admin credentials
-  if (email === "fastio121299@gmail.com" && password === "fastio1212") {
-    return res.json({
-      success: true,
-      message: "Login successful",
-      user: {
-        id: "admin-1",
-        email: email,
-        name: "FastIO Admin",
-        phone: "+91-9876543210",
-        isAdmin: true,
-        isActive: true,
-        lastLogin: new Date().toISOString(),
-        totalOrders: 0,
-        totalSpent: 0,
-      },
-      token: "admin-token-123",
-    });
-  }
+  const user = mockUsers.get(email?.toLowerCase());
 
-  // Check user credentials
-  if (email === "mohamedshafik2526@gmail.com" && password === "Shafik1212@") {
+  if (user && user.password === password) {
+    const { password: _, ...userWithoutPassword } = user;
     return res.json({
       success: true,
       message: "Login successful",
       user: {
-        id: "user-1",
-        email: email,
-        name: "Mohamed Shafik",
-        phone: "+91-9876543211",
-        isAdmin: false,
-        isActive: true,
+        ...userWithoutPassword,
         lastLogin: new Date().toISOString(),
-        totalOrders: 5,
-        totalSpent: 2450,
       },
-      token: "user-token-123",
+      token: `token-${user.id}-${Date.now()}`,
     });
   }
 
   return res.status(401).json({
     success: false,
     message: "Invalid credentials",
+  });
+});
+
+// Mock signup route
+app.post("/api/auth/signup", (req, res) => {
+  const { email, password, username, mobile } = req.body;
+
+  if (!email || !password || !username || !mobile) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
+  }
+
+  const emailLower = email.toLowerCase();
+
+  if (mockUsers.has(emailLower)) {
+    return res.status(400).json({
+      success: false,
+      message: "User already exists with this email",
+    });
+  }
+
+  // Generate OTP
+  const otp = generateOTP();
+  const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  // Store OTP
+  otpStorage.set(emailLower, {
+    otp,
+    expiry: otpExpiry,
+    userData: {
+      email: emailLower,
+      username,
+      password,
+      mobile,
+    },
+  });
+
+  // Log OTP for development
+  console.log(`🔑 OTP for ${email}: ${otp}`);
+  console.log(`🔑 Valid until: ${new Date(otpExpiry).toLocaleTimeString()}`);
+
+  res.json({
+    success: true,
+    message: "OTP sent to your email. Please verify to complete registration.",
+    email: emailLower,
+    // In development, include OTP in response
+    ...(process.env.NODE_ENV === "development" && { otp }),
+  });
+});
+
+// Mock OTP verification route
+app.post("/api/auth/verify-otp", (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({
+      success: false,
+      message: "Email and OTP are required",
+    });
+  }
+
+  const emailLower = email.toLowerCase();
+  const storedData = otpStorage.get(emailLower);
+
+  if (!storedData) {
+    return res.status(400).json({
+      success: false,
+      message: "OTP not found or expired. Please request a new one.",
+    });
+  }
+
+  if (Date.now() > storedData.expiry) {
+    otpStorage.delete(emailLower);
+    return res.status(400).json({
+      success: false,
+      message: "OTP has expired. Please request a new one.",
+    });
+  }
+
+  if (storedData.otp !== otp) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid OTP. Please try again.",
+    });
+  }
+
+  // Create user account
+  const userId = `user-${Date.now()}`;
+  const newUser = {
+    id: userId,
+    email: emailLower,
+    name: storedData.userData.username,
+    phone: storedData.userData.mobile,
+    password: storedData.userData.password,
+    isAdmin: false,
+    isActive: true,
+    isVerified: true,
+    totalOrders: 0,
+    totalSpent: 0,
+    createdAt: new Date().toISOString(),
+  };
+
+  mockUsers.set(emailLower, newUser);
+  otpStorage.delete(emailLower);
+
+  const { password: _, ...userWithoutPassword } = newUser;
+
+  res.json({
+    success: true,
+    message: "Account verified successfully. You are now logged in!",
+    user: userWithoutPassword,
+    token: `token-${userId}-${Date.now()}`,
+  });
+});
+
+// Mock resend OTP route
+app.post("/api/auth/resend-otp", (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Email is required",
+    });
+  }
+
+  const emailLower = email.toLowerCase();
+  const storedData = otpStorage.get(emailLower);
+
+  if (!storedData) {
+    return res.status(400).json({
+      success: false,
+      message: "No pending signup found for this email",
+    });
+  }
+
+  // Generate new OTP
+  const otp = generateOTP();
+  const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  // Update stored data
+  storedData.otp = otp;
+  storedData.expiry = otpExpiry;
+  otpStorage.set(emailLower, storedData);
+
+  // Log OTP for development
+  console.log(`🔑 Resent OTP for ${email}: ${otp}`);
+
+  res.json({
+    success: true,
+    message: "New OTP sent to your email",
+    // In development, include OTP in response
+    ...(process.env.NODE_ENV === "development" && { otp }),
+  });
+});
+
+// Mock forgot password route
+app.post("/api/auth/forgot-password", (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Email is required",
+    });
+  }
+
+  const emailLower = email.toLowerCase();
+  const user = mockUsers.get(emailLower);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "No account found with this email address",
+    });
+  }
+
+  // Generate OTP for password reset
+  const otp = generateOTP();
+  const otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  // Store password reset OTP
+  otpStorage.set(`reset-${emailLower}`, {
+    otp,
+    expiry: otpExpiry,
+    email: emailLower,
+    type: "password-reset",
+  });
+
+  // Log OTP for development
+  console.log(`🔑 Password reset OTP for ${email}: ${otp}`);
+
+  res.json({
+    success: true,
+    message: "Password reset OTP sent to your email",
+    // In development, include OTP in response
+    ...(process.env.NODE_ENV === "development" && { otp }),
+  });
+});
+
+// Mock verify forgot password OTP and reset password
+app.post("/api/auth/reset-password", (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Email, OTP, and new password are required",
+    });
+  }
+
+  const emailLower = email.toLowerCase();
+  const resetKey = `reset-${emailLower}`;
+  const storedData = otpStorage.get(resetKey);
+
+  if (!storedData) {
+    return res.status(400).json({
+      success: false,
+      message: "Password reset OTP not found or expired",
+    });
+  }
+
+  if (Date.now() > storedData.expiry) {
+    otpStorage.delete(resetKey);
+    return res.status(400).json({
+      success: false,
+      message: "OTP has expired. Please request a new password reset.",
+    });
+  }
+
+  if (storedData.otp !== otp) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid OTP. Please try again.",
+    });
+  }
+
+  // Update user password
+  const user = mockUsers.get(emailLower);
+  if (user) {
+    user.password = newPassword;
+    mockUsers.set(emailLower, user);
+  }
+
+  otpStorage.delete(resetKey);
+
+  res.json({
+    success: true,
+    message:
+      "Password reset successfully. You can now login with your new password.",
   });
 });
 
