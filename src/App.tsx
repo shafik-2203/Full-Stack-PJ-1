@@ -23,15 +23,10 @@ import NotFound from "./pages/NotFound";
 
 import Navbar from "./components/Navbar";
 import PageTransition from "./components/PageTransition";
-import WelcomeAnimation from "./components/WelcomeAnimation";
-
-import { useAuth } from "./contexts/AuthContext";
 
 function App() {
-  const { user } = useAuth();
-
   return (
-    <div className="font-sans">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <Navbar />
       <PageTransition>
         <Routes>
@@ -40,20 +35,19 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-otp" element={<VerifyOTP />} />
-          <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/restaurants" element={<Restaurants />} />
           <Route path="/restaurant/:id" element={<Restaurant />} />
           <Route path="/food" element={<Food />} />
+          <Route path="/admin" element={<AdminPortal />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/signup" element={<AdminSignup />} />
-          <Route path="/admin" element={<AdminPortal />} />
           <Route path="/track-order" element={<TrackOrder />} />
-          <Route path="/user-profile" element={<UserProfile />} />
-          <Route path="/welcome" element={<WelcomeAnimation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
