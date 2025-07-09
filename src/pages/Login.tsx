@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import { apiClient } from "../lib/api";
 import { AuthConflictResolver } from "../utils/authConflictResolver";
 import AuthTroubleshooter from "../components/AuthTroubleshooter";
