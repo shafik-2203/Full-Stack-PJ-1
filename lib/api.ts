@@ -231,49 +231,57 @@ class ApiClient {
       });
     } catch (error) {
       // Check if this is a backend unavailable error or other error
-      if (error.name === "BackendUnavailableError" || error.message === "BACKEND_UNAVAILABLE") {
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
         // Fallback authentication for deployed version when backend is unavailable
         console.log("🔄 Backend unavailable, using fallback authentication");
 
-      // Demo credentials for fallback
-      const validCredentials = [
-        {
-          email: "mohamedshafik2526@gmail.com",
-          password: "Shafik1212@",
-          isAdmin: false,
-        },
-        {
-          email: "fastio121299@gmail.com",
-          password: "fastio1212",
-          isAdmin: true,
-        },
-      ];
-
-      const credential = validCredentials.find(
-        (cred) => cred.email === data.email && cred.password === data.password,
-      );
-
-      if (credential) {
-        return {
-          success: true,
-          message: "Login successful (offline mode)",
-          user: {
-            id: credential.isAdmin ? "admin-1" : "user-1",
-            email: credential.email,
-            username: credential.email.split("@")[0],
-            mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
-            isVerified: true,
-            createdAt: new Date().toISOString(),
+        // Demo credentials for fallback
+        const validCredentials = [
+          {
+            email: "mohamedshafik2526@gmail.com",
+            password: "Shafik1212@",
+            isAdmin: false,
           },
-          token: credential.isAdmin
-            ? "admin-token-offline"
-            : "user-token-offline",
-        };
+          {
+            email: "fastio121299@gmail.com",
+            password: "fastio1212",
+            isAdmin: true,
+          },
+        ];
+
+        const credential = validCredentials.find(
+          (cred) =>
+            cred.email === data.email && cred.password === data.password,
+        );
+
+        if (credential) {
+          return {
+            success: true,
+            message: "Login successful (offline mode)",
+            user: {
+              id: credential.isAdmin ? "admin-1" : "user-1",
+              email: credential.email,
+              username: credential.email.split("@")[0],
+              mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
+              isVerified: true,
+              createdAt: new Date().toISOString(),
+            },
+            token: credential.isAdmin
+              ? "admin-token-offline"
+              : "user-token-offline",
+          };
+        } else {
+          return {
+            success: false,
+            message: "Invalid credentials",
+          };
+        }
       } else {
-        return {
-          success: false,
-          message: "Invalid credentials",
-        };
+        // Re-throw other types of errors (like 401, 403, etc.)
+        throw error;
       }
     }
   }
