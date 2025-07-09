@@ -161,23 +161,59 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      // Fetch users
-      const usersResponse = await fetch("/api/debug/users", { headers });
-      const usersData = await usersResponse.json();
+      // Use existing admin endpoints that we know work
+      try {
+        // Fetch dashboard stats
+        const dashboardResponse = await fetch("/api/admin/dashboard", {
+          headers,
+        });
+        if (dashboardResponse.ok) {
+          const dashboardData = await dashboardResponse.json();
+          console.log("Dashboard data:", dashboardData);
+        }
 
-      // Fetch stats
-      const statsResponse = await fetch("/api/admin/user-stats", { headers });
-      const statsData = await statsResponse.json();
+        // Fetch users
+        const usersResponse = await fetch("/api/admin/users", { headers });
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json();
+          if (usersData.success && usersData.data) {
+            setUsers(usersData.data);
+          }
+        }
 
-      // Fetch admin permissions
-      const permissionsResponse = await fetch("/api/admin/permissions", {
-        headers,
-      });
-      const permissionsData = await permissionsResponse.json();
+        // Fetch restaurants
+        const restaurantsResponse = await fetch("/api/admin/restaurants", {
+          headers,
+        });
+        if (restaurantsResponse.ok) {
+          const restaurantsData = await restaurantsResponse.json();
+          if (restaurantsData.success && restaurantsData.data) {
+            setRestaurants(restaurantsData.data);
+          }
+        }
 
-      // Fetch admin requests
-      const requestsResponse = await fetch("/api/admin/requests", { headers });
-      const requestsData = await requestsResponse.json();
+        // Fetch orders
+        const ordersResponse = await fetch("/api/admin/orders", { headers });
+        if (ordersResponse.ok) {
+          const ordersData = await ordersResponse.json();
+          if (ordersData.success && ordersData.data) {
+            setOrders(ordersData.data);
+          }
+        }
+
+        // Fetch signup requests
+        const signupResponse = await fetch("/api/admin/signup-requests", {
+          headers,
+        });
+        if (signupResponse.ok) {
+          const signupData = await signupResponse.json();
+          if (signupData.success && signupData.data) {
+            setSignupRequests(signupData.data);
+          }
+        }
+      } catch (fetchError) {
+        console.warn("Some admin endpoints failed:", fetchError);
+      }
 
       // Mock data for restaurants, orders, payments if APIs don't exist yet
       setRestaurants([
