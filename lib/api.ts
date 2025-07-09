@@ -231,50 +231,54 @@ class ApiClient {
       });
     } catch (error) {
       // Check if this is a backend unavailable error or other error
-      if (error.name === "BackendUnavailableError" || error.message === "BACKEND_UNAVAILABLE") {
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
         // Fallback authentication for deployed version when backend is unavailable
         console.log("🔄 Backend unavailable, using fallback authentication");
 
-      // Demo credentials for fallback
-      const validCredentials = [
-        {
-          email: "mohamedshafik2526@gmail.com",
-          password: "Shafik1212@",
-          isAdmin: false,
-        },
-        {
-          email: "fastio121299@gmail.com",
-          password: "fastio1212",
-          isAdmin: true,
-        },
-      ];
-
-      const credential = validCredentials.find(
-        (cred) => cred.email === data.email && cred.password === data.password,
-      );
-
-      if (credential) {
-        return {
-          success: true,
-          message: "Login successful (offline mode)",
-          user: {
-            id: credential.isAdmin ? "admin-1" : "user-1",
-            email: credential.email,
-            username: credential.email.split("@")[0],
-            mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
-            isVerified: true,
-            createdAt: new Date().toISOString(),
+        // Demo credentials for fallback
+        const validCredentials = [
+          {
+            email: "mohamedshafik2526@gmail.com",
+            password: "Shafik1212@",
+            isAdmin: false,
           },
-          token: credential.isAdmin
-            ? "admin-token-offline"
-            : "user-token-offline",
-        };
-      } else {
-        return {
-          success: false,
-          message: "Invalid credentials",
-        };
-      }
+          {
+            email: "fastio121299@gmail.com",
+            password: "fastio1212",
+            isAdmin: true,
+          },
+        ];
+
+        const credential = validCredentials.find(
+          (cred) =>
+            cred.email === data.email && cred.password === data.password,
+        );
+
+        if (credential) {
+          return {
+            success: true,
+            message: "Login successful (offline mode)",
+            user: {
+              id: credential.isAdmin ? "admin-1" : "user-1",
+              email: credential.email,
+              username: credential.email.split("@")[0],
+              mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
+              isVerified: true,
+              createdAt: new Date().toISOString(),
+            },
+            token: credential.isAdmin
+              ? "admin-token-offline"
+              : "user-token-offline",
+          };
+        } else {
+          return {
+            success: false,
+            message: "Invalid credentials",
+          };
+        }
       } else {
         // Re-throw other types of errors (like 401, 403, etc.)
         throw error;
@@ -351,49 +355,57 @@ class ApiClient {
       return await this.request<ApiResponse<Restaurant[]>>("/restaurants");
     } catch (error) {
       // Check if this is a backend unavailable error
-      if (error.name === "BackendUnavailableError" || error.message === "BACKEND_UNAVAILABLE") {
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
         // Fallback restaurants data for deployed version
         console.log("🔄 Backend unavailable, using fallback restaurants data");
 
-      return {
-        success: true,
-        message: "Restaurants loaded (offline mode)",
-        data: [
-          {
-            id: "rest-1",
-            name: "Pizza Palace",
-            description: "Authentic Italian pizzas made with fresh ingredients",
-            category: "Italian",
-            rating: 4.5,
-            deliveryTime: "25-35 min",
-            deliveryFee: 40,
-            minimumOrder: 200,
-            isActive: true,
-          },
-          {
-            id: "rest-2",
-            name: "Burger Hub",
-            description: "Gourmet burgers and crispy fries",
-            category: "American",
-            rating: 4.2,
-            deliveryTime: "20-30 min",
-            deliveryFee: 30,
-            minimumOrder: 150,
-            isActive: true,
-          },
-          {
-            id: "rest-3",
-            name: "Sushi Express",
-            description: "Fresh sushi and Japanese cuisine",
-            category: "Japanese",
-            rating: 4.7,
-            deliveryTime: "30-40 min",
-            deliveryFee: 50,
-            minimumOrder: 300,
-            isActive: true,
-          },
-        ],
-      };
+        return {
+          success: true,
+          message: "Restaurants loaded (offline mode)",
+          data: [
+            {
+              id: "rest-1",
+              name: "Pizza Palace",
+              description:
+                "Authentic Italian pizzas made with fresh ingredients",
+              category: "Italian",
+              rating: 4.5,
+              deliveryTime: "25-35 min",
+              deliveryFee: 40,
+              minimumOrder: 200,
+              isActive: true,
+            },
+            {
+              id: "rest-2",
+              name: "Burger Hub",
+              description: "Gourmet burgers and crispy fries",
+              category: "American",
+              rating: 4.2,
+              deliveryTime: "20-30 min",
+              deliveryFee: 30,
+              minimumOrder: 150,
+              isActive: true,
+            },
+            {
+              id: "rest-3",
+              name: "Sushi Express",
+              description: "Fresh sushi and Japanese cuisine",
+              category: "Japanese",
+              rating: 4.7,
+              deliveryTime: "30-40 min",
+              deliveryFee: 50,
+              minimumOrder: 300,
+              isActive: true,
+            },
+          ],
+        };
+      } else {
+        // Re-throw other types of errors
+        throw error;
+      }
     }
   }
 
