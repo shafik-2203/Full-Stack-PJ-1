@@ -295,7 +295,7 @@ class ApiClient {
       });
     } catch (error) {
       // Fallback OTP verification for deployed version when backend is unavailable
-      console.log("�� Backend unavailable, using fallback OTP verification");
+      console.log("🔄 Backend unavailable, using fallback OTP verification");
 
       // Accept demo OTP
       if (data.otp === "123456") {
@@ -444,9 +444,63 @@ class ApiClient {
   }
 
   async getMenuItems(restaurantId: string): Promise<ApiResponse<MenuItem[]>> {
-    return this.request<ApiResponse<MenuItem[]>>(
-      `/restaurants/${restaurantId}/menu`,
-    );
+    try {
+      return await this.request<ApiResponse<MenuItem[]>>(
+        `/restaurants/${restaurantId}/menu`,
+      );
+    } catch (error) {
+      // Check if this is a backend unavailable error
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
+        // Fallback menu items data for deployed version
+        console.log("🔄 Backend unavailable, using fallback menu items data");
+
+        return {
+          success: true,
+          message: "Menu items loaded (offline mode)",
+          data: [
+            {
+              id: "item-1",
+              restaurantId: restaurantId,
+              name: "Margherita Pizza",
+              description: "Fresh tomatoes, mozzarella cheese, and basil",
+              price: 299,
+              category: "Pizza",
+              imageUrl:
+                "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300",
+              isAvailable: true,
+            },
+            {
+              id: "item-2",
+              restaurantId: restaurantId,
+              name: "Chicken Burger",
+              description: "Grilled chicken with lettuce and tomatoes",
+              price: 249,
+              category: "Burger",
+              imageUrl:
+                "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300",
+              isAvailable: true,
+            },
+            {
+              id: "item-3",
+              restaurantId: restaurantId,
+              name: "Caesar Salad",
+              description: "Fresh romaine lettuce with caesar dressing",
+              price: 199,
+              category: "Salad",
+              imageUrl:
+                "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300",
+              isAvailable: true,
+            },
+          ],
+        };
+      } else {
+        // Re-throw other types of errors
+        throw error;
+      }
+    }
   }
 
   async searchRestaurants(
