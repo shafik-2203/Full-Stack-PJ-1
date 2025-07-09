@@ -215,107 +215,44 @@ export default function Admin() {
         console.warn("Some admin endpoints failed:", fetchError);
       }
 
-      // Mock data for restaurants, orders, payments if APIs don't exist yet
-      setRestaurants([
+      // Set default mock data for menu items and payments (endpoints don't exist yet)
+      setMenuItems([
         {
-          id: "1",
-          name: "Tasty Bites",
-          cuisine: "Indian",
-          rating: 4.5,
-          status: "active",
-          orders_count: 150,
-          revenue: 25000,
+          id: "item_1",
+          name: "Margherita Pizza",
+          restaurant_id: "rest-1",
+          price: 299,
+          category: "Pizza",
+          status: "available",
         },
         {
-          id: "2",
-          name: "Pizza Palace",
-          cuisine: "Italian",
-          rating: 4.2,
-          status: "active",
-          orders_count: 95,
-          revenue: 18000,
-        },
-        {
-          id: "3",
-          name: "Burger Joint",
-          cuisine: "American",
-          rating: 4.0,
-          status: "inactive",
-          orders_count: 75,
-          revenue: 12000,
-        },
-      ]);
-
-      setOrders([
-        {
-          id: "ord_1",
-          user_id: "user_1",
-          restaurant_id: "1",
-          status: "delivered",
-          total_amount: 450,
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: "ord_2",
-          user_id: "user_2",
-          restaurant_id: "2",
-          status: "pending",
-          total_amount: 680,
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: "ord_3",
-          user_id: "user_3",
-          restaurant_id: "1",
-          status: "preparing",
-          total_amount: 320,
-          created_at: new Date().toISOString(),
+          id: "item_2",
+          name: "Chicken Burger",
+          restaurant_id: "rest-2",
+          price: 249,
+          category: "Burger",
+          status: "available",
         },
       ]);
 
       setPayments([
         {
           id: "pay_1",
-          order_id: "ord_1",
-          amount: 450,
+          order_id: "order-1",
+          amount: 916.7,
           method: "UPI",
           status: "completed",
-          created_at: new Date().toISOString(),
+          created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
         },
         {
           id: "pay_2",
-          order_id: "ord_2",
-          amount: 680,
+          order_id: "order-2",
+          amount: 412.8,
           method: "Card",
-          status: "pending",
-          created_at: new Date().toISOString(),
+          status: "completed",
+          created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
         },
       ]);
-
-      if (usersResponse.status === 401 || usersResponse.status === 403) {
-        sessionStorage.removeItem("adminAuth");
-        navigate("/admin-login");
-        return;
-      }
-
-      if (usersData.success) {
-        const userData = usersData.users || [];
-        setUsers(userData);
-      } else {
-        setError(usersData.message || "Failed to fetch users");
-      }
-
-      if (statsData.success) {
-        setStats(statsData.stats);
-      }
-
-      if (permissionsData.success) {
-        setAdminPermissions(permissionsData.permissions || []);
-      }
-
-      if (requestsData.success) {
-        setAdminRequests(requestsData.requests || []);
-      }
     } catch (err) {
       setError("Failed to fetch user data");
       console.error("Error fetching user data:", err);
