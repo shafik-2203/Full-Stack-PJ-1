@@ -507,13 +507,84 @@ class ApiClient {
     query?: string,
     category?: string,
   ): Promise<ApiResponse<Restaurant[]>> {
-    const params = new URLSearchParams();
-    if (query) params.append("query", query);
-    if (category) params.append("category", category);
+    try {
+      const params = new URLSearchParams();
+      if (query) params.append("query", query);
+      if (category) params.append("category", category);
 
-    return this.request<ApiResponse<Restaurant[]>>(
-      `/restaurants/search?${params}`,
-    );
+      return await this.request<ApiResponse<Restaurant[]>>(
+        `/restaurants/search?${params}`,
+      );
+    } catch (error) {
+      // Check if this is a backend unavailable error
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
+        // Fallback search results for deployed version
+        console.log("🔄 Backend unavailable, using fallback search results");
+
+        // Filter demo restaurants based on query/category
+        let filteredRestaurants = [
+          {
+            id: "rest-1",
+            name: "Pizza Palace",
+            description: "Authentic Italian pizzas made with fresh ingredients",
+            category: "Italian",
+            rating: 4.5,
+            deliveryTime: "25-35 min",
+            deliveryFee: 40,
+            minimumOrder: 200,
+            isActive: true,
+          },
+          {
+            id: "rest-2",
+            name: "Burger Hub",
+            description: "Gourmet burgers and crispy fries",
+            category: "American",
+            rating: 4.2,
+            deliveryTime: "20-30 min",
+            deliveryFee: 30,
+            minimumOrder: 150,
+            isActive: true,
+          },
+          {
+            id: "rest-3",
+            name: "Sushi Express",
+            description: "Fresh sushi and Japanese cuisine",
+            category: "Japanese",
+            rating: 4.7,
+            deliveryTime: "30-40 min",
+            deliveryFee: 50,
+            minimumOrder: 300,
+            isActive: true,
+          },
+        ];
+
+        // Apply filters
+        if (category) {
+          filteredRestaurants = filteredRestaurants.filter(
+            (r) => r.category.toLowerCase() === category.toLowerCase(),
+          );
+        }
+        if (query) {
+          filteredRestaurants = filteredRestaurants.filter(
+            (r) =>
+              r.name.toLowerCase().includes(query.toLowerCase()) ||
+              r.description.toLowerCase().includes(query.toLowerCase()),
+          );
+        }
+
+        return {
+          success: true,
+          message: "Search results loaded (offline mode)",
+          data: filteredRestaurants,
+        };
+      } else {
+        // Re-throw other types of errors
+        throw error;
+      }
+    }
   }
 
   async getCategories(): Promise<ApiResponse<string[]>> {
