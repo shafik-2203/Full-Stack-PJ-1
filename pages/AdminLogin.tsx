@@ -10,6 +10,7 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
