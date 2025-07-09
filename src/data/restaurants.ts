@@ -1,313 +1,568 @@
-export interface FoodItem {
-  id: string;
+export interface RestaurantData {
+  _id: string;
+  name: string;
+  cuisine: string[];
+  rating: number;
+  totalReviews: number;
+  deliveryTime: { min: number; max: number };
+  deliveryFee: number;
+  minimumOrder: number;
+  image: string;
+  description: string;
+  isVerified: boolean;
+  address: string;
+  phone: string;
+  menu: MenuItem[];
+}
+
+export interface MenuItem {
+  _id: string;
   name: string;
   description: string;
   price: number;
-  image: string;
   category: string;
-  isVegetarian: boolean;
-  isPopular: boolean;
-  rating: number;
-  preparationTime: string;
-}
-
-export interface Restaurant {
-  id: string;
-  name: string;
-  description: string;
   image: string;
-  coverImage: string;
-  rating: number;
-  reviewCount: number;
-  deliveryTime: string;
-  deliveryFee: number;
-  minimumOrder: number;
-  cuisines: string[];
-  isOpen: boolean;
-  location: {
-    address: string;
-    area: string;
-    coordinates: [number, number];
-  };
-  menu: FoodItem[];
+  isVegetarian: boolean;
+  isVegan?: boolean;
+  isGlutenFree?: boolean;
+  spiceLevel?: string;
+  preparationTime?: number;
+  rating?: number;
+  totalOrders?: number;
+  emoji?: string;
 }
 
-export const restaurants: Restaurant[] = [
+export const restaurantsData: RestaurantData[] = [
   {
-    id: "1",
+    _id: "1",
     name: "Pizza Palace",
-    description: "Authentic Italian pizzas with fresh ingredients",
-    image:
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
-    coverImage:
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=400&fit=crop",
+    cuisine: ["Italian", "Pizza"],
     rating: 4.5,
-    reviewCount: 1250,
-    deliveryTime: "25-35 min",
+    totalReviews: 120,
+    deliveryTime: { min: 25, max: 35 },
     deliveryFee: 2.99,
-    minimumOrder: 15.0,
-    cuisines: ["Italian", "Pizza", "Fast Food"],
-    isOpen: true,
-    location: {
-      address: "123 Main Street",
-      area: "Downtown",
-      coordinates: [40.7128, -74.006],
-    },
+    minimumOrder: 15,
+    image:
+      "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&h=300&fit=crop",
+    description: "Authentic Italian pizzas with fresh ingredients",
+    isVerified: true,
+    address: "123 Pizza Street, Food City",
+    phone: "(555) 123-4567",
     menu: [
       {
-        id: "p1",
+        _id: "pizza_1",
         name: "Margherita Pizza",
-        description:
-          "Classic pizza with tomato sauce, mozzarella, and fresh basil",
-        price: 12.99,
-        image:
-          "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=300&h=200&fit=crop",
+        description: "Fresh mozzarella, tomato sauce, and basil",
+        price: 16.99,
         category: "Pizza",
+        image:
+          "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=300&h=200&fit=crop",
         isVegetarian: true,
-        isPopular: true,
-        rating: 4.6,
-        preparationTime: "15-20 min",
+        emoji: "🍕",
+        rating: 4.8,
+        totalOrders: 1205,
       },
       {
-        id: "p2",
+        _id: "pizza_2",
         name: "Pepperoni Pizza",
-        description: "Delicious pizza topped with pepperoni and cheese",
-        price: 15.99,
+        description: "Classic pepperoni with mozzarella cheese",
+        price: 18.99,
+        category: "Pizza",
         image:
           "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=300&h=200&fit=crop",
-        category: "Pizza",
         isVegetarian: false,
-        isPopular: true,
+        emoji: "🍕",
         rating: 4.7,
-        preparationTime: "15-20 min",
+        totalOrders: 1890,
       },
       {
-        id: "p3",
-        name: "Caesar Salad",
-        description: "Fresh romaine lettuce with caesar dressing and croutons",
-        price: 8.99,
+        _id: "pizza_3",
+        name: "Quattro Stagioni",
+        description:
+          "Four seasons pizza with mushrooms, ham, artichokes, and olives",
+        price: 22.99,
+        category: "Pizza",
         image:
-          "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=300&h=200&fit=crop",
+          "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        emoji: "🍕",
+        rating: 4.6,
+        totalOrders: 723,
+      },
+      {
+        _id: "pizza_4",
+        name: "Caesar Salad",
+        description: "Crisp romaine lettuce with caesar dressing and croutons",
+        price: 12.99,
         category: "Salads",
+        image:
+          "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&h=200&fit=crop",
         isVegetarian: true,
-        isPopular: false,
+        emoji: "🥗",
+        rating: 4.4,
+        totalOrders: 456,
+      },
+      {
+        _id: "pizza_5",
+        name: "Garlic Bread",
+        description: "Toasted bread with garlic butter and herbs",
+        price: 7.99,
+        category: "Appetizers",
+        image:
+          "https://images.unsplash.com/photo-1573140401552-388c8b6cabb3?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        emoji: "🥖",
         rating: 4.3,
-        preparationTime: "10-15 min",
+        totalOrders: 892,
       },
     ],
   },
   {
-    id: "2",
+    _id: "2",
     name: "Burger Junction",
-    description: "Juicy burgers and crispy fries made fresh daily",
-    image:
-      "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop",
-    coverImage:
-      "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800&h=400&fit=crop",
-    rating: 4.3,
-    reviewCount: 890,
-    deliveryTime: "20-30 min",
+    cuisine: ["American", "Burgers"],
+    rating: 4.2,
+    totalReviews: 89,
+    deliveryTime: { min: 20, max: 30 },
     deliveryFee: 1.99,
-    minimumOrder: 12.0,
-    cuisines: ["American", "Burgers", "Fast Food"],
-    isOpen: true,
-    location: {
-      address: "456 Oak Avenue",
-      area: "Midtown",
-      coordinates: [40.758, -73.9855],
-    },
+    minimumOrder: 12,
+    image:
+      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&h=300&fit=crop",
+    description: "Juicy burgers and crispy fries",
+    isVerified: true,
+    address: "456 Burger Ave, Food City",
+    phone: "(555) 234-5678",
     menu: [
       {
-        id: "b1",
-        name: "Classic Burger",
+        _id: "burger_1",
+        name: "Classic Cheeseburger",
         description:
-          "Beef patty with lettuce, tomato, onion, and special sauce",
-        price: 10.99,
+          "Beef patty with cheddar cheese, lettuce, tomato, and pickles",
+        price: 14.99,
+        category: "Burgers",
         image:
           "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop",
-        category: "Burgers",
         isVegetarian: false,
-        isPopular: true,
+        emoji: "🍔",
         rating: 4.5,
-        preparationTime: "12-18 min",
+        totalOrders: 2341,
       },
       {
-        id: "b2",
-        name: "Veggie Burger",
-        description: "Plant-based patty with fresh vegetables and avocado",
-        price: 11.99,
-        image:
-          "https://images.unsplash.com/photo-1525059696034-4967a729002e?w=300&h=200&fit=crop",
+        _id: "burger_2",
+        name: "Bacon BBQ Burger",
+        description: "Double beef patty with bacon, BBQ sauce, and onion rings",
+        price: 18.99,
         category: "Burgers",
-        isVegetarian: true,
-        isPopular: false,
-        rating: 4.2,
-        preparationTime: "12-18 min",
+        image:
+          "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        emoji: "🍔",
+        rating: 4.7,
+        totalOrders: 1876,
       },
       {
-        id: "b3",
+        _id: "burger_3",
+        name: "Veggie Burger",
+        description: "Plant-based patty with avocado, lettuce, and vegan mayo",
+        price: 16.99,
+        category: "Burgers",
+        image:
+          "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        isVegan: true,
+        emoji: "🍔",
+        rating: 4.3,
+        totalOrders: 567,
+      },
+      {
+        _id: "burger_4",
         name: "Crispy Fries",
         description: "Golden crispy french fries with sea salt",
-        price: 4.99,
-        image:
-          "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&h=200&fit=crop",
+        price: 6.99,
         category: "Sides",
+        image:
+          "https://images.unsplash.com/photo-1576107316049-54a7ddd833c9?w=300&h=200&fit=crop",
         isVegetarian: true,
-        isPopular: true,
+        emoji: "🍟",
+        rating: 4.6,
+        totalOrders: 3456,
+      },
+      {
+        _id: "burger_5",
+        name: "Chocolate Shake",
+        description: "Rich chocolate milkshake with whipped cream",
+        price: 5.99,
+        category: "Beverages",
+        image:
+          "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        emoji: "🥤",
         rating: 4.4,
-        preparationTime: "8-12 min",
+        totalOrders: 1234,
       },
     ],
   },
   {
-    id: "3",
+    _id: "3",
     name: "Sushi Zen",
-    description: "Fresh sushi and Japanese cuisine prepared by expert chefs",
-    image:
-      "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=300&fit=crop",
-    coverImage:
-      "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&h=400&fit=crop",
-    rating: 4.8,
-    reviewCount: 2100,
-    deliveryTime: "30-45 min",
+    cuisine: ["Japanese", "Sushi"],
+    rating: 4.7,
+    totalReviews: 156,
+    deliveryTime: { min: 30, max: 45 },
     deliveryFee: 3.99,
-    minimumOrder: 25.0,
-    cuisines: ["Japanese", "Sushi", "Asian"],
-    isOpen: true,
-    location: {
-      address: "789 Cherry Blossom Lane",
-      area: "Uptown",
-      coordinates: [40.7831, -73.9712],
-    },
+    minimumOrder: 25,
+    image:
+      "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=500&h=300&fit=crop",
+    description: "Fresh sushi and Japanese delicacies",
+    isVerified: true,
+    address: "789 Sushi Lane, Food City",
+    phone: "(555) 345-6789",
     menu: [
       {
-        id: "s1",
+        _id: "sushi_1",
         name: "California Roll",
-        description: "Avocado, cucumber, and crab stick with sesame seeds",
-        price: 8.99,
-        image:
-          "https://images.unsplash.com/photo-1607301405390-d831c242a59b?w=300&h=200&fit=crop",
-        category: "Sushi Rolls",
-        isVegetarian: false,
-        isPopular: true,
-        rating: 4.7,
-        preparationTime: "20-25 min",
-      },
-      {
-        id: "s2",
-        name: "Salmon Sashimi",
-        description: "Fresh salmon sliced to perfection",
+        description: "Crab, avocado, and cucumber wrapped in nori and rice",
         price: 12.99,
+        category: "Sushi Rolls",
         image:
-          "https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=300&h=200&fit=crop",
-        category: "Sashimi",
+          "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300&h=200&fit=crop",
         isVegetarian: false,
-        isPopular: true,
-        rating: 4.9,
-        preparationTime: "15-20 min",
+        emoji: "🍣",
+        rating: 4.8,
+        totalOrders: 1567,
       },
       {
-        id: "s3",
+        _id: "sushi_2",
+        name: "Salmon Nigiri",
+        description: "Fresh salmon over seasoned sushi rice (2 pieces)",
+        price: 8.99,
+        category: "Nigiri",
+        image:
+          "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        emoji: "🍣",
+        rating: 4.9,
+        totalOrders: 2234,
+      },
+      {
+        _id: "sushi_3",
+        name: "Dragon Roll",
+        description: "Eel and cucumber topped with avocado and eel sauce",
+        price: 18.99,
+        category: "Specialty Rolls",
+        image:
+          "https://images.unsplash.com/photo-1553621042-f6e147245754?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        emoji: "🍣",
+        rating: 4.7,
+        totalOrders: 892,
+      },
+      {
+        _id: "sushi_4",
         name: "Miso Soup",
         description: "Traditional Japanese soup with tofu and seaweed",
-        price: 3.99,
-        image:
-          "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=300&h=200&fit=crop",
+        price: 4.99,
         category: "Soups",
+        image:
+          "https://images.unsplash.com/photo-1606850196854-d13cdec95358?w=300&h=200&fit=crop",
         isVegetarian: true,
-        isPopular: false,
-        rating: 4.4,
-        preparationTime: "10-15 min",
+        emoji: "🍲",
+        rating: 4.6,
+        totalOrders: 1789,
+      },
+      {
+        _id: "sushi_5",
+        name: "Tempura Vegetables",
+        description: "Lightly battered and fried seasonal vegetables",
+        price: 14.99,
+        category: "Tempura",
+        image:
+          "https://images.unsplash.com/photo-1541057670-9b5b78ed7853?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        emoji: "🍤",
+        rating: 4.5,
+        totalOrders: 678,
       },
     ],
   },
   {
-    id: "4",
+    _id: "4",
     name: "Taco Fiesta",
-    description:
-      "Authentic Mexican food with bold flavors and fresh ingredients",
-    image:
-      "https://images.unsplash.com/photo-1565299585323-38174c13a47e?w=400&h=300&fit=crop",
-    coverImage:
-      "https://images.unsplash.com/photo-1565299585323-38174c13a47e?w=800&h=400&fit=crop",
-    rating: 4.4,
-    reviewCount: 756,
-    deliveryTime: "25-35 min",
+    cuisine: ["Mexican", "Tacos"],
+    rating: 4.3,
+    totalReviews: 94,
+    deliveryTime: { min: 15, max: 25 },
     deliveryFee: 2.49,
-    minimumOrder: 18.0,
-    cuisines: ["Mexican", "Tacos", "Latin"],
-    isOpen: false,
-    location: {
-      address: "321 Fiesta Street",
-      area: "South End",
-      coordinates: [40.7505, -73.9934],
-    },
+    minimumOrder: 10,
+    image:
+      "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=500&h=300&fit=crop",
+    description: "Authentic Mexican tacos and burritos",
+    isVerified: true,
+    address: "321 Taco Street, Food City",
+    phone: "(555) 456-7890",
     menu: [
       {
-        id: "t1",
-        name: "Beef Tacos",
-        description: "Seasoned ground beef with lettuce, cheese, and tomatoes",
-        price: 9.99,
+        _id: "taco_1",
+        name: "Carnitas Tacos",
+        description:
+          "Slow-cooked pork with onions, cilantro, and lime (3 tacos)",
+        price: 11.99,
+        category: "Tacos",
         image:
           "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=300&h=200&fit=crop",
-        category: "Tacos",
         isVegetarian: false,
-        isPopular: true,
-        rating: 4.5,
-        preparationTime: "15-20 min",
-      },
-      {
-        id: "t2",
-        name: "Chicken Quesadilla",
-        description: "Grilled chicken with melted cheese in a flour tortilla",
-        price: 11.99,
-        image:
-          "https://images.unsplash.com/photo-1618040996337-56904b7850b9?w=300&h=200&fit=crop",
-        category: "Quesadillas",
-        isVegetarian: false,
-        isPopular: true,
+        spiceLevel: "Medium",
+        emoji: "🌮",
         rating: 4.6,
-        preparationTime: "12-18 min",
+        totalOrders: 1890,
       },
       {
-        id: "t3",
-        name: "Guacamole & Chips",
-        description: "Fresh avocado dip with crispy tortilla chips",
-        price: 6.99,
+        _id: "taco_2",
+        name: "Fish Tacos",
+        description:
+          "Grilled fish with cabbage slaw and chipotle mayo (3 tacos)",
+        price: 13.99,
+        category: "Tacos",
         image:
-          "https://images.unsplash.com/photo-1541544181051-e46607ee9c87?w=300&h=200&fit=crop",
-        category: "Appetizers",
+          "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        spiceLevel: "Mild",
+        emoji: "🌮",
+        rating: 4.4,
+        totalOrders: 1234,
+      },
+      {
+        _id: "taco_3",
+        name: "Veggie Burrito Bowl",
+        description: "Black beans, rice, guacamole, salsa, and vegetables",
+        price: 12.99,
+        category: "Bowls",
+        image:
+          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=200&fit=crop",
         isVegetarian: true,
-        isPopular: false,
+        isVegan: true,
+        emoji: "🥙",
+        rating: 4.5,
+        totalOrders: 987,
+      },
+      {
+        _id: "taco_4",
+        name: "Chicken Quesadilla",
+        description: "Grilled chicken and cheese in a crispy tortilla",
+        price: 10.99,
+        category: "Quesadillas",
+        image:
+          "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        emoji: "🫓",
         rating: 4.3,
-        preparationTime: "8-12 min",
+        totalOrders: 1567,
+      },
+      {
+        _id: "taco_5",
+        name: "Guacamole & Chips",
+        description: "Fresh made guacamole with crispy tortilla chips",
+        price: 7.99,
+        category: "Appetizers",
+        image:
+          "https://images.unsplash.com/photo-1541905349827-1b11b13b8f83?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        isVegan: true,
+        emoji: "🥑",
+        rating: 4.7,
+        totalOrders: 2345,
+      },
+    ],
+  },
+  {
+    _id: "5",
+    name: "Thai Garden",
+    cuisine: ["Thai", "Asian"],
+    rating: 4.4,
+    totalReviews: 78,
+    deliveryTime: { min: 25, max: 40 },
+    deliveryFee: 3.49,
+    minimumOrder: 18,
+    image:
+      "https://images.unsplash.com/photo-1559847844-5315695dadae?w=500&h=300&fit=crop",
+    description: "Spicy and flavorful Thai cuisine",
+    isVerified: true,
+    address: "654 Thai Way, Food City",
+    phone: "(555) 567-8901",
+    menu: [
+      {
+        _id: "thai_1",
+        name: "Pad Thai",
+        description:
+          "Stir-fried rice noodles with shrimp, bean sprouts, and peanuts",
+        price: 15.99,
+        category: "Noodles",
+        image:
+          "https://images.unsplash.com/photo-1559847844-5315695dadae?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        spiceLevel: "Medium",
+        emoji: "🍜",
+        rating: 4.6,
+        totalOrders: 1456,
+      },
+      {
+        _id: "thai_2",
+        name: "Green Curry",
+        description: "Coconut curry with vegetables and choice of protein",
+        price: 17.99,
+        category: "Curries",
+        image:
+          "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        spiceLevel: "Hot",
+        emoji: "🍛",
+        rating: 4.8,
+        totalOrders: 1234,
+      },
+      {
+        _id: "thai_3",
+        name: "Tom Yum Soup",
+        description: "Spicy and sour soup with lemongrass and lime leaves",
+        price: 12.99,
+        category: "Soups",
+        image:
+          "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        spiceLevel: "Hot",
+        emoji: "🍲",
+        rating: 4.5,
+        totalOrders: 891,
+      },
+      {
+        _id: "thai_4",
+        name: "Mango Sticky Rice",
+        description: "Sweet sticky rice with fresh mango and coconut milk",
+        price: 8.99,
+        category: "Desserts",
+        image:
+          "https://images.unsplash.com/photo-1624432203834-12c74e8b5e8e?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        emoji: "🥭",
+        rating: 4.7,
+        totalOrders: 567,
+      },
+      {
+        _id: "thai_5",
+        name: "Spring Rolls",
+        description: "Fresh vegetables wrapped in rice paper with peanut sauce",
+        price: 9.99,
+        category: "Appetizers",
+        image:
+          "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        isVegan: true,
+        emoji: "🥬",
+        rating: 4.4,
+        totalOrders: 678,
+      },
+    ],
+  },
+  {
+    _id: "6",
+    name: "Healthy Bowls",
+    cuisine: ["Healthy", "Salads"],
+    rating: 4.6,
+    totalReviews: 112,
+    deliveryTime: { min: 20, max: 30 },
+    deliveryFee: 2.99,
+    minimumOrder: 14,
+    image:
+      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&h=300&fit=crop",
+    description: "Fresh, healthy bowls and salads",
+    isVerified: true,
+    address: "987 Health Street, Food City",
+    phone: "(555) 678-9012",
+    menu: [
+      {
+        _id: "healthy_1",
+        name: "Quinoa Power Bowl",
+        description:
+          "Quinoa with roasted vegetables, avocado, and tahini dressing",
+        price: 14.99,
+        category: "Power Bowls",
+        image:
+          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        isVegan: true,
+        isGlutenFree: true,
+        emoji: "🥗",
+        rating: 4.8,
+        totalOrders: 1345,
+      },
+      {
+        _id: "healthy_2",
+        name: "Grilled Chicken Salad",
+        description:
+          "Mixed greens with grilled chicken, cherry tomatoes, and balsamic",
+        price: 16.99,
+        category: "Salads",
+        image:
+          "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&h=200&fit=crop",
+        isVegetarian: false,
+        isGlutenFree: true,
+        emoji: "🥗",
+        rating: 4.6,
+        totalOrders: 2134,
+      },
+      {
+        _id: "healthy_3",
+        name: "Acai Bowl",
+        description: "Acai blend topped with granola, berries, and honey",
+        price: 12.99,
+        category: "Smoothie Bowls",
+        image:
+          "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        emoji: "🍓",
+        rating: 4.7,
+        totalOrders: 987,
+      },
+      {
+        _id: "healthy_4",
+        name: "Green Smoothie",
+        description: "Spinach, banana, mango, and coconut water blend",
+        price: 7.99,
+        category: "Smoothies",
+        image:
+          "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        isVegan: true,
+        emoji: "🥤",
+        rating: 4.4,
+        totalOrders: 1567,
+      },
+      {
+        _id: "healthy_5",
+        name: "Protein Energy Balls",
+        description: "Date and nut energy balls with protein powder (6 pieces)",
+        price: 9.99,
+        category: "Snacks",
+        image:
+          "https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=300&h=200&fit=crop",
+        isVegetarian: true,
+        isVegan: true,
+        isGlutenFree: true,
+        emoji: "🍪",
+        rating: 4.5,
+        totalOrders: 678,
       },
     ],
   },
 ];
 
-export const foodCategories = [
-  "All",
-  "Pizza",
-  "Burgers",
-  "Sushi",
-  "Mexican",
-  "Italian",
-  "American",
-  "Japanese",
-  "Vegetarian",
-  "Fast Food",
-  "Healthy",
-];
+export const getRestaurantById = (id: string): RestaurantData | undefined => {
+  return restaurantsData.find((restaurant) => restaurant._id === id);
+};
 
-export const popularItems = restaurants
-  .flatMap((restaurant) =>
-    restaurant.menu
-      .filter((item) => item.isPopular)
-      .map((item) => ({
-        ...item,
-        restaurantName: restaurant.name,
-        restaurantId: restaurant.id,
-      })),
-  )
-  .sort((a, b) => b.rating - a.rating);
+export const getMenuItemById = (
+  restaurantId: string,
+  itemId: string,
+): MenuItem | undefined => {
+  const restaurant = getRestaurantById(restaurantId);
+  return restaurant?.menu.find((item) => item._id === itemId);
+};

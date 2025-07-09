@@ -1,102 +1,40 @@
-import { useEffect, useState } from "react";
-import { Utensils, ShoppingCart, Star } from "lucide-react";
+import React, { useEffect } from "react";
+import { CheckCircle } from "lucide-react";
 
 interface WelcomeAnimationProps {
+  userName: string;
   onComplete: () => void;
-  userName?: string;
 }
 
 export default function WelcomeAnimation({
-  onComplete,
   userName,
+  onComplete,
 }: WelcomeAnimationProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
-
-  const steps = [
-    {
-      icon: <Utensils className="w-16 h-16 text-primary-500" />,
-      title: "Welcome to FASTIO!",
-      description: userName
-        ? `Hi ${userName}! Let's get you started`
-        : "Your food delivery journey begins here",
-    },
-    {
-      icon: <Utensils className="w-16 h-16 text-orange-500" />,
-      title: "Discover Amazing Restaurants",
-      description: "Browse through hundreds of local restaurants and cuisines",
-    },
-    {
-      icon: <ShoppingCart className="w-16 h-16 text-green-500" />,
-      title: "Easy Ordering",
-      description: "Add items to cart and checkout in just a few taps",
-    },
-    {
-      icon: <Star className="w-16 h-16 text-yellow-500" />,
-      title: "Get FASTIO Pass",
-      description: "Enjoy free delivery and exclusive discounts",
-    },
-  ];
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentStep((prev) => {
-        if (prev >= steps.length - 1) {
-          clearInterval(timer);
-          setTimeout(() => {
-            setIsVisible(false);
-            setTimeout(onComplete, 300);
-          }, 1000);
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 1500);
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 3000);
 
-    return () => clearInterval(timer);
+    return () => clearTimeout(timer);
   }, [onComplete]);
 
-  if (!isVisible) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center animate-scale-in transform-gpu">
-        <div className="flex justify-center mb-6 animate-bounce-slow transform-gpu">
-          {steps[currentStep].icon}
+    <div className="fixed inset-0 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 flex items-center justify-center z-50">
+      <div className="text-center text-white animate-fade-in">
+        <div className="mb-8">
+          <CheckCircle className="w-20 h-20 mx-auto mb-4 animate-bounce" />
         </div>
-
-        <h2 className="text-2xl font-bold text-gray-900 mb-4 animate-slide-up transform-gpu">
-          {steps[currentStep].title}
-        </h2>
-
-        <p className="text-gray-600 mb-8 animate-slide-up delay-100 transform-gpu">
-          {steps[currentStep].description}
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-slide-in-left">
+          Welcome!
+        </h1>
+        <p className="text-xl md:text-2xl font-medium animate-slide-in-right">
+          Hello {userName}, let's get you started with FASTIO
         </p>
-
-        {/* Progress indicators */}
-        <div className="flex justify-center space-x-2 mb-6">
-          {steps.map((_, index) => (
-            <div
-              key={index}
-              className={`w-3 h-3 rounded-full transition-smooth transform-gpu ${
-                index <= currentStep
-                  ? "bg-primary-500 scale-110"
-                  : "bg-gray-200"
-              }`}
-            />
-          ))}
+        <div className="mt-8">
+          <div className="w-16 h-1 bg-white/30 rounded-full mx-auto overflow-hidden">
+            <div className="w-full h-full bg-white rounded-full animate-pulse"></div>
+          </div>
         </div>
-
-        {/* Skip button */}
-        <button
-          onClick={() => {
-            setIsVisible(false);
-            setTimeout(onComplete, 300);
-          }}
-          className="text-gray-500 hover:text-gray-700 text-sm transition-colors-smooth"
-        >
-          Skip intro
-        </button>
       </div>
     </div>
   );

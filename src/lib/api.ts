@@ -240,6 +240,36 @@ export interface DashboardStats {
   activeRestaurants: number;
 }
 
+// Create a proper axios instance for the API client
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Add request interceptor for auth token
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Add response interceptor for error handling
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
+);
+
 class ApiClient {
   private token: string | null = null;
 
@@ -247,9 +277,11 @@ class ApiClient {
     this.token = token;
     if (typeof window !== "undefined") {
       if (token) {
-        localStorage.setItem("authToken", token);
+        localStorage.setItem("token", token);
+        apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       } else {
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("token");
+        delete apiClient.defaults.headers.common["Authorization"];
       }
     }
   }
@@ -378,5 +410,5 @@ class ApiClient {
   }
 }
 
-export const apiClient = new ApiClient();
-export default api;
+export const apiClientInstance = new ApiClient();
+export default apiClient;

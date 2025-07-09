@@ -1,10 +1,17 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { apiClient } from "@/lib/api";
-import type { MenuItem, Order } from "@/types";
+import { apiClient } from "../lib/api";
+import type { MenuItem, Order } from "../types";
 import { toast } from "sonner";
 
-export interface CartItem extends MenuItem {
+export interface CartItem {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  image?: string;
+  category?: string;
+  restaurantId?: string;
+  isVegetarian?: boolean;
   quantity: number;
 }
 
@@ -28,36 +35,77 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [restaurantId, setRestaurantId] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedCart = localStorage.getItem("fastio_cart");
-    const savedRestaurantId = localStorage.getItem("fastio_cart_restaurant");
-    if (savedCart) setItems(JSON.parse(savedCart));
-    if (savedRestaurantId) setRestaurantId(savedRestaurantId);
+    try {
+      const savedCart = localStorage.getItem("fastio_cart");
+      const savedRestaurantId = localStorage.getItem("fastio_cart_restaurant");
+      if (savedCart) {
+        const parsedCart = JSON.parse(savedCart);
+        if (Array.isArray(parsedCart)) {
+          setItems(parsedCart);
+        }
+      }
+      if (savedRestaurantId) {
+        setRestaurantId(savedRestaurantId);
+      }
+    } catch (error) {
+      console.error("Error loading cart from localStorage:", error);
+      localStorage.removeItem("fastio_cart");
+      localStorage.removeItem("fastio_cart_restaurant");
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("fastio_cart", JSON.stringify(items));
-    if (restaurantId) {
-      localStorage.setItem("fastio_cart_restaurant", restaurantId);
-    } else {
-      localStorage.removeItem("fastio_cart_restaurant");
+    try {
+      localStorage.setItem("fastio_cart", JSON.stringify(items));
+      if (restaurantId) {
+        localStorage.setItem("fastio_cart_restaurant", restaurantId);
+      } else {
+        localStorage.removeItem("fastio_cart_restaurant");
+      }
+    } catch (error) {
+      console.error("Error saving cart to localStorage:", error);
     }
   }, [items, restaurantId]);
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
-  const totalAmount = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalAmount = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
 
   const addItem = (item: MenuItem) => {
     if (restaurantId && restaurantId !== item.restaurantId) {
-      toast.error("You can only order from one restaurant at a time.");
+      toast.error("You can only order from one restaurant at a time.", {
+        action: {
+          label: "Clear Cart",
+          onClick: () => clearCart(),
+        },
+      });
       return;
     }
 
-    const existing = items.find((i) => i._id === item._id);
-    if (existing) {
-      setItems(items.map((i) => i._id === item._id ? { ...i, quantity: i.quantity + 1 } : i));
-    } else {
-      setItems([...items, { ...item, quantity: 1 }]);
-    }
+    const cartItem: CartItem = {
+      _id: item._id,
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      image: item.image,
+      category: item.category,
+      restaurantId: item.restaurantId,
+      isVegetarian: item.isVegetarian,
+      quantity: 1,
+    };
+
+    setItems((prevItems) => {
+      const existing = prevItems.find((i) => i._id === item._id);
+      if (existing) {
+        return prevItems.map((i) =>
+          i._id === item._id ? { ...i, quantity: i.quantity + 1 } : i,
+        );
+      } else {
+        return [...prevItems, cartItem];
+      }
+    });
     setRestaurantId(item.restaurantId || null);
   };
 
@@ -71,7 +119,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (quantity <= 0) {
       removeItem(itemId);
     } else {
-      setItems(items.map((i) => i._id === itemId ? { ...i, quantity } : i));
+      setItems(items.map((i) => (i._id === itemId ? { ...i, quantity } : i)));
     }
   };
 
@@ -84,25 +132,86 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const placeOrder = async (): Promise<Order | null> => {
     try {
-      const res = await apiClient.post("/api/orders", {
-        items: items.map((i) => ({
-          itemId: i._id,
-          quantity: i.quantity
-        }))
-      });
+      // Simulate order placement for demo
+      const mockOrder: Order = {
+        _id: "order_" + Date.now(),
+        orderId: "ORD-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
+        user: {
+          _id: "user_1",
+          name: "Demo User",
+          email: "demo@fastio.com",
+        },
+        restaurant: {
+          _id: "rest_1",
+          name: "Demo Restaurant",
+        },
+        items: items.map((item) => ({
+          foodItem: {
+            _id: item._id,
+            name: item.name,
+          },
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        subtotal: totalAmount,
+        tax: totalAmount * 0.08,
+        deliveryFee: 2.99,
+        total: totalAmount + totalAmount * 0.08 + 2.99,
+        status: "Pending",
+        paymentStatus: "Pending",
+        paymentMethod: "Card",
+        deliveryAddress: {
+          street: "123 Demo Street",
+          city: "Demo City",
+          state: "Demo State",
+          zipCode: "12345",
+          phone: "555-123-4567",
+        },
+        createdAt: new Date().toISOString(),
+      };
+
       clearCart();
       toast.success("Order placed successfully!");
-      return res.data;
+      return mockOrder;
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to place order");
+      toast.error("Failed to place order");
       return null;
     }
   };
 
   const trackOrder = async (orderId: string): Promise<Order | null> => {
     try {
-      const res = await apiClient.get(`/api/orders/${orderId}`);
-      return res.data;
+      // Simulate order tracking for demo
+      const mockOrder: Order = {
+        _id: orderId,
+        orderId: orderId,
+        user: {
+          _id: "user_1",
+          name: "Demo User",
+          email: "demo@fastio.com",
+        },
+        restaurant: {
+          _id: "rest_1",
+          name: "Demo Restaurant",
+        },
+        items: [],
+        subtotal: 25.99,
+        tax: 2.08,
+        deliveryFee: 2.99,
+        total: 31.06,
+        status: "Preparing",
+        paymentStatus: "Completed",
+        paymentMethod: "Card",
+        deliveryAddress: {
+          street: "123 Demo Street",
+          city: "Demo City",
+          state: "Demo State",
+          zipCode: "12345",
+          phone: "555-123-4567",
+        },
+        createdAt: new Date().toISOString(),
+      };
+      return mockOrder;
     } catch (error: any) {
       toast.error("Unable to track order");
       return null;

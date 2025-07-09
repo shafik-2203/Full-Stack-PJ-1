@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock, Shield, Star } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import Logo from "@/components/Logo";
-import WelcomeAnimation from "@/components/WelcomeAnimation";
+import { useAuth } from "../contexts/AuthContext";
+import Logo from "../components/Logo";
+import WelcomeAnimation from "../components/WelcomeAnimation";
 
 export default function Home() {
   const { user } = useAuth();
@@ -24,7 +24,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="text-center text-white max-w-4xl mx-auto">
             <div className="flex justify-center mb-6 sm:mb-8">
-              <Logo size={80} className="sm:w-24 sm:h-24 lg:w-32 lg:h-32" />
+              <Logo size={100} className="sm:w-24 sm:h-24 lg:w-32 lg:h-32" />
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
               Welcome to FASTIO
@@ -101,6 +101,14 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Creator Credit */}
+        <div className="mt-16 pt-8 border-t border-white/20 text-center">
+          <p className="text-white/80 text-sm">
+            Project created by{" "}
+            <span className="font-semibold text-white">Mohamed Shafik</span>
+          </p>
+        </div>
       </div>
     );
   }
@@ -124,13 +132,21 @@ export default function Home() {
             <p className="text-base sm:text-lg lg:text-xl text-primary-100 mb-6 sm:mb-8 leading-relaxed">
               What would you like to eat today?
             </p>
-            <Link
-              to="/restaurants"
-              className="inline-flex items-center btn-primary px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full bg-white text-primary-600 hover:bg-primary-50 touch-manipulation"
-            >
-              Browse Restaurants
-              <ArrowRight className="ml-2" size={18} />
-            </Link>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+  <Link
+    to="/restaurants"
+    className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full bg-orange-500 text-white hover:bg-orange-600 transition-all duration-200"
+  >
+    Browse Restaurants
+    <ArrowRight className="ml-2" size={18} />
+  </Link>
+  <Link
+    to="/cart"
+    className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full bg-white text-orange-500 hover:bg-orange-100 shadow transition-all duration-200"
+  >
+    🛒 Cart
+  </Link>
+</div>
           </div>
         </div>
       </div>
