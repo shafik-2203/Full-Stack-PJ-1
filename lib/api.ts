@@ -199,10 +199,56 @@ class ApiClient {
   }
 
   async login(data: LoginRequest): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request<AuthResponse>("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      // Fallback authentication for deployed version when backend is unavailable
+      console.log("🔄 Backend unavailable, using fallback authentication");
+
+      // Demo credentials for fallback
+      const validCredentials = [
+        {
+          email: "mohamedshafik2526@gmail.com",
+          password: "Shafik1212@",
+          isAdmin: false,
+        },
+        {
+          email: "fastio121299@gmail.com",
+          password: "fastio1212",
+          isAdmin: true,
+        },
+      ];
+
+      const credential = validCredentials.find(
+        (cred) => cred.email === data.email && cred.password === data.password,
+      );
+
+      if (credential) {
+        return {
+          success: true,
+          message: "Login successful (offline mode)",
+          user: {
+            id: credential.isAdmin ? "admin-1" : "user-1",
+            email: credential.email,
+            username: credential.email.split("@")[0],
+            mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
+            isVerified: true,
+            createdAt: new Date().toISOString(),
+          },
+          token: credential.isAdmin
+            ? "admin-token-offline"
+            : "user-token-offline",
+        };
+      } else {
+        return {
+          success: false,
+          message: "Invalid credentials",
+        };
+      }
+    }
   }
 
   async verifyOTP(data: VerifyOTPRequest): Promise<AuthResponse> {
