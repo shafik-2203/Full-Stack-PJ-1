@@ -1,5 +1,7 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { apiClient } from "../lib/api";
+import { toast } from "sonner";
 
 interface User {
   id: string;
@@ -19,8 +21,9 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  token: string | null;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   signup: (userData: {
     username: string;
     email: string;
@@ -30,134 +33,47 @@ interface AuthContextType {
   logout: () => void;
   verifyOTP: (email: string, otp: string) => Promise<void>;
   resendOTP: (email: string) => Promise<void>;
+  setToken: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Start with false loading
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on app start
-    const checkAuth = () => {
-      try {
-        const token =
-          localStorage.getItem("fastio_token") ||
-          localStorage.getItem("authToken");
-        const userData =
-          localStorage.getItem("fastio_user") || localStorage.getItem("user");
+    if (token) {
+      apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      fetchUser();
+    } else {
+      setIsLoading(false);
+    }
+  }, [token]);
 
-        if (token && userData) {
-          try {
-            const parsedUser = JSON.parse(userData);
-            setUser(parsedUser);
-            if (apiClient.setToken) {
-              apiClient.setToken(token);
-            }
-          } catch (error) {
-            console.error("Failed to parse user data:", error);
-            localStorage.removeItem("fastio_token");
-            localStorage.removeItem("fastio_user");
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("user");
-          }
-        }
-      } catch (error) {
-        console.error("Auth check error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Small delay to ensure localStorage is available
-    setTimeout(checkAuth, 100);
-  }, []);
-
-  const login = async (username: string, password: string) => {
+  const fetchUser = async () => {
     try {
-      // Try MongoDB backend first
-      try {
-        console.log("Attempting login with backend API...");
-        const response = await apiClient.login({
-          email: username.includes("@") ? username : "",
-          password,
-        });
-
-        if (response.success && response.user) {
-          const userResponse = {
-            id: response.user.id,
-            username: response.user.name,
-            email: response.user.email,
-            mobile: response.user.phone || "",
-            isVerified: true,
-            role: response.user.isAdmin ? "admin" : "user",
-          };
-
-          setUser(userResponse);
-          apiClient.setToken(response.token || "");
-          localStorage.setItem("fastio_user", JSON.stringify(userResponse));
-          localStorage.setItem("fastio_token", response.token || "");
-          return;
-        }
-      } catch (mongoError) {
-        console.log(
-          "MongoDB login failed, falling back to local auth:",
-          mongoError,
-        );
-      }
-
-      // Fallback to local authentication
-      const localUsers = [
-        {
-          id: "admin_1",
-          username: "FastioAdmin",
-          email: "fastio121299@gmail.com",
-          password: "fastio1212",
-          role: "admin",
-          isVerified: true,
-        },
-        {
-          id: "user_1",
-          username: "Mohamed Shafik",
-          email: "mohamedshafik2526@gmail.com",
-          password: "Shafik1212@",
-          role: "user",
-          isVerified: true,
-        },
-      ];
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const user = localUsers.find(
-        (u) =>
-          (u.email === username || u.username === username) &&
-          u.password === password,
-      );
-
-      if (user) {
-        const userResponse = {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          mobile: user.phone || "",
-          isVerified: user.isVerified,
-          role: user.role,
-        };
-
-        const token = `token_${user.id}_${Date.now()}`;
-
-        setUser(userResponse);
-        apiClient.setToken(token);
-        localStorage.setItem("fastio_user", JSON.stringify(userResponse));
-        localStorage.setItem("fastio_token", token);
-      } else {
-        throw new Error("Invalid email/username or password");
-      }
+      const res = await apiClient.get("/api/users/me");
+      setUser(res.data);
     } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+      logout(); // if token is invalid
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    try {
+      const res = await apiClient.post("/api/auth/login", { email, password });
+      const { token } = res.data;
+      localStorage.setItem("token", token);
+      setToken(token);
+      toast.success("Login successful");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 
@@ -168,100 +84,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     mobile: string;
   }) => {
     try {
-      // Local signup simulation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Store the email for OTP verification
-      localStorage.setItem("fastio_pending_email", userData.email);
-      localStorage.setItem("fastio_pending_user", JSON.stringify(userData));
-
-      // Simulate successful signup
-
-      // Don't set user yet - they need to verify OTP first
-    } catch (error) {
-      console.error("Signup error:", error);
-      throw error;
+      await apiClient.post("/api/auth/signup", userData);
+      toast.success("Signup successful! Verify OTP.");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Signup failed");
     }
   };
 
-  const verifyOTP = async (_email: string, otp: string) => {
+  const verifyOTP = async (email: string, otp: string) => {
     try {
-      // Local OTP verification - accept any 6-digit OTP
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      if (otp.length !== 6) {
-        throw new Error("Please enter a valid 6-digit OTP");
-      }
-
-      // Get the pending user data
-      const pendingUserData = localStorage.getItem("fastio_pending_user");
-      if (!pendingUserData) {
-        throw new Error("No pending signup found. Please signup again.");
-      }
-
-      const userData = JSON.parse(pendingUserData);
-      const newUser = {
-        id: `user_${Date.now()}`,
-        username: userData.username,
-        email: userData.email,
-        mobile: userData.mobile,
-        isVerified: true,
-        role: "user",
-      };
-
-      const token = `token_${newUser.id}_${Date.now()}`;
-
-      setUser(newUser);
-      apiClient.setToken(token);
-      localStorage.setItem("fastio_user", JSON.stringify(newUser));
-      localStorage.setItem("fastio_token", token);
-
-      // Clear pending data
-      localStorage.removeItem("fastio_pending_email");
-      localStorage.removeItem("fastio_pending_user");
-    } catch (error) {
-      console.error("OTP verification error:", error);
-      throw error;
+      await apiClient.post("/api/auth/verify-otp", { email, otp });
+      toast.success("OTP Verified! You can now log in.");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "OTP verification failed");
     }
   };
 
   const resendOTP = async (email: string) => {
     try {
-      const response = await apiClient.resendOTP(email);
-
-      if (!response.success) {
-        throw new Error(response.message || "Failed to resend OTP");
-      }
-    } catch (error) {
-      console.error("Resend OTP error:", error);
-      throw error;
+      await apiClient.post("/api/auth/resend-otp", { email });
+      toast.success("OTP resent to your email");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to resend OTP");
     }
   };
 
   const logout = () => {
     setUser(null);
-    apiClient.setToken(null);
-    localStorage.removeItem("fastio_token");
-    localStorage.removeItem("fastio_user");
-    localStorage.removeItem("fastio_cart");
+    setToken(null);
+    localStorage.removeItem("token");
+    delete apiClient.defaults.headers.common["Authorization"];
+    toast.success("Logged out");
   };
 
-  const value = {
-    user,
-    isLoading,
-    login,
-    signup,
-    logout,
-    verifyOTP,
-    resendOTP,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isLoading,
+        login,
+        signup,
+        logout,
+        verifyOTP,
+        resendOTP,
+        setToken,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;

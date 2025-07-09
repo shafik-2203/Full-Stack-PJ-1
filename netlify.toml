@@ -1,37 +1,7 @@
 [build]
-  command = "npm run build"
+  base = "."              # client is the root when deploying only frontend
   publish = "dist"
+  command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
-  VITE_API_URL = "https://your-backend.onrender.com"
-
-[[redirects]]
-  from = "/api/*"
-  to = "https://your-backend.onrender.com/api/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[build.processing]
-  skip_processing = false
-
-[build.processing.css]
-  bundle = true
-  minify = true
-
-[build.processing.js]
-  bundle = true
-  minify = true
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
