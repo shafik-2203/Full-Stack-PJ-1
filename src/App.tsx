@@ -22,6 +22,7 @@ import AdminPortal from "./pages/AdminPortal";
 import Admin from "./pages/Admin";
 import DataExport from "./pages/DataExport";
 import Debug from "./pages/Debug";
+import AdminDashboard from "./pages/Admin";
 
 const NotFound = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -69,6 +70,7 @@ export default function App() {
       <Route path="/data-export" element={<DataExport />} />
       <Route path="/debug" element={<Debug />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/admin" element={<Admin/>} />
     </Routes>
   );
 }
