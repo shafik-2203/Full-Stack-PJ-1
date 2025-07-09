@@ -807,6 +807,197 @@ app.get("/api/restaurants/:id/menu", (req, res) => {
   });
 });
 
+// Mock orders data
+const mockOrders = [
+  {
+    _id: "order-1",
+    orderId: "ORD-001",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-1",
+      name: "Pizza Palace",
+    },
+    items: [
+      {
+        _id: "item-1",
+        name: "Margherita Pizza",
+        quantity: 2,
+        price: 299,
+        image:
+          "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300",
+      },
+      {
+        _id: "item-3",
+        name: "Caesar Salad",
+        quantity: 1,
+        price: 199,
+        image:
+          "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300",
+      },
+    ],
+    subtotal: 797,
+    tax: 79.7,
+    deliveryFee: 40,
+    total: 916.7,
+    status: "delivered",
+    paymentStatus: "completed",
+    paymentMethod: "UPI",
+    deliveryAddress: {
+      street: "123 User St",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400005",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(
+      Date.now() - 2 * 60 * 60 * 1000,
+    ).toISOString(), // 2 hours ago
+    actualDeliveryTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
+    notes: "Extra cheese please",
+    rating: 5,
+    review: "Excellent food and fast delivery!",
+    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 hours ago
+  },
+  {
+    _id: "order-2",
+    orderId: "ORD-002",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-2",
+      name: "Burger Hub",
+    },
+    items: [
+      {
+        _id: "item-4",
+        name: "Classic Burger",
+        quantity: 1,
+        price: 249,
+        image:
+          "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300",
+      },
+    ],
+    subtotal: 249,
+    tax: 24.9,
+    deliveryFee: 30,
+    total: 303.9,
+    status: "preparing",
+    paymentStatus: "completed",
+    paymentMethod: "Card",
+    deliveryAddress: {
+      street: "123 User St",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400005",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 minutes from now
+    actualDeliveryTime: null,
+    notes: "",
+    rating: null,
+    review: null,
+    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 minutes ago
+  },
+];
+
+// Orders endpoints
+app.get("/api/orders", (req, res) => {
+  // In a real app, filter by authenticated user
+  res.json({
+    success: true,
+    data: mockOrders,
+  });
+});
+
+app.get("/api/orders/:id", (req, res) => {
+  const { id } = req.params;
+  const order = mockOrders.find((o) => o._id === id);
+
+  if (!order) {
+    return res.status(404).json({
+      success: false,
+      message: "Order not found",
+    });
+  }
+
+  res.json({
+    success: true,
+    data: order,
+  });
+});
+
+app.post("/api/orders", (req, res) => {
+  const { restaurantId, items, deliveryAddress, paymentMethod } = req.body;
+
+  if (!restaurantId || !items || !deliveryAddress || !paymentMethod) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields",
+    });
+  }
+
+  const restaurant = mockRestaurants.find((r) => r._id === restaurantId);
+  if (!restaurant) {
+    return res.status(404).json({
+      success: false,
+      message: "Restaurant not found",
+    });
+  }
+
+  // Calculate totals
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+  const tax = subtotal * 0.1; // 10% tax
+  const deliveryFee = restaurant.deliveryFee;
+  const total = subtotal + tax + deliveryFee;
+
+  const newOrder = {
+    _id: `order-${Date.now()}`,
+    orderId: `ORD-${String(mockOrders.length + 1).padStart(3, "0")}`,
+    user: {
+      _id: "user-1", // Would be from auth token in real app
+      name: "Current User",
+      email: "user@example.com",
+    },
+    restaurant: {
+      _id: restaurant._id,
+      name: restaurant.name,
+    },
+    items,
+    subtotal,
+    tax,
+    deliveryFee,
+    total,
+    status: "pending",
+    paymentStatus: "pending",
+    paymentMethod,
+    deliveryAddress,
+    estimatedDeliveryTime: new Date(Date.now() + 45 * 60 * 1000).toISOString(), // 45 minutes from now
+    actualDeliveryTime: null,
+    notes: "",
+    rating: null,
+    review: null,
+    createdAt: new Date().toISOString(),
+  };
+
+  mockOrders.push(newOrder);
+
+  res.status(201).json({
+    success: true,
+    data: newOrder,
+    message: "Order placed successfully",
+  });
+});
+
 // Mock update endpoints
 app.put("/api/admin/users/:id", (req, res) => {
   res.json({ success: true, data: req.body });
