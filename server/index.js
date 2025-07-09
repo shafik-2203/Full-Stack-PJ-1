@@ -337,11 +337,17 @@ app.use((error, req, res, next) => {
 });
 
 // Graceful shutdown
+let serverInstance = null;
+
 process.on("SIGTERM", () => {
   console.log("🔄 SIGTERM received, shutting down gracefully");
-  server.close(() => {
-    console.log("💀 Process terminated");
-  });
+  if (serverInstance) {
+    serverInstance.close(() => {
+      console.log("💀 Process terminated");
+    });
+  } else {
+    process.exit(0);
+  }
 });
 
 // Initialize database and start server
