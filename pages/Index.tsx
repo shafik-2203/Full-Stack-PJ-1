@@ -249,6 +249,24 @@ export default function Index() {
           </a>
         </div>
       </div>
+
+      {/* Credits Section */}
+      <footer className="absolute bottom-4 left-0 right-0 flex justify-center">
+        <div
+          className="text-center animate-fade-in"
+          style={{ animationDelay: "2s" }}
+        >
+          <p className="text-xs sm:text-sm text-black/60 font-medium">
+            Developed with ❤️ by{" "}
+            <span className="text-black font-semibold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
+              Mohamed Shafik
+            </span>
+          </p>
+          <p className="text-xs text-black/40 mt-1">
+            Full-Stack Developer & Tech Enthusiast
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
