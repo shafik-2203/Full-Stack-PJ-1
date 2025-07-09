@@ -366,7 +366,7 @@ const startServer = async () => {
       }
     }
 
-    const server = app.listen(PORT, "0.0.0.0", () => {
+    serverInstance = app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(
         `📱 API Base URL: ${process.env.NODE_ENV === "production" ? "https://your-backend.onrender.com" : `http://localhost:${PORT}`}/api`,
@@ -374,7 +374,7 @@ const startServer = async () => {
       console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
     });
 
-    return server;
+    return serverInstance;
   } catch (error) {
     console.error("❌ Failed to start server:", error);
     process.exit(1);
