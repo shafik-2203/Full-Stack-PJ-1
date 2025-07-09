@@ -438,21 +438,30 @@ class ApiClient {
         "/restaurants/categories",
       );
     } catch (error) {
-      // Fallback categories data for deployed version
-      console.log("🔄 Backend unavailable, using fallback categories data");
+      // Check if this is a backend unavailable error
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
+        // Fallback categories data for deployed version
+        console.log("🔄 Backend unavailable, using fallback categories data");
 
-      return {
-        success: true,
-        message: "Categories loaded (offline mode)",
-        data: [
-          "Italian",
-          "American",
-          "Japanese",
-          "Indian",
-          "Chinese",
-          "Mexican",
-        ],
-      };
+        return {
+          success: true,
+          message: "Categories loaded (offline mode)",
+          data: [
+            "Italian",
+            "American",
+            "Japanese",
+            "Indian",
+            "Chinese",
+            "Mexican",
+          ],
+        };
+      } else {
+        // Re-throw other types of errors
+        throw error;
+      }
     }
   }
 
