@@ -4,8 +4,8 @@ import { ArrowLeft, Shield, KeyIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("fastio121299@gmail.com");
+  const [password, setPassword] = useState("fastio1212");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
