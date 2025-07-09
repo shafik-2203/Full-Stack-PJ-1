@@ -230,8 +230,10 @@ class ApiClient {
         body: JSON.stringify(data),
       });
     } catch (error) {
-      // Fallback authentication for deployed version when backend is unavailable
-      console.log("🔄 Backend unavailable, using fallback authentication");
+      // Check if this is a backend unavailable error or other error
+      if (error.name === "BackendUnavailableError" || error.message === "BACKEND_UNAVAILABLE") {
+        // Fallback authentication for deployed version when backend is unavailable
+        console.log("🔄 Backend unavailable, using fallback authentication");
 
       // Demo credentials for fallback
       const validCredentials = [
