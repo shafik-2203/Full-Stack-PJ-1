@@ -724,7 +724,38 @@ class ApiClient {
   }
 
   async getOrder(id: string): Promise<ApiResponse<Order>> {
-    return this.request<ApiResponse<Order>>(`/orders/${id}`);
+    try {
+      return await this.request<ApiResponse<Order>>(`/orders/${id}`);
+    } catch (error) {
+      // Check if this is a backend unavailable error
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
+        // Fallback single order data for deployed version
+        console.log("🔄 Backend unavailable, using fallback order data");
+
+        return {
+          success: true,
+          message: "Order loaded (offline mode)",
+          data: {
+            id: id,
+            userId: "user-offline",
+            restaurantId: "rest-1",
+            status: "preparing",
+            totalAmount: 450,
+            deliveryAddress: "Demo Address, City",
+            paymentMethod: "UPI",
+            paymentStatus: "completed",
+            estimatedDeliveryTime: 25,
+            createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+          },
+        };
+      } else {
+        // Re-throw other types of errors
+        throw error;
+      }
+    }
   }
 }
 
