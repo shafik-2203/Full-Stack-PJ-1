@@ -1,218 +1,288 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Minus, Plus, Trash2, ArrowLeft, ShoppingCart } from "lucide-react";
-import { useCart } from "../contexts/CartContext";
-import { useAuth } from "../contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import Logo from "../components/Logo";
 
 export default function Cart() {
-  const { items, totalAmount, totalItems, updateQuantity, removeItem } =
-    useCart();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const {
+    items,
+    totalItems,
+    totalAmount,
+    updateQuantity,
+    removeItem,
+    clearCart,
+  } = useCart();
 
-  if (!user) {
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const handleQuantityChange = (itemId: string, newQuantity: number) => {
+    if (newQuantity < 1) {
+      removeItem(itemId);
+    } else {
+      updateQuantity(itemId, newQuantity);
+    }
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate("/checkout");
+  };
+
+  if (items.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Please log in to view your cart
-          </h2>
-          <Link
-            to="/login"
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600"
-          >
-            Go to Login
-          </Link>
+      <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600">
+        {/* Header */}
+        <header className="bg-white/10 backdrop-blur-sm border-b border-white/20">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Logo size={60} />
+              <h1 className="text-2xl font-bold text-white">FASTIO</h1>
+            </div>
+
+            <nav className="hidden md:flex items-center gap-6">
+              <Link
+                to="/dashboard"
+                className="text-white hover:text-orange-200 transition-colors"
+              >
+                Home
+              </Link>
+              <Link to="/cart" className="text-orange-200 font-semibold">
+                Cart
+              </Link>
+              <Link
+                to="/orders"
+                className="text-white hover:text-orange-200 transition-colors"
+              >
+                Orders
+              </Link>
+            </nav>
+
+            <div className="flex items-center gap-4">
+              <span className="text-white">Welcome, {user?.username}!</span>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] px-4">
+          <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-12 text-center max-w-2xl">
+            <div className="text-white text-8xl mb-6">🛒</div>
+            <h1 className="text-4xl font-bold text-white mb-6">
+              Your Cart is Empty
+            </h1>
+            <p className="text-xl text-white/90 mb-8">
+              Discover delicious food from our restaurants and add items to your
+              cart.
+            </p>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="px-8 py-3 bg-white text-orange-500 rounded-lg font-semibold hover:bg-orange-100 transition-all"
+            >
+              Browse Restaurants
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-  const deliveryFee = 2.99;
+  const restaurantName = items[0]?.restaurantName || "Restaurant";
+  const deliveryFee = 2.99; // This should come from restaurant data
   const tax = totalAmount * 0.08; // 8% tax
   const finalTotal = totalAmount + deliveryFee + tax;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link
-                to="/restaurants"
-                className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 transition-colors"
-              >
-                <ArrowLeft size={20} />
-                <span className="font-medium">Back to Restaurants</span>
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Your Cart</h1>
-              {totalItems > 0 && (
-                <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-sm font-medium">
-                  {totalItems} item{totalItems !== 1 ? "s" : ""}
-                </span>
-              )}
-            </div>
+      <header className="bg-white/10 backdrop-blur-sm border-b border-white/20">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Logo size={60} />
+            <h1 className="text-2xl font-bold text-white">FASTIO</h1>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-6">
+            <Link
+              to="/dashboard"
+              className="text-white hover:text-orange-200 transition-colors"
+            >
+              Home
+            </Link>
+            <Link to="/cart" className="text-orange-200 font-semibold">
+              Cart ({totalItems})
+            </Link>
+            <Link
+              to="/orders"
+              className="text-white hover:text-orange-200 transition-colors"
+            >
+              Orders
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-4">
+            <span className="text-white">Welcome, {user?.username}!</span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
+            >
+              Logout
+            </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {items.length === 0 ? (
-          // Empty Cart
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ShoppingCart className="w-12 h-12 text-gray-400" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Your cart is empty
-            </h2>
-            <p className="text-gray-600 mb-8">
-              Add some delicious items to get started!
-            </p>
-            <Link
-              to="/restaurants"
-              className="inline-flex items-center px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
-            >
-              Browse Restaurants
-            </Link>
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Page Title */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-white mb-2">Your Cart</h1>
+            <p className="text-white/80 text-lg">From {restaurantName}</p>
           </div>
-        ) : (
-          // Cart with Items
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl shadow-sm">
-                <div className="p-6 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Order Items
-                  </h3>
+              <div className="bg-white rounded-2xl p-6 shadow-lg">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Items ({totalItems})
+                  </h2>
+                  <button
+                    onClick={clearCart}
+                    className="text-red-500 hover:text-red-700 transition-colors"
+                  >
+                    Clear Cart
+                  </button>
                 </div>
-                <div className="p-6">
-                  <div className="space-y-4">
-                    {items.map((item) => (
-                      <div
-                        key={item._id}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                      >
-                        <div className="flex items-center gap-4">
-                          {item.image && (
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="w-16 h-16 object-cover rounded-lg"
-                            />
-                          )}
-                          <div>
-                            <h4 className="font-medium text-gray-900">
-                              {item.name}
-                            </h4>
-                            <p className="text-sm text-gray-600">
-                              {item.description}
-                            </p>
-                            <p className="text-sm font-medium text-orange-600">
-                              ${item.price.toFixed(2)}
-                            </p>
-                          </div>
-                        </div>
 
-                        <div className="flex items-center gap-3">
-                          {/* Quantity Controls */}
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() =>
-                                updateQuantity(item._id, item.quantity - 1)
-                              }
-                              className="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                            >
-                              <Minus size={16} />
-                            </button>
-                            <span className="w-8 text-center font-medium">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() =>
-                                updateQuantity(item._id, item.quantity + 1)
-                              }
-                              className="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                            >
-                              <Plus size={16} />
-                            </button>
-                          </div>
-
-                          {/* Remove Button */}
-                          <button
-                            onClick={() => removeItem(item._id)}
-                            className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200 transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
+                <div className="space-y-4">
+                  {items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      {/* Item Image */}
+                      <div className="w-16 h-16 bg-gradient-to-br from-orange-200 to-orange-400 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span className="text-white text-xl">🍽️</span>
                       </div>
-                    ))}
-                  </div>
+
+                      {/* Item Details */}
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800">
+                          {item.menuItem.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm">
+                          {item.menuItem.description}
+                        </p>
+                        <p className="text-orange-500 font-semibold">
+                          ${item.menuItem.price}
+                        </p>
+                      </div>
+
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity - 1)
+                          }
+                          className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center font-semibold">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            handleQuantityChange(item.id, item.quantity + 1)
+                          }
+                          className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {/* Item Total */}
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-800">
+                          ${(item.menuItem.price * item.quantity).toFixed(2)}
+                        </p>
+                      </div>
+
+                      {/* Remove Button */}
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="text-red-500 hover:text-red-700 transition-colors ml-2"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl shadow-sm sticky top-8">
-                <div className="p-6 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Order Summary
-                  </h3>
-                </div>
-                <div className="p-6">
-                  <div className="space-y-3">
+              <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-4">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                  Order Summary
+                </h2>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="font-semibold">
+                      ${totalAmount.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Delivery Fee</span>
+                    <span className="font-semibold">
+                      ${deliveryFee.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tax</span>
+                    <span className="font-semibold">${tax.toFixed(2)}</span>
+                  </div>
+                  <div className="border-t pt-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Subtotal</span>
-                      <span className="font-medium">
-                        ${totalAmount.toFixed(2)}
+                      <span className="text-lg font-bold">Total</span>
+                      <span className="text-lg font-bold text-orange-500">
+                        ${finalTotal.toFixed(2)}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Delivery Fee</span>
-                      <span className="font-medium">
-                        ${deliveryFee.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Tax</span>
-                      <span className="font-medium">${tax.toFixed(2)}</span>
-                    </div>
-                    <div className="border-t border-gray-200 pt-3">
-                      <div className="flex justify-between">
-                        <span className="text-lg font-semibold text-gray-900">
-                          Total
-                        </span>
-                        <span className="text-lg font-semibold text-gray-900">
-                          ${finalTotal.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Link
-                    to="/checkout"
-                    className="w-full mt-6 bg-orange-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-orange-600 transition-colors inline-block text-center"
-                  >
-                    Proceed to Checkout
-                  </Link>
-
-                  <div className="mt-4 text-center">
-                    <Link
-                      to="/restaurants"
-                      className="text-orange-600 hover:text-orange-700 text-sm font-medium"
-                    >
-                      Add more items
-                    </Link>
                   </div>
                 </div>
+
+                <button
+                  onClick={handleProceedToCheckout}
+                  className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold text-lg hover:bg-orange-600 transition-all"
+                >
+                  Proceed to Checkout
+                </button>
+
+                <Link
+                  to={`/restaurants/${items[0]?.restaurantId}`}
+                  className="block w-full text-center mt-4 text-orange-500 hover:text-orange-700 transition-colors"
+                >
+                  Add more items
+                </Link>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

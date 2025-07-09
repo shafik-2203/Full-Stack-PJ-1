@@ -1,161 +1,169 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Bug, Info, CheckCircle, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Debug() {
-  const debugInfo = {
-    appVersion: "3.0.0",
-    buildTime: new Date().toISOString(),
-    environment: import.meta.env.MODE,
-    apiUrl: import.meta.env.VITE_API_URL || "Not set",
-    userAgent: navigator.userAgent,
-    localStorageItems: Object.keys(localStorage).length,
-    sessionStorageItems: Object.keys(sessionStorage).length,
+  const [apiStatus, setApiStatus] = useState("Testing...");
+  const [healthStatus, setHealthStatus] = useState("Testing...");
+  const [dbStatus, setDbStatus] = useState("Testing...");
+
+  useEffect(() => {
+    testConnections();
+  }, []);
+
+  const testConnections = async () => {
+    // Test API endpoint
+    try {
+      console.log("Testing /api/test endpoint...");
+      const response = await fetch("/api/test");
+      const data = await response.json();
+      setApiStatus(`✅ API Working: ${data.message}`);
+    } catch (error) {
+      console.error("API test failed:", error);
+      setApiStatus(`❌ API Error: ${error.message}`);
+    }
+
+    // Test health endpoint
+    try {
+      console.log("Testing /health endpoint...");
+      const response = await fetch("/health");
+      const data = await response.json();
+      setHealthStatus(`✅ Health: ${data.status} - ${data.database}`);
+    } catch (error) {
+      console.error("Health test failed:", error);
+      setHealthStatus(`❌ Health Error: ${error.message}`);
+    }
+
+    // Test database through auth endpoint
+    try {
+      console.log("Testing database connection via API...");
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: "test",
+          email: "test@test.com",
+          password: "Test1234@",
+          mobile: "1234567890",
+        }),
+      });
+      const data = await response.json();
+      setDbStatus(
+        `✅ DB Test: Response received - ${data.success ? "Success" : data.message}`,
+      );
+    } catch (error) {
+      console.error("DB test failed:", error);
+      setDbStatus(`❌ DB Error: ${error.message}`);
+    }
   };
 
-  const checks = [
-    {
-      name: "API Connection",
-      status: "success",
-      message: "API is reachable",
-    },
-    {
-      name: "Authentication",
-      status: "success",
-      message: "Auth system working",
-    },
-    {
-      name: "Local Storage",
-      status: "success",
-      message: "Local storage available",
-    },
-    {
-      name: "Routing",
-      status: "success",
-      message: "React Router working",
-    },
-  ];
+  const handleRetry = () => {
+    setApiStatus("Testing...");
+    setHealthStatus("Testing...");
+    setDbStatus("Testing...");
+    testConnections();
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <Link
-          to="/dashboard"
-          className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 mb-6"
-        >
-          <ArrowLeft size={20} />
-          Back to Dashboard
-        </Link>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          FASTIO Debug Panel
+        </h1>
 
-        <div className="bg-white rounded-xl shadow-sm p-8">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Bug className="w-8 h-8 text-orange-600" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Debug Information
-            </h1>
-            <p className="text-gray-600">
-              System status and debugging information
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* System Checks */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                System Checks
-              </h3>
-              <div className="space-y-3">
-                {checks.map((check, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <span className="font-medium">{check.name}</span>
-                    <div className="flex items-center gap-2">
-                      {check.status === "success" ? (
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                      ) : (
-                        <AlertCircle className="w-4 h-4 text-red-600" />
-                      )}
-                      <span className="text-sm text-gray-600">
-                        {check.message}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+        <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Connection Status
+            </h2>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <span className="font-medium">API Test Endpoint:</span>
+                <span
+                  className={
+                    apiStatus.includes("✅") ? "text-green-600" : "text-red-600"
+                  }
+                >
+                  {apiStatus}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <span className="font-medium">Health Check:</span>
+                <span
+                  className={
+                    healthStatus.includes("✅")
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }
+                >
+                  {healthStatus}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <span className="font-medium">Database Connection:</span>
+                <span
+                  className={
+                    dbStatus.includes("✅") ? "text-green-600" : "text-red-600"
+                  }
+                >
+                  {dbStatus}
+                </span>
               </div>
             </div>
 
-            {/* Debug Info */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Info className="w-5 h-5 text-blue-600" />
-                Debug Information
-              </h3>
-              <div className="space-y-3">
-                {Object.entries(debugInfo).map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="flex justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <span className="font-medium capitalize">
-                      {key.replace(/([A-Z])/g, " $1").trim()}
-                    </span>
-                    <span className="text-sm text-gray-600 text-right max-w-xs truncate">
-                      {value}
-                    </span>
-                  </div>
-                ))}
+            <button
+              onClick={handleRetry}
+              className="mt-4 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+            >
+              Retry Tests
+            </button>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Environment Info
+            </h2>
+            <div className="space-y-2 text-sm">
+              <div>
+                <strong>Base URL:</strong> {window.location.origin}
+              </div>
+              <div>
+                <strong>API Base:</strong> /api
+              </div>
+              <div>
+                <strong>User Agent:</strong> {navigator.userAgent}
+              </div>
+              <div>
+                <strong>Network:</strong>{" "}
+                {navigator.onLine ? "Online" : "Offline"}
               </div>
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Debug Actions</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <button
-                onClick={() => {
-                  localStorage.clear();
-                  alert("Local storage cleared!");
-                }}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Quick Actions
+            </h2>
+            <div className="space-y-2">
+              <a
+                href="/"
+                className="block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-center"
               >
-                Clear Local Storage
-              </button>
-              <button
-                onClick={() => {
-                  console.log("Debug info:", debugInfo);
-                  alert("Debug info logged to console");
-                }}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                Go to Home
+              </a>
+              <a
+                href="/signup"
+                className="block px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors text-center"
               >
-                Log Debug Info
-              </button>
-              <button
-                onClick={() => {
-                  window.location.reload();
-                }}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                Test Signup
+              </a>
+              <a
+                href="/login"
+                className="block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors text-center"
               >
-                Reload App
-              </button>
+                Test Login
+              </a>
             </div>
-          </div>
-
-          {/* Warning */}
-          <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <AlertCircle className="w-5 h-5 text-yellow-600" />
-              <h4 className="font-medium text-yellow-900">Warning</h4>
-            </div>
-            <p className="text-sm text-yellow-800">
-              This page is for debugging purposes only. Some actions may clear
-              your app data or cause unexpected behavior.
-            </p>
           </div>
         </div>
       </div>

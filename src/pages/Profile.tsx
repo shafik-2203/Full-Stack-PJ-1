@@ -1,71 +1,190 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import {
-  ArrowLeft,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Edit,
-  Lock,
-  Eye,
-  EyeOff,
-  Save,
-  X,
-  Camera,
-  Bell,
-  CreditCard,
-  Shield,
-  Heart,
-  Package,
-  Star,
-} from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
-import { toast } from "sonner";
+import { useAuth } from "../context/AuthContext";
+import { apiClient } from "../lib/api";
+import { User, Edit3, Save, X, Eye, EyeOff } from "lucide-react";
+
+// Password validation function
+const validatePassword = (
+  password: string,
+): { isValid: boolean; message: string } => {
+  if (password.length < 8) {
+    return {
+      isValid: false,
+      message: "Password must be at least 8 characters long",
+    };
+  }
+  if (!/(?=.*[a-z])/.test(password)) {
+    return {
+      isValid: false,
+      message: "Password must contain at least one lowercase letter",
+    };
+  }
+  if (!/(?=.*[A-Z])/.test(password)) {
+    return {
+      isValid: false,
+      message: "Password must contain at least one uppercase letter",
+    };
+  }
+  if (!/(?=.*\d)/.test(password)) {
+    return {
+      isValid: false,
+      message: "Password must contain at least one number",
+    };
+  }
+  if (!/(?=.*[@$!%*?&])/.test(password)) {
+    return {
+      isValid: false,
+      message: "Password must contain at least one special character (@$!%*?&)",
+    };
+  }
+  return { isValid: true, message: "" };
+};
+
+// Phone number validation function
+const validatePhoneNumber = (phone: string): boolean => {
+  const phoneRegex = /^\+?[\d\s\-\(\)]{10,15}$/;
+  return phoneRegex.test(phone.replace(/\s/g, ""));
+};
 
 export default function Profile() {
-  const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState("personal");
+  const { user, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [editForm, setEditForm] = useState({
+  const [formData, setFormData] = useState({
     username: user?.username || "",
     email: user?.email || "",
-    mobile: user?.mobile || user?.phone || "",
-    address: "123 Demo Street, Demo City",
+    mobile: user?.mobile || "",
   });
 
-  const [passwordForm, setPasswordForm] = useState({
+  const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
 
-  const [preferences, setPreferences] = useState({
-    notifications: {
-      orderUpdates: true,
-      promotions: true,
-      newsletter: false,
-    },
-    dietary: {
-      vegetarian: false,
-      vegan: false,
-      glutenFree: false,
-    },
-  });
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        username: user.username || "",
+        email: user.email || "",
+        mobile: user.mobile || "",
+      });
+    }
+  }, [user]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    // Phone number validation
+    if (!validatePhoneNumber(formData.mobile)) {
+      setError("Please enter a valid phone number (10-15 digits)");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await apiClient.updateProfile({
+        username: formData.username,
+        email: formData.email,
+        mobile: formData.mobile,
+      });
+
+      if (response.success) {
+        setSuccess("Profile updated successfully!");
+        setIsEditing(false);
+        updateUser(response.user);
+      } else {
+        setError(response.message || "Failed to update profile");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("New passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    // Enhanced password validation
+    const passwordValidation = validatePassword(passwordData.newPassword);
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.message);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await apiClient.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
+
+      if (response.success) {
+        setSuccess("Password changed successfully!");
+        setIsChangingPassword(false);
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      } else {
+        setError(response.message || "Failed to change password");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to change password",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">
-            Please log in to view profile
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            Please log in to view your profile
           </h2>
-          <Link to="/login" className="text-orange-600 hover:text-orange-700">
+          <Link
+            to="/login"
+            className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors"
+          >
             Go to Login
           </Link>
         </div>
@@ -73,654 +192,269 @@ export default function Profile() {
     );
   }
 
-  const tabs = [
-    { id: "personal", name: "Personal Info", icon: User },
-    { id: "security", name: "Security", icon: Shield },
-    { id: "preferences", name: "Preferences", icon: Bell },
-    { id: "orders", name: "Order History", icon: Package },
-    { id: "favorites", name: "Favorites", icon: Heart },
-  ];
-
-  const handleSaveProfile = () => {
-    // Simulate API call
-    toast.success("Profile updated successfully!");
-    setIsEditing(false);
-  };
-
-  const handleChangePassword = () => {
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error("New passwords don't match");
-      return;
-    }
-    if (passwordForm.newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-    // Simulate API call
-    toast.success("Password changed successfully!");
-    setShowPasswordForm(false);
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-  };
-
-  const recentOrders = [
-    {
-      id: "ORD-001",
-      restaurant: "Pizza Palace",
-      total: 24.99,
-      date: "2024-01-15",
-      rating: 5,
-    },
-    {
-      id: "ORD-002",
-      restaurant: "Burger Junction",
-      total: 18.5,
-      date: "2024-01-12",
-      rating: 4,
-    },
-    {
-      id: "ORD-003",
-      restaurant: "Sushi Zen",
-      total: 32.0,
-      date: "2024-01-10",
-      rating: 5,
-    },
-  ];
-
-  const favoriteItems = [
-    { name: "Margherita Pizza", restaurant: "Pizza Palace", image: "🍕" },
-    { name: "Classic Burger", restaurant: "Burger Junction", image: "🍔" },
-    { name: "California Roll", restaurant: "Sushi Zen", image: "🍣" },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <Link
-          to="/dashboard"
-          className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 mb-6"
-        >
-          <ArrowLeft size={20} />
-          Back to Dashboard
-        </Link>
-
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          {/* Profile Header */}
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-8 py-6">
-            <div className="flex items-center gap-6">
-              <div className="relative">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                  <User className="w-10 h-10 text-orange-600" />
-                </div>
-                <button className="absolute -bottom-1 -right-1 w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white hover:bg-orange-700">
-                  <Camera className="w-4 h-4" />
-                </button>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center">
+                <User className="w-8 h-8 text-white" />
               </div>
-              <div className="text-white">
-                <h1 className="text-2xl font-bold">
-                  {user.username || user.name}
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  {user.username}
                 </h1>
-                <p className="text-orange-100">Member since January 2024</p>
-                <div className="flex items-center gap-4 mt-2">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-300 fill-current" />
-                    <span className="text-sm">4.8 Rating</span>
-                  </div>
-                  <div className="text-sm">{user.totalOrders || 0} Orders</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="border-b border-gray-200">
-            <nav className="flex px-8">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-4 border-b-2 font-medium text-sm ${
-                    activeTab === tab.id
-                      ? "border-orange-500 text-orange-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700"
+                <p className="text-gray-600">{user.email}</p>
+                <span
+                  className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    user.isVerified
+                      ? "bg-green-100 text-green-800"
+                      : "bg-yellow-100 text-yellow-800"
                   }`}
                 >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.name}
-                </button>
-              ))}
-            </nav>
+                  {user.isVerified ? "Verified" : "Unverified"}
+                </span>
+              </div>
+            </div>
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors"
+            >
+              Back to Dashboard
+            </Link>
+          </div>
+        </div>
+
+        {/* Success/Error Messages */}
+        {success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
+            {success}
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {error}
+          </div>
+        )}
+
+        {/* Profile Information */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Profile Information
+            </h2>
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors"
+              >
+                <Edit3 className="w-4 h-4" />
+                Edit Profile
+              </button>
+            )}
           </div>
 
-          {/* Tab Content */}
-          <div className="p-8">
-            {/* Personal Info Tab */}
-            {activeTab === "personal" && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">
-                    Personal Information
-                  </h2>
-                  <button
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="flex items-center gap-2 px-4 py-2 text-orange-600 hover:text-orange-700"
-                  >
-                    {isEditing ? (
-                      <X className="w-4 h-4" />
-                    ) : (
-                      <Edit className="w-4 h-4" />
-                    )}
-                    {isEditing ? "Cancel" : "Edit"}
-                  </button>
-                </div>
+          <form onSubmit={handleProfileUpdate}>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className={`w-full p-3 border rounded-lg ${
+                    isEditing
+                      ? "bg-white text-gray-800 border-gray-300 focus:ring-2 focus:ring-orange-500"
+                      : "bg-gray-100 text-gray-600 border-gray-200"
+                  }`}
+                />
+              </div>
 
-                {isEditing ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Username
-                      </label>
-                      <input
-                        type="text"
-                        value={editForm.username}
-                        onChange={(e) =>
-                          setEditForm({ ...editForm, username: e.target.value })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        value={editForm.email}
-                        onChange={(e) =>
-                          setEditForm({ ...editForm, email: e.target.value })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Mobile Number
-                      </label>
-                      <input
-                        type="tel"
-                        value={editForm.mobile}
-                        onChange={(e) =>
-                          setEditForm({ ...editForm, mobile: e.target.value })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Address
-                      </label>
-                      <input
-                        type="text"
-                        value={editForm.address}
-                        onChange={(e) =>
-                          setEditForm({ ...editForm, address: e.target.value })
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <button
-                        onClick={handleSaveProfile}
-                        className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-                      >
-                        <Save className="w-4 h-4" />
-                        Save Changes
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <User className="w-5 h-5 text-gray-400" />
-                        <div>
-                          <label className="text-sm text-gray-600">
-                            Username
-                          </label>
-                          <p className="font-medium">
-                            {user.username || user.name}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Mail className="w-5 h-5 text-gray-400" />
-                        <div>
-                          <label className="text-sm text-gray-600">Email</label>
-                          <p className="font-medium">{user.email}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <Phone className="w-5 h-5 text-gray-400" />
-                        <div>
-                          <label className="text-sm text-gray-600">
-                            Mobile
-                          </label>
-                          <p className="font-medium">
-                            {user.mobile || user.phone || "Not provided"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <MapPin className="w-5 h-5 text-gray-400" />
-                        <div>
-                          <label className="text-sm text-gray-600">
-                            Address
-                          </label>
-                          <p className="font-medium">
-                            123 Demo Street, Demo City
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className={`w-full p-3 border rounded-lg ${
+                    isEditing
+                      ? "bg-white text-gray-800 border-gray-300 focus:ring-2 focus:ring-orange-500"
+                      : "bg-gray-100 text-gray-600 border-gray-200"
+                  }`}
+                />
+              </div>
 
-                {/* Account Stats */}
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold mb-4">
-                    Account Statistics
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-orange-600">
-                        {user.totalOrders || 0}
-                      </div>
-                      <div className="text-sm text-gray-600">Total Orders</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">
-                        ${user.totalSpent || 0}
-                      </div>
-                      <div className="text-sm text-gray-600">Total Spent</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">
-                        4.8
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Average Rating
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600">
-                        12
-                      </div>
-                      <div className="text-sm text-gray-600">Favorites</div>
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  className={`w-full p-3 border rounded-lg ${
+                    isEditing
+                      ? "bg-white text-gray-800 border-gray-300 focus:ring-2 focus:ring-orange-500"
+                      : "bg-gray-100 text-gray-600 border-gray-200"
+                  }`}
+                />
+              </div>
+            </div>
+
+            {isEditing && (
+              <div className="flex gap-4 mt-6">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setFormData({
+                      username: user.username || "",
+                      email: user.email || "",
+                      mobile: user.mobile || "",
+                    });
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                  Cancel
+                </button>
               </div>
             )}
+          </form>
+        </div>
 
-            {/* Security Tab */}
-            {activeTab === "security" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">Security Settings</h2>
+        {/* Change Password */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Change Password
+            </h2>
+            {!isChangingPassword && (
+              <button
+                onClick={() => setIsChangingPassword(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors"
+              >
+                <Edit3 className="w-4 h-4" />
+                Change Password
+              </button>
+            )}
+          </div>
 
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="font-medium">Password</h3>
-                      <p className="text-sm text-gray-600">
-                        Last changed 30 days ago
-                      </p>
-                    </div>
+          {isChangingPassword && (
+            <form onSubmit={handlePasswordUpdate}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Current Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="currentPassword"
+                      value={passwordData.currentPassword}
+                      onChange={handlePasswordChange}
+                      className="w-full p-3 border rounded-lg bg-white text-gray-800 border-gray-300 focus:ring-2 focus:ring-orange-500 pr-10"
+                      required
+                    />
                     <button
-                      onClick={() => setShowPasswordForm(!showPasswordForm)}
-                      className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                     >
-                      Change Password
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
-
-                  {showPasswordForm && (
-                    <div className="space-y-4 pt-4 border-t border-gray-200">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Current Password
-                        </label>
-                        <div className="relative">
-                          <input
-                            type={showCurrentPassword ? "text" : "password"}
-                            value={passwordForm.currentPassword}
-                            onChange={(e) =>
-                              setPasswordForm({
-                                ...passwordForm,
-                                currentPassword: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setShowCurrentPassword(!showCurrentPassword)
-                            }
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          >
-                            {showCurrentPassword ? (
-                              <EyeOff size={16} />
-                            ) : (
-                              <Eye size={16} />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          New Password
-                        </label>
-                        <div className="relative">
-                          <input
-                            type={showNewPassword ? "text" : "password"}
-                            value={passwordForm.newPassword}
-                            onChange={(e) =>
-                              setPasswordForm({
-                                ...passwordForm,
-                                newPassword: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowNewPassword(!showNewPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          >
-                            {showNewPassword ? (
-                              <EyeOff size={16} />
-                            ) : (
-                              <Eye size={16} />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Confirm New Password
-                        </label>
-                        <div className="relative">
-                          <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            value={passwordForm.confirmPassword}
-                            onChange={(e) =>
-                              setPasswordForm({
-                                ...passwordForm,
-                                confirmPassword: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setShowConfirmPassword(!showConfirmPassword)
-                            }
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          >
-                            {showConfirmPassword ? (
-                              <EyeOff size={16} />
-                            ) : (
-                              <Eye size={16} />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="flex gap-3">
-                        <button
-                          onClick={handleChangePassword}
-                          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-                        >
-                          Update Password
-                        </button>
-                        <button
-                          onClick={() => setShowPasswordForm(false)}
-                          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="font-medium mb-4">
-                    Two-Factor Authentication
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Add an extra layer of security to your account
-                  </p>
-                  <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                    Enable 2FA
-                  </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
+                    className="w-full p-3 border rounded-lg bg-white text-gray-800 border-gray-300 focus:ring-2 focus:ring-orange-500"
+                    placeholder="At least 8 chars, with uppercase, lowercase, number & special character"
+                    required
+                  />
                 </div>
 
-                <div className="pt-6">
-                  <button
-                    onClick={logout}
-                    className="w-full px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 flex items-center justify-center gap-2"
-                  >
-                    <Lock className="w-4 h-4" />
-                    Logout from All Devices
-                  </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    className="w-full p-3 border rounded-lg bg-white text-gray-800 border-gray-300 focus:ring-2 focus:ring-orange-500"
+                    required
+                  />
                 </div>
               </div>
-            )}
 
-            {/* Order History Tab */}
-            {activeTab === "orders" && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">Recent Orders</h2>
-                  <Link
-                    to="/orders"
-                    className="text-orange-600 hover:text-orange-700 font-medium"
-                  >
-                    View All Orders
-                  </Link>
-                </div>
-                <div className="space-y-4">
-                  {recentOrders.map((order) => (
-                    <div key={order.id} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{order.restaurant}</p>
-                          <p className="text-sm text-gray-600">
-                            {order.id} • {order.date}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium">${order.total}</p>
-                          <div className="flex items-center gap-1">
-                            {Array.from({ length: order.rating }).map(
-                              (_, i) => (
-                                <Star
-                                  key={i}
-                                  className="w-3 h-3 text-yellow-400 fill-current"
-                                />
-                              ),
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex gap-4 mt-6">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  {loading ? "Changing..." : "Change Password"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsChangingPassword(false);
+                    setPasswordData({
+                      currentPassword: "",
+                      newPassword: "",
+                      confirmPassword: "",
+                    });
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                  Cancel
+                </button>
               </div>
-            )}
+            </form>
+          )}
 
-            {/* Favorites Tab */}
-            {activeTab === "favorites" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">Your Favorites</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {favoriteItems.map((item, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-50 rounded-lg p-4 flex items-center gap-4"
-                    >
-                      <div className="text-3xl">{item.image}</div>
-                      <div>
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-gray-600">
-                          {item.restaurant}
-                        </p>
-                      </div>
-                      <button className="ml-auto text-red-500 hover:text-red-600">
-                        <Heart className="w-5 h-5 fill-current" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Preferences Tab */}
-            {activeTab === "preferences" && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold">Preferences</h2>
-
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="font-medium mb-4">Notifications</h3>
-                    <div className="space-y-3">
-                      <label className="flex items-center justify-between">
-                        <span>Order updates</span>
-                        <input
-                          type="checkbox"
-                          checked={preferences.notifications.orderUpdates}
-                          onChange={(e) =>
-                            setPreferences({
-                              ...preferences,
-                              notifications: {
-                                ...preferences.notifications,
-                                orderUpdates: e.target.checked,
-                              },
-                            })
-                          }
-                          className="w-4 h-4"
-                        />
-                      </label>
-                      <label className="flex items-center justify-between">
-                        <span>Promotions and offers</span>
-                        <input
-                          type="checkbox"
-                          checked={preferences.notifications.promotions}
-                          onChange={(e) =>
-                            setPreferences({
-                              ...preferences,
-                              notifications: {
-                                ...preferences.notifications,
-                                promotions: e.target.checked,
-                              },
-                            })
-                          }
-                          className="w-4 h-4"
-                        />
-                      </label>
-                      <label className="flex items-center justify-between">
-                        <span>Newsletter</span>
-                        <input
-                          type="checkbox"
-                          checked={preferences.notifications.newsletter}
-                          onChange={(e) =>
-                            setPreferences({
-                              ...preferences,
-                              notifications: {
-                                ...preferences.notifications,
-                                newsletter: e.target.checked,
-                              },
-                            })
-                          }
-                          className="w-4 h-4"
-                        />
-                      </label>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium mb-4">Dietary Preferences</h3>
-                    <div className="space-y-3">
-                      <label className="flex items-center justify-between">
-                        <span>Vegetarian</span>
-                        <input
-                          type="checkbox"
-                          checked={preferences.dietary.vegetarian}
-                          onChange={(e) =>
-                            setPreferences({
-                              ...preferences,
-                              dietary: {
-                                ...preferences.dietary,
-                                vegetarian: e.target.checked,
-                              },
-                            })
-                          }
-                          className="w-4 h-4"
-                        />
-                      </label>
-                      <label className="flex items-center justify-between">
-                        <span>Vegan</span>
-                        <input
-                          type="checkbox"
-                          checked={preferences.dietary.vegan}
-                          onChange={(e) =>
-                            setPreferences({
-                              ...preferences,
-                              dietary: {
-                                ...preferences.dietary,
-                                vegan: e.target.checked,
-                              },
-                            })
-                          }
-                          className="w-4 h-4"
-                        />
-                      </label>
-                      <label className="flex items-center justify-between">
-                        <span>Gluten-free</span>
-                        <input
-                          type="checkbox"
-                          checked={preferences.dietary.glutenFree}
-                          onChange={(e) =>
-                            setPreferences({
-                              ...preferences,
-                              dietary: {
-                                ...preferences.dietary,
-                                glutenFree: e.target.checked,
-                              },
-                            })
-                          }
-                          className="w-4 h-4"
-                        />
-                      </label>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => toast.success("Preferences saved!")}
-                    className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-                  >
-                    Save Preferences
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          {!isChangingPassword && (
+            <p className="text-gray-600">
+              Your password should be at least 8 characters long and include
+              uppercase, lowercase, numbers, and special characters.
+            </p>
+          )}
         </div>
       </div>
     </div>

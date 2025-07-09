@@ -1,320 +1,213 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import {
-  User,
-  ShoppingBag,
-  Clock,
-  Star,
-  TrendingUp,
-  MapPin,
-  CreditCard,
-  Gift,
-  ArrowRight,
-  Home,
-} from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import Logo from "../components/Logo";
+import PWAInstallPrompt from "../components/PWAInstallPrompt";
+import RealTimeDashboard from "../components/RealTimeDashboard";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const { totalItems } = useCart();
+  const navigate = useNavigate();
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Please log in to view your dashboard
-          </h2>
-          <Link
-            to="/login"
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600"
-          >
-            Go to Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
-  const stats = [
-    { label: "Total Orders", value: user.totalOrders || 0, icon: ShoppingBag },
+  const quickActions = [
     {
-      label: "Total Spent",
-      value: `$${user.totalSpent || 0}`,
-      icon: CreditCard,
-    },
-    { label: "Favorite Items", value: "12", icon: Star },
-    { label: "Last Order", value: "2 days ago", icon: Clock },
-  ];
-
-  const recentOrders = [
-    {
-      id: "1",
-      restaurant: "Pizza Palace",
-      items: ["Margherita Pizza", "Caesar Salad"],
-      total: 24.99,
-      status: "Delivered",
-      date: "2024-01-15",
+      title: "Browse Restaurants",
+      description: "Discover amazing food near you",
+      icon: "🍽️",
+      action: () => navigate("/restaurants"),
+      color: "from-orange-500 to-red-500",
     },
     {
-      id: "2",
-      restaurant: "Burger Junction",
-      items: ["Classic Burger", "Fries"],
-      total: 18.5,
-      status: "Delivered",
-      date: "2024-01-12",
+      title: "Search Food",
+      description: "Find your favorite dishes",
+      icon: "🔍",
+      action: () => navigate("/food"),
+      color: "from-green-500 to-emerald-500",
     },
     {
-      id: "3",
-      restaurant: "Sushi Zen",
-      items: ["California Roll", "Miso Soup"],
-      total: 32.0,
-      status: "Delivered",
-      date: "2024-01-10",
+      title: "View Cart",
+      description: `${totalItems} items in cart`,
+      icon: "🛒",
+      action: () => navigate("/cart"),
+      color: "from-blue-500 to-indigo-500",
+    },
+    {
+      title: "My Orders",
+      description: "Track your orders",
+      icon: "📦",
+      action: () => navigate("/orders"),
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      title: "FASTIO Pass",
+      description: "Get exclusive benefits",
+      icon: "���",
+      action: () => navigate("/fastio-pass"),
+      color: "from-yellow-500 to-orange-500",
+    },
+    {
+      title: "Profile",
+      description: "Manage your account",
+      icon: "👤",
+      action: () => navigate("/profile"),
+      color: "from-gray-500 to-slate-500",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 transition-colors"
-              >
-                <Home size={20} />
-                <span className="font-medium">Home</span>
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link
-                to="/profile"
-                className="text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Profile
-              </Link>
-              <button
-                onClick={logout}
-                className="text-red-600 hover:text-red-700 transition-colors"
-              >
-                Logout
-              </button>
-            </div>
+      <header className="bg-white/10 backdrop-blur-sm border-b border-white/20">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Logo size={60} />
+            <h1 className="text-2xl font-bold text-white">FASTIO</h1>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl text-white p-8 mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">
-                Welcome back, {user.username || user.name}! 👋
-              </h2>
-              <p className="text-orange-100 mb-4">
-                Ready to order some delicious food?
-              </p>
-              <Link
-                to="/restaurants"
-                className="inline-flex items-center gap-2 bg-white text-orange-600 px-6 py-3 rounded-lg font-medium hover:bg-orange-50 transition-colors"
-              >
-                Browse Restaurants
-                <ArrowRight size={18} />
-              </Link>
-            </div>
-            <div className="hidden md:block">
-              <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center">
-                <User className="w-16 h-16 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <div
-              key={stat.label}
-              className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+          <nav className="hidden md:flex items-center gap-6">
+            <Link to="/dashboard" className="text-white font-semibold">
+              Dashboard
+            </Link>
+            <Link
+              to="/restaurants"
+              className="text-white hover:text-orange-200 transition-colors"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 text-sm font-medium">
-                    {stat.label}
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">
-                    {stat.value}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <stat.icon className="w-6 h-6 text-orange-600" />
-                </div>
+              Restaurants
+            </Link>
+            <Link
+              to="/food"
+              className="text-white hover:text-orange-200 transition-colors"
+            >
+              Food
+            </Link>
+            <Link
+              to="/cart"
+              className="text-white hover:text-orange-200 transition-colors flex items-center gap-2"
+            >
+              Cart
+              {totalItems > 0 && (
+                <span className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+            <Link
+              to="/orders"
+              className="text-white hover:text-orange-200 transition-colors"
+            >
+              Orders
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-4">
+            <span className="text-white hidden md:block">
+              Welcome, {user?.username}!
+            </span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-full border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        {/* Welcome Section */}
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Welcome back, {user?.username}! 👋
+          </h2>
+          <p className="text-white/90 text-lg">
+            What would you like to do today?
+          </p>
+        </div>
+
+        {/* Real-time Dashboard */}
+        <div className="mb-8">
+          <RealTimeDashboard />
+        </div>
+
+        {/* Quick Actions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {quickActions.map((action, index) => (
+            <div
+              key={index}
+              onClick={action.action}
+              className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-xl"
+            >
+              <div
+                className={`w-16 h-16 rounded-full bg-gradient-to-r ${action.color} flex items-center justify-center text-2xl mb-4`}
+              >
+                {action.icon}
               </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                {action.title}
+              </h3>
+              <p className="text-white/80">{action.description}</p>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Orders */}
-          <div className="bg-white rounded-xl shadow-sm">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Recent Orders
-                </h3>
-                <Link
-                  to="/orders"
-                  className="text-orange-600 hover:text-orange-700 text-sm font-medium"
-                >
-                  View All
-                </Link>
-              </div>
-            </div>
-            <div className="p-6">
-              {recentOrders.length === 0 ? (
-                <div className="text-center py-8">
-                  <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-500">No orders yet</p>
-                  <Link
-                    to="/restaurants"
-                    className="text-orange-600 hover:text-orange-700 text-sm font-medium"
-                  >
-                    Start ordering →
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {recentOrders.map((order) => (
-                    <div
-                      key={order.id}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                    >
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">
-                          {order.restaurant}
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {order.items.join(", ")}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {order.date}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-gray-900">
-                          ${order.total}
-                        </p>
-                        <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                          {order.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-sm">
-            <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Quick Actions
-              </h3>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 gap-4">
-                <Link
-                  to="/restaurants"
-                  className="flex flex-col items-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors text-center"
-                >
-                  <ShoppingBag className="w-8 h-8 text-orange-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-900">
-                    Order Food
-                  </span>
-                </Link>
-                <Link
-                  to="/orders"
-                  className="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors text-center"
-                >
-                  <Clock className="w-8 h-8 text-blue-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-900">
-                    Track Orders
-                  </span>
-                </Link>
-                <Link
-                  to="/profile"
-                  className="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors text-center"
-                >
-                  <User className="w-8 h-8 text-green-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-900">
-                    My Profile
-                  </span>
-                </Link>
-                <Link
-                  to="/fastio-pass"
-                  className="flex flex-col items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors text-center"
-                >
-                  <Gift className="w-8 h-8 text-purple-600 mb-2" />
-                  <span className="text-sm font-medium text-gray-900">
-                    FASTIO Pass
-                  </span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Recommendations */}
-        <div className="mt-8 bg-white rounded-xl shadow-sm">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Recommended for You
+        {/* Featured Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Order History Preview */}
+          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              📋 Recent Activity
             </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between py-2 border-b border-white/20">
+                <span className="text-white/90">Last Order</span>
+                <span className="text-white font-medium">View Details →</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-white/20">
+                <span className="text-white/90">Favorite Restaurant</span>
+                <span className="text-white font-medium">Order Again →</span>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-white/90">Saved Addresses</span>
+                <span className="text-white font-medium">Manage →</span>
+              </div>
+            </div>
           </div>
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <TrendingUp className="w-8 h-8 text-orange-600" />
-                </div>
-                <h4 className="font-medium text-gray-900 mb-2">
-                  Try Popular Items
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Discover trending dishes in your area
+
+          {/* Promotional Section */}
+          <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              🎁 Special Offers
+            </h3>
+            <div className="space-y-3">
+              <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-3">
+                <p className="text-sm font-medium text-gray-800">
+                  🌟 Get FASTIO Pass for exclusive discounts!
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <MapPin className="w-8 h-8 text-blue-600" />
-                </div>
-                <h4 className="font-medium text-gray-900 mb-2">
-                  New Restaurants
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Check out newly added restaurants
+              <div className="bg-gradient-to-r from-green-400 to-blue-400 rounded-lg p-3">
+                <p className="text-sm font-medium text-gray-800">
+                  🍕 Free delivery on orders above ₹299
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Gift className="w-8 h-8 text-green-600" />
-                </div>
-                <h4 className="font-medium text-gray-900 mb-2">
-                  Special Offers
-                </h4>
-                <p className="text-sm text-gray-600">
-                  Get exclusive deals and discounts
+              <div className="bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg p-3">
+                <p className="text-sm font-medium text-gray-800">
+                  ⏰ 20% off on weekend orders
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
+
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
     </div>
   );
 }
