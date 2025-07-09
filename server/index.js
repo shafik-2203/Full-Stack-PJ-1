@@ -561,12 +561,13 @@ app.get("/api/admin/signup-requests", (req, res) => {
   });
 });
 
-// Mock restaurants data
+// Mock restaurants data - Expanded with more variety
 const mockRestaurants = [
   {
     _id: "rest-1",
     name: "Pizza Palace",
-    description: "Authentic Italian pizzas made with fresh ingredients",
+    description:
+      "Authentic Italian pizzas made with fresh ingredients and wood-fired ovens",
     category: "Italian",
     rating: 4.5,
     deliveryTime: "25-35 min",
@@ -574,10 +575,10 @@ const mockRestaurants = [
     minimumOrder: 200,
     image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
     location: {
-      address: "123 Food Street, Mumbai",
+      address: "123 Food Street, Bandra West",
       city: "Mumbai",
       state: "Maharashtra",
-      zipCode: "400001",
+      zipCode: "400050",
     },
     contact: {
       phone: "+91-9876543210",
@@ -587,13 +588,18 @@ const mockRestaurants = [
       open: "10:00",
       close: "23:00",
     },
-    features: ["Pure Veg", "Home Delivery", "Card Payment"],
+    features: [
+      "Pure Veg Options",
+      "Home Delivery",
+      "Card Payment",
+      "Outdoor Seating",
+    ],
     isActive: true,
   },
   {
     _id: "rest-2",
     name: "Burger Hub",
-    description: "Gourmet burgers and crispy fries",
+    description: "Gourmet burgers with premium beef patties and artisan buns",
     category: "American",
     rating: 4.2,
     deliveryTime: "20-30 min",
@@ -601,10 +607,10 @@ const mockRestaurants = [
     minimumOrder: 150,
     image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
     location: {
-      address: "456 Fast Lane, Mumbai",
+      address: "456 Fast Lane, Andheri East",
       city: "Mumbai",
       state: "Maharashtra",
-      zipCode: "400002",
+      zipCode: "400069",
     },
     contact: {
       phone: "+91-9876543211",
@@ -614,13 +620,19 @@ const mockRestaurants = [
       open: "11:00",
       close: "24:00",
     },
-    features: ["Home Delivery", "Takeaway", "Cash Payment"],
+    features: [
+      "Late Night Delivery",
+      "Takeaway",
+      "Cash Payment",
+      "Drive Through",
+    ],
     isActive: true,
   },
   {
     _id: "rest-3",
     name: "Sushi Express",
-    description: "Fresh sushi and Japanese cuisine",
+    description:
+      "Fresh sushi and authentic Japanese cuisine crafted by expert chefs",
     category: "Japanese",
     rating: 4.7,
     deliveryTime: "30-40 min",
@@ -628,10 +640,10 @@ const mockRestaurants = [
     minimumOrder: 300,
     image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400",
     location: {
-      address: "789 Sushi Street, Mumbai",
+      address: "789 Sushi Street, Lower Parel",
       city: "Mumbai",
       state: "Maharashtra",
-      zipCode: "400003",
+      zipCode: "400013",
     },
     contact: {
       phone: "+91-9876543212",
@@ -641,13 +653,19 @@ const mockRestaurants = [
       open: "12:00",
       close: "22:00",
     },
-    features: ["Home Delivery", "Card Payment"],
+    features: [
+      "Premium Quality",
+      "Home Delivery",
+      "Card Payment",
+      "Fresh Ingredients",
+    ],
     isActive: true,
   },
   {
     _id: "rest-4",
     name: "Spice Garden",
-    description: "Authentic Indian curries and biryanis",
+    description:
+      "Authentic Indian curries, biryanis and traditional dishes from across India",
     category: "Indian",
     rating: 4.3,
     deliveryTime: "35-45 min",
@@ -655,10 +673,10 @@ const mockRestaurants = [
     minimumOrder: 180,
     image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
     location: {
-      address: "321 Curry Lane, Mumbai",
+      address: "321 Curry Lane, Powai",
       city: "Mumbai",
       state: "Maharashtra",
-      zipCode: "400004",
+      zipCode: "400076",
     },
     contact: {
       phone: "+91-9876543213",
@@ -668,7 +686,205 @@ const mockRestaurants = [
       open: "11:30",
       close: "23:30",
     },
-    features: ["Veg Options", "Home Delivery", "Online Payment"],
+    features: [
+      "Vegetarian Options",
+      "Home Delivery",
+      "Online Payment",
+      "Family Packs",
+    ],
+    isActive: true,
+  },
+  {
+    _id: "rest-5",
+    name: "Dragon Wok",
+    description:
+      "Authentic Chinese cuisine with traditional flavors and modern presentation",
+    category: "Chinese",
+    rating: 4.4,
+    deliveryTime: "25-35 min",
+    deliveryFee: 45,
+    minimumOrder: 220,
+    image: "https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400",
+    location: {
+      address: "555 Chinatown Road, Colaba",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400005",
+    },
+    contact: {
+      phone: "+91-9876543214",
+      email: "info@dragonwok.com",
+    },
+    timings: {
+      open: "12:00",
+      close: "23:00",
+    },
+    features: [
+      "Authentic Recipes",
+      "Home Delivery",
+      "Group Orders",
+      "Dim Sum Specials",
+    ],
+    isActive: true,
+  },
+  {
+    _id: "rest-6",
+    name: "Taco Fiesta",
+    description:
+      "Fresh Mexican street food, tacos, burritos and nachos with bold flavors",
+    category: "Mexican",
+    rating: 4.1,
+    deliveryTime: "20-30 min",
+    deliveryFee: 35,
+    minimumOrder: 160,
+    image: "https://images.unsplash.com/photo-1565299585323-38174c4a6663?w=400",
+    location: {
+      address: "777 Fiesta Street, Juhu",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400049",
+    },
+    contact: {
+      phone: "+91-9876543215",
+      email: "info@tacofiesta.com",
+    },
+    timings: {
+      open: "11:00",
+      close: "24:00",
+    },
+    features: [
+      "Spicy Food",
+      "Vegetarian Options",
+      "Quick Delivery",
+      "Party Orders",
+    ],
+    isActive: true,
+  },
+  {
+    _id: "rest-7",
+    name: "Mediterranean Delights",
+    description:
+      "Fresh Mediterranean cuisine with healthy options, grilled meats and salads",
+    category: "Mediterranean",
+    rating: 4.6,
+    deliveryTime: "30-40 min",
+    deliveryFee: 50,
+    minimumOrder: 250,
+    image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400",
+    location: {
+      address: "999 Olive Grove, Worli",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400018",
+    },
+    contact: {
+      phone: "+91-9876543216",
+      email: "info@meddelights.com",
+    },
+    timings: {
+      open: "12:00",
+      close: "22:30",
+    },
+    features: [
+      "Healthy Options",
+      "Organic Ingredients",
+      "Gluten Free",
+      "Keto Friendly",
+    ],
+    isActive: true,
+  },
+  {
+    _id: "rest-8",
+    name: "Royal Biryani House",
+    description:
+      "Traditional Hyderabadi and Lucknowi biryanis with authentic spices and flavors",
+    category: "Indian",
+    rating: 4.8,
+    deliveryTime: "40-50 min",
+    deliveryFee: 25,
+    minimumOrder: 200,
+    image: "https://images.unsplash.com/photo-1563379091339-03246963d96c?w=400",
+    location: {
+      address: "123 Biryani Boulevard, Dadar",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400014",
+    },
+    contact: {
+      phone: "+91-9876543217",
+      email: "info@royalbiryani.com",
+    },
+    timings: {
+      open: "11:00",
+      close: "23:30",
+    },
+    features: [
+      "Dum Biryani",
+      "Family Portions",
+      "Traditional Recipes",
+      "Raita & Shorba",
+    ],
+    isActive: true,
+  },
+  {
+    _id: "rest-9",
+    name: "Healthy Bowls Co.",
+    description:
+      "Nutritious salad bowls, smoothies and healthy wraps for fitness enthusiasts",
+    category: "Healthy",
+    rating: 4.3,
+    deliveryTime: "15-25 min",
+    deliveryFee: 25,
+    minimumOrder: 120,
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400",
+    location: {
+      address: "456 Wellness Street, Malad",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400064",
+    },
+    contact: {
+      phone: "+91-9876543218",
+      email: "info@healthybowls.com",
+    },
+    timings: {
+      open: "07:00",
+      close: "22:00",
+    },
+    features: ["Low Calorie", "Protein Rich", "Vegan Options", "Meal Plans"],
+    isActive: true,
+  },
+  {
+    _id: "rest-10",
+    name: "Dessert Paradise",
+    description:
+      "Heavenly desserts, cakes, pastries and ice creams for your sweet cravings",
+    category: "Desserts",
+    rating: 4.5,
+    deliveryTime: "20-30 min",
+    deliveryFee: 30,
+    minimumOrder: 100,
+    image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400",
+    location: {
+      address: "789 Sweet Street, Versova",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400061",
+    },
+    contact: {
+      phone: "+91-9876543219",
+      email: "info@dessertparadise.com",
+    },
+    timings: {
+      open: "10:00",
+      close: "24:00",
+    },
+    features: [
+      "Custom Cakes",
+      "Sugar Free Options",
+      "Party Desserts",
+      "Ice Cream Bar",
+    ],
     isActive: true,
   },
 ];
