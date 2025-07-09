@@ -22,37 +22,45 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      // Use the new admin login endpoint
       const response = await fetch("/api/auth/admin-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
+      console.log("🟢 Admin login response:", data);
 
       if (response.ok && data.success) {
-        // Store admin token and user info
         if (data.token) {
           localStorage.setItem("fastio_token", data.token);
           sessionStorage.setItem("adminAuth", data.token);
           sessionStorage.setItem("adminUser", JSON.stringify(data.user));
         }
 
-        // Show success animation before redirect
-        setIsAnimating(true);
+        // Optional debug confirmation
+        console.log("✅ Login successful. Redirecting to /admin...");
+
+        // ✅ Use navigate immediately (you can keep the animation delay if needed)
         setTimeout(() => {
           navigate("/admin");
         }, 1000);
+
+        // Optional fallback: Force redirect if navigate fails (e.g. route not mounted)
+        setTimeout(() => {
+          if (window.location.pathname !== "/admin") {
+            console.warn("⚠️ Fallback redirect triggered");
+            window.location.href = "/admin";
+          }
+        }, 2000);
       } else {
         setError(data.message || "Invalid admin credentials");
+        console.warn("⚠️ Admin login failed:", data);
       }
     } catch (err) {
+      console.error("🔴 Login error:", err);
       setError("Failed to authenticate. Please try again.");
     } finally {
       setLoading(false);
@@ -84,38 +92,26 @@ export default function AdminLogin() {
         <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
           <form className="space-y-6" onSubmit={handleLogin}>
             <div className="space-y-4">
-              <div className="relative">
-                <label htmlFor="email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
-                  placeholder="Admin Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="relative">
-                <label htmlFor="password" className="sr-only">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
+                placeholder="Admin Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
             {error && (
@@ -124,24 +120,21 @@ export default function AdminLogin() {
               </div>
             )}
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-4 px-6 border-2 border-transparent rounded-2xl shadow-lg text-lg font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-white/50 disabled:opacity-50 transform hover:scale-105 transition-all duration-200"
-              >
-                {loading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Authenticating...
-                  </div>
-                ) : (
-                  "Sign in as Admin"
-                )}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center py-4 px-6 border-2 border-transparent rounded-2xl shadow-lg text-lg font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-white/50 disabled:opacity-50 transform hover:scale-105 transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Authenticating...
+                </div>
+              ) : (
+                "Sign in as Admin"
+              )}
+            </button>
 
-            {/* Forgot Password Link */}
             <div className="text-center">
               <button
                 type="button"
@@ -156,8 +149,7 @@ export default function AdminLogin() {
             {showForgotPassword && (
               <div className="bg-white/20 rounded-2xl p-4 animate-fade-in">
                 <p className="text-white text-sm text-center">
-                  Please contact your system administrator for password reset
-                  assistance.
+                  Please contact your system administrator for password reset assistance.
                 </p>
               </div>
             )}
