@@ -15,34 +15,22 @@ export default function Index() {
         {/* Premium Admin Button */}
         <Link
           to="/admin-portal"
-          className="group relative flex items-center justify-center w-24 h-12 px-3 py-2 sm:w-32 sm:h-14 sm:px-4 sm:py-3 md:w-40 md:h-16 md:px-5 md:py-4 rounded-3xl bg-white/95 backdrop-blur-md border-2 border-orange-400/30 shadow-2xl hover:shadow-orange-500/20 transition-all hover:scale-105 hover:border-orange-500/50 animate-fade-in overflow-hidden"
+          className="group relative flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-slate-900 via-gray-900 to-slate-900 border border-gray-700 shadow-2xl text-white font-semibold text-xs sm:text-sm md:text-base transition-all hover:scale-105 hover:shadow-slate-900/50 hover:border-gray-600 animate-fade-in overflow-hidden"
           style={{ animationDelay: "0.1s" }}
         >
-          {/* Subtle gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-50/80 via-white/90 to-orange-50/80 rounded-3xl"></div>
-
-          {/* Animated shine effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-300/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+          {/* Subtle shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
           {/* Premium glow effect */}
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-orange-400/10 via-orange-500/15 to-orange-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gray-700/20 via-gray-600/30 to-gray-700/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
           {/* Content */}
-          <div className="relative flex items-center gap-1.5 sm:gap-2">
-            <span className="text-orange-500 text-lg sm:text-xl md:text-2xl filter drop-shadow-sm">
-              👑
-            </span>
-            <span className="bg-gradient-to-br from-orange-600 via-orange-500 to-orange-700 bg-clip-text text-transparent font-black text-xs sm:text-sm md:text-base tracking-wider">
-              ADMIN
-            </span>
+          <div className="relative flex items-center">
+            <span className="text-gray-100 font-bold tracking-wide">ADMIN</span>
           </div>
 
           {/* Premium indicator */}
-          <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full animate-pulse shadow-lg"></div>
-
-          {/* Corner accents */}
-          <div className="absolute top-1 left-1 w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full opacity-60"></div>
-          <div className="absolute bottom-1 right-1 w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-tl from-orange-400 to-orange-500 rounded-full opacity-60"></div>
+          <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full"></div>
         </Link>
 
         <Link
