@@ -22,8 +22,8 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      // Use the new admin login endpoint
-      const response = await fetch("/api/auth/admin-login", {
+      // Use the standard login endpoint (admin users are handled in backend)
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
