@@ -1,14 +1,98 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
-// Enhanced FastIO Homepage
-function SimpleHome() {
+// Safely import page components with fallbacks
+const importPage = (path: string) => {
+  try {
+    return require(path).default;
+  } catch {
+    return () => (
+      <div className="p-8 text-center">
+        <h2 className="text-xl font-semibold mb-4">Page Under Development</h2>
+        <p className="text-gray-600">This page is currently being built.</p>
+      </div>
+    );
+  }
+};
+
+const Home = importPage("./pages/Home");
+const Login = importPage("./pages/Login");
+const Signup = importPage("./pages/Signup");
+const VerifyOTP = importPage("./pages/VerifyOTP");
+const ForgotPassword = importPage("./pages/ForgotPassword");
+const Dashboard = importPage("./pages/Dashboard");
+const Restaurants = importPage("./pages/Restaurants");
+const Restaurant = importPage("./pages/Restaurant");
+const Food = importPage("./pages/Food");
+const Cart = importPage("./pages/Cart");
+const Checkout = importPage("./pages/Checkout");
+const Orders = importPage("./pages/Orders");
+const Profile = importPage("./pages/Profile");
+const FastioPass = importPage("./pages/FastioPass");
+const DataExport = importPage("./pages/DataExport");
+const AdminLogin = importPage("./pages/AdminLogin");
+const AdminSignup = importPage("./pages/AdminSignup");
+const AdminPortal = importPage("./pages/AdminPortal");
+const Admin = importPage("./pages/Admin");
+const NotFound = importPage("./pages/NotFound");
+
+// Import contexts with fallbacks
+let AuthProvider, CartProvider;
+
+try {
+  AuthProvider = require("./contexts/AuthContext").AuthProvider;
+} catch {
+  AuthProvider = ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  );
+}
+
+try {
+  CartProvider = require("./contexts/CartContext").CartProvider;
+} catch {
+  CartProvider = ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  );
+}
+
+// Import components (with fallbacks)
+let Navbar, ErrorBoundary;
+
+try {
+  Navbar = require("./components/Navbar").default;
+} catch {
+  Navbar = () => null;
+}
+
+try {
+  ErrorBoundary = require("./components/ErrorBoundary").default;
+} catch {
+  ErrorBoundary = ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  );
+}
+
+// Enhanced FastIO Homepage for non-authenticated users
+function LandingPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleOrderNow = () => {
+    navigate("/restaurants");
+  };
+
+  const handleDownloadApp = () => {
+    navigate("/signup");
+  };
+
+  const handleSignIn = () => {
+    navigate("/login");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 relative overflow-hidden">
@@ -22,7 +106,11 @@ function SimpleHome() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="text-left flex items-center gap-3">
-            <img src="/fastio-icon.svg" alt="FastIO Logo" className="w-8 h-8" />
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F53e602feabe5447da13ddaa0f99d281d%2F8df4b720e4d54c139f349fa997ea8cff?format=webp&width=800"
+              alt="FastIO Logo"
+              className="w-8 h-8 rounded-full"
+            />
             <div>
               <div className="text-lg font-semibold">FASTIO</div>
               <div className="text-sm opacity-80">Food Delivery</div>
@@ -40,9 +128,9 @@ function SimpleHome() {
         <div className="mb-16">
           <div className="flex items-center justify-center gap-4 mb-6">
             <img
-              src="/fastio-icon.svg"
+              src="https://cdn.builder.io/api/v1/image/assets%2F53e602feabe5447da13ddaa0f99d281d%2F8df4b720e4d54c139f349fa997ea8cff?format=webp&width=800"
               alt="FastIO Logo"
-              className="w-20 h-20 animate-pulse"
+              className="w-20 h-20 animate-pulse rounded-full"
             />
             <h1 className="text-7xl font-bold animate-pulse">FASTIO</h1>
           </div>
@@ -54,32 +142,47 @@ function SimpleHome() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <button className="bg-white text-orange-500 px-8 py-4 rounded-full font-bold text-lg hover:bg-orange-50 transition-all transform hover:scale-105 shadow-lg">
+            <button
+              onClick={handleOrderNow}
+              className="bg-white text-orange-500 px-8 py-4 rounded-full font-bold text-lg hover:bg-orange-50 transition-all transform hover:scale-105 shadow-lg cursor-pointer"
+            >
               🚀 Order Now
             </button>
-            <button className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-orange-500 transition-all transform hover:scale-105">
-              📱 Download App
+            <button
+              onClick={handleDownloadApp}
+              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-orange-500 transition-all transform hover:scale-105 cursor-pointer"
+            >
+              📱 Get Started
             </button>
           </div>
         </div>
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2">
+          <div
+            className="bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2 cursor-pointer"
+            onClick={() => navigate("/restaurants")}
+          >
             <div className="text-4xl mb-4">🏪</div>
             <h3 className="text-2xl font-semibold mb-4">Browse Restaurants</h3>
             <p className="opacity-90">
               Discover amazing local restaurants and cuisines near you
             </p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2">
+          <div
+            className="bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2 cursor-pointer"
+            onClick={() => navigate("/signup")}
+          >
             <div className="text-4xl mb-4">🛒</div>
             <h3 className="text-2xl font-semibold mb-4">Easy Ordering</h3>
             <p className="opacity-90">
               Simple and fast ordering process with secure payments
             </p>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2">
+          <div
+            className="bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2 cursor-pointer"
+            onClick={() => navigate("/signup")}
+          >
             <div className="text-4xl mb-4">🚚</div>
             <h3 className="text-2xl font-semibold mb-4">Fast Delivery</h3>
             <p className="opacity-90">
@@ -108,8 +211,35 @@ function SimpleHome() {
           </div>
         </div>
 
+        {/* Sign In / Sign Up Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 max-w-md mx-auto">
+          <h3 className="text-2xl font-semibold mb-6">Ready to get started?</h3>
+          <div className="space-y-4">
+            <button
+              onClick={handleSignIn}
+              className="w-full bg-white text-orange-500 px-6 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-all transform hover:scale-105"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => navigate("/signup")}
+              className="w-full bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-500 transition-all transform hover:scale-105"
+            >
+              Create Account
+            </button>
+          </div>
+
+          <div className="mt-6 text-sm opacity-80">
+            <p>Demo Credentials:</p>
+            <div className="text-xs mt-2">
+              <div>Admin: fastio121299@gmail.com / fastio1212</div>
+              <div>User: mohamedshafik2526@gmail.com / Shafik1212@</div>
+            </div>
+          </div>
+        </div>
+
         {/* Footer */}
-        <div className="text-center opacity-80">
+        <div className="text-center opacity-80 mt-12">
           <p>© 2024 FastIO Food Delivery. Made with ❤️ by Mohamed Shafik</p>
         </div>
       </div>
@@ -117,100 +247,56 @@ function SimpleHome() {
   );
 }
 
-function SimpleLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = () => {
-    if (email && password) {
-      alert(`Welcome back! Logging in with ${email}`);
-      // You can add actual login logic here
-    } else {
-      alert("Please enter both email and password");
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center px-4">
-      <div className="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <img
-              src="/fastio-icon.svg"
-              alt="FastIO Logo"
-              className="w-10 h-10"
-            />
-            <h1 className="text-3xl font-bold text-orange-600">FASTIO</h1>
-          </div>
-          <h2 className="text-xl font-semibold text-gray-800">Welcome Back!</h2>
-          <p className="text-gray-600">Sign in to your account</p>
-        </div>
-
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-            />
-          </div>
-
-          <button
-            onClick={handleLogin}
-            className="w-full bg-orange-500 text-white p-3 rounded-lg font-semibold hover:bg-orange-600 transform hover:scale-105 transition-all shadow-lg"
-          >
-            Sign In 🚀
-          </button>
-
-          <div className="text-center">
-            <p className="text-gray-600">
-              Don't have an account?{" "}
-              <button className="text-orange-500 font-semibold hover:text-orange-600">
-                Sign up now
-              </button>
-            </p>
-          </div>
-
-          <div className="border-t pt-6">
-            <p className="text-sm text-gray-500 text-center">
-              Demo Credentials:
-            </p>
-            <div className="text-xs text-gray-400 text-center mt-2">
-              <div>Admin: fastio121299@gmail.com / fastio1212</div>
-              <div>User: mohamedshafik2526@gmail.com / Shafik1212@</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function App() {
+  const AppWrapper =
+    typeof ErrorBoundary === "function" ? ErrorBoundary : React.Fragment;
+  const Auth =
+    typeof AuthProvider === "function" ? AuthProvider : React.Fragment;
+  const Cart =
+    typeof CartProvider === "function" ? CartProvider : React.Fragment;
+
   return (
-    <Routes>
-      <Route path="/" element={<SimpleHome />} />
-      <Route path="/login" element={<SimpleLogin />} />
-      <Route path="*" element={<SimpleHome />} />
-    </Routes>
+    <AppWrapper>
+      <Auth>
+        <Cart>
+          <div className="App">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/welcome" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/verify-otp" element={<VerifyOTP />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+
+              {/* Main App Routes */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/restaurants" element={<Restaurants />} />
+              <Route path="/restaurant/:id" element={<Restaurant />} />
+              <Route path="/food/:id" element={<Food />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/fastio-pass" element={<FastioPass />} />
+              <Route path="/data-export" element={<DataExport />} />
+
+              {/* Admin Routes */}
+              <Route path="/admin-login" element={<AdminLogin />} />
+              <Route path="/admin-signup" element={<AdminSignup />} />
+              <Route path="/admin-portal" element={<AdminPortal />} />
+              <Route path="/admin" element={<Admin />} />
+
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+
+            {/* Conditional Navbar - only show on authenticated routes */}
+            {typeof Navbar === "function" && <Navbar />}
+          </div>
+        </Cart>
+      </Auth>
+    </AppWrapper>
   );
 }
 
