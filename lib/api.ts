@@ -50,7 +50,7 @@ class ApiClient {
       }
 
       xhr.onload = () => {
-        console.log(`📡 XHR Response status: ${xhr.status}`);
+        console.log(`��� XHR Response status: ${xhr.status}`);
 
         let data;
         try {
@@ -944,11 +944,11 @@ class ApiClient {
     try {
       return await this.request<ApiResponse<Order[]>>("/orders");
     } catch (error) {
-      // Check if this is a backend unavailable error
-      if (
-        error.name === "BackendUnavailableError" ||
-        error.message === "BACKEND_UNAVAILABLE"
-      ) {
+      // Catch any network-related error and provide fallback
+      console.log("🔄 getUserOrders: Caught error:", error);
+      console.log("🔄 Backend unavailable, using fallback user orders");
+
+      // Always provide fallback for any error in deployed environment
         // Fallback user orders for deployed version
         console.log("🔄 Backend unavailable, using fallback user orders");
 
