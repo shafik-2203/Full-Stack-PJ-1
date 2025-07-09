@@ -122,7 +122,12 @@ class ApiClient {
       response = await fetch(url, config);
     } catch (fetchError) {
       console.error("🚨 Network error:", fetchError);
-      throw new Error("Network error - please check your connection");
+      console.log("🔄 Triggering fallback mode for:", endpoint);
+
+      // Throw a special error type that fallback handlers can catch
+      const fallbackError = new Error("BACKEND_UNAVAILABLE");
+      fallbackError.name = "BackendUnavailableError";
+      throw fallbackError;
     }
 
     console.log(
