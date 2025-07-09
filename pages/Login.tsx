@@ -8,8 +8,8 @@ import Logo from "../components/Logo";
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "mohamedshafik2526@gmail.com",
+    password: "Shafik1212@",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
