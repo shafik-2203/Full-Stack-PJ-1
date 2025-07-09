@@ -894,38 +894,10 @@ class ApiClient {
 
   // Order endpoints
   async createOrder(data: CreateOrderRequest): Promise<ApiResponse<Order>> {
-    try {
-      return await this.request<ApiResponse<Order>>("/orders", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-    } catch (error) {
-      // Catch any error and provide fallback for deployed version
-      console.log("🔄 createOrder: Caught error:", error);
-      console.log("🔄 Backend unavailable, using fallback create order");
-
-      const newOrder = {
-        id: `order-${Date.now()}`,
-        userId: "user-offline",
-        restaurantId: data.restaurantId,
-        status: "pending" as const,
-        totalAmount: data.items.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0,
-        ),
-        deliveryAddress: data.deliveryAddress,
-        paymentMethod: data.paymentMethod,
-        paymentStatus: "pending" as const,
-        estimatedDeliveryTime: 30,
-        createdAt: new Date().toISOString(),
-      };
-
-      return {
-        success: true,
-        message: "Order placed successfully (offline mode)",
-        data: newOrder,
-      };
-    }
+    return this.request<ApiResponse<Order>>("/orders", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   }
 
   async getUserOrders(): Promise<ApiResponse<Order[]>> {
