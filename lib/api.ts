@@ -295,7 +295,7 @@ class ApiClient {
       });
     } catch (error) {
       // Fallback OTP verification for deployed version when backend is unavailable
-      console.log("🔄 Backend unavailable, using fallback OTP verification");
+      console.log("�� Backend unavailable, using fallback OTP verification");
 
       // Accept demo OTP
       if (data.otp === "123456") {
@@ -410,7 +410,37 @@ class ApiClient {
   }
 
   async getRestaurant(id: string): Promise<ApiResponse<Restaurant>> {
-    return this.request<ApiResponse<Restaurant>>(`/restaurants/${id}`);
+    try {
+      return await this.request<ApiResponse<Restaurant>>(`/restaurants/${id}`);
+    } catch (error) {
+      // Check if this is a backend unavailable error
+      if (
+        error.name === "BackendUnavailableError" ||
+        error.message === "BACKEND_UNAVAILABLE"
+      ) {
+        // Fallback restaurant data for deployed version
+        console.log("🔄 Backend unavailable, using fallback restaurant data");
+
+        return {
+          success: true,
+          message: "Restaurant loaded (offline mode)",
+          data: {
+            id: id,
+            name: "Demo Restaurant",
+            description: "A fantastic dining experience with great food",
+            category: "International",
+            rating: 4.5,
+            deliveryTime: "25-35 min",
+            deliveryFee: 40,
+            minimumOrder: 200,
+            isActive: true,
+          },
+        };
+      } else {
+        // Re-throw other types of errors
+        throw error;
+      }
+    }
   }
 
   async getMenuItems(restaurantId: string): Promise<ApiResponse<MenuItem[]>> {
