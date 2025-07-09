@@ -26,7 +26,7 @@ export default function Index() {
 
           {/* Content */}
           <div className="relative flex items-center">
-            <span className="text-gray-100 font-bold tracking-wide">ADMIN</span>
+            <span className="text-gray-100 font-bold tracking-wide">Admin</span>
           </div>
 
           {/* Premium indicator */}
