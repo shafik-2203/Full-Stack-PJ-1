@@ -408,7 +408,27 @@ class ApiClient {
   }
 
   async getCategories(): Promise<ApiResponse<string[]>> {
-    return this.request<ApiResponse<string[]>>("/restaurants/categories");
+    try {
+      return await this.request<ApiResponse<string[]>>(
+        "/restaurants/categories",
+      );
+    } catch (error) {
+      // Fallback categories data for deployed version
+      console.log("🔄 Backend unavailable, using fallback categories data");
+
+      return {
+        success: true,
+        message: "Categories loaded (offline mode)",
+        data: [
+          "Italian",
+          "American",
+          "Japanese",
+          "Indian",
+          "Chinese",
+          "Mexican",
+        ],
+      };
+    }
   }
 
   // Order endpoints
