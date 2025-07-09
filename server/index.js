@@ -1023,7 +1023,7 @@ app.get("/api/restaurants/:id/menu", (req, res) => {
   });
 });
 
-// Mock orders data
+// Mock orders data - Expanded with more variety and realistic history
 const mockOrders = [
   {
     _id: "order-1",
@@ -1063,20 +1063,20 @@ const mockOrders = [
     paymentStatus: "completed",
     paymentMethod: "UPI",
     deliveryAddress: {
-      street: "123 User St",
+      street: "123 User Street, Bandra West",
       city: "Mumbai",
       state: "Maharashtra",
-      zipCode: "400005",
+      zipCode: "400050",
       phone: "+91-9876543211",
     },
     estimatedDeliveryTime: new Date(
       Date.now() - 2 * 60 * 60 * 1000,
-    ).toISOString(), // 2 hours ago
-    actualDeliveryTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
+    ).toISOString(),
+    actualDeliveryTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
     notes: "Extra cheese please",
     rating: 5,
     review: "Excellent food and fast delivery!",
-    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 hours ago
+    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
   },
   {
     _id: "order-2",
@@ -1099,27 +1099,387 @@ const mockOrders = [
         image:
           "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300",
       },
+      {
+        _id: "item-5",
+        name: "French Fries",
+        quantity: 1,
+        price: 99,
+        image:
+          "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300",
+      },
     ],
-    subtotal: 249,
-    tax: 24.9,
+    subtotal: 348,
+    tax: 34.8,
     deliveryFee: 30,
-    total: 303.9,
+    total: 412.8,
+    status: "out_for_delivery",
+    paymentStatus: "completed",
+    paymentMethod: "Card",
+    deliveryAddress: {
+      street: "123 User Street, Bandra West",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400050",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+    actualDeliveryTime: null,
+    notes: "Please ring the doorbell",
+    rating: null,
+    review: null,
+    createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+  },
+  {
+    _id: "order-3",
+    orderId: "ORD-003",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-8",
+      name: "Royal Biryani House",
+    },
+    items: [
+      {
+        _id: "item-6",
+        name: "Chicken Dum Biryani",
+        quantity: 2,
+        price: 450,
+        image:
+          "https://images.unsplash.com/photo-1563379091339-03246963d96c?w=300",
+      },
+      {
+        _id: "item-7",
+        name: "Mutton Kebab",
+        quantity: 1,
+        price: 320,
+        image:
+          "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=300",
+      },
+      {
+        _id: "item-8",
+        name: "Raita",
+        quantity: 2,
+        price: 80,
+        image:
+          "https://images.unsplash.com/photo-1583218821096-dbe7f45c02e6?w=300",
+      },
+    ],
+    subtotal: 1380,
+    tax: 138,
+    deliveryFee: 25,
+    total: 1543,
+    status: "delivered",
+    paymentStatus: "completed",
+    paymentMethod: "UPI",
+    deliveryAddress: {
+      street: "123 User Street, Bandra West",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400050",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(
+      Date.now() - 1 * 24 * 60 * 60 * 1000,
+    ).toISOString(), // Yesterday
+    actualDeliveryTime: new Date(
+      Date.now() - 1 * 24 * 60 * 60 * 1000 + 5 * 60 * 1000,
+    ).toISOString(),
+    notes: "Family dinner order",
+    rating: 5,
+    review: "Amazing biryani! Perfectly cooked and flavorful.",
+    createdAt: new Date(
+      Date.now() - 1 * 24 * 60 * 60 * 1000 - 45 * 60 * 1000,
+    ).toISOString(),
+  },
+  {
+    _id: "order-4",
+    orderId: "ORD-004",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-3",
+      name: "Sushi Express",
+    },
+    items: [
+      {
+        _id: "item-9",
+        name: "California Roll",
+        quantity: 2,
+        price: 399,
+        image:
+          "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300",
+      },
+      {
+        _id: "item-10",
+        name: "Salmon Sashimi",
+        quantity: 1,
+        price: 599,
+        image:
+          "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=300",
+      },
+    ],
+    subtotal: 1397,
+    tax: 139.7,
+    deliveryFee: 50,
+    total: 1586.7,
     status: "preparing",
     paymentStatus: "completed",
     paymentMethod: "Card",
     deliveryAddress: {
-      street: "123 User St",
+      street: "123 User Street, Bandra West",
       city: "Mumbai",
       state: "Maharashtra",
-      zipCode: "400005",
+      zipCode: "400050",
       phone: "+91-9876543211",
     },
-    estimatedDeliveryTime: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 minutes from now
+    estimatedDeliveryTime: new Date(Date.now() + 35 * 60 * 1000).toISOString(),
     actualDeliveryTime: null,
-    notes: "",
+    notes: "Handle with care - sushi order",
     rating: null,
     review: null,
-    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 minutes ago
+    createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+  },
+  {
+    _id: "order-5",
+    orderId: "ORD-005",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-9",
+      name: "Healthy Bowls Co.",
+    },
+    items: [
+      {
+        _id: "item-11",
+        name: "Quinoa Power Bowl",
+        quantity: 1,
+        price: 280,
+        image:
+          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300",
+      },
+      {
+        _id: "item-12",
+        name: "Green Smoothie",
+        quantity: 1,
+        price: 180,
+        image:
+          "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=300",
+      },
+    ],
+    subtotal: 460,
+    tax: 46,
+    deliveryFee: 25,
+    total: 531,
+    status: "confirmed",
+    paymentStatus: "completed",
+    paymentMethod: "UPI",
+    deliveryAddress: {
+      street: "123 User Street, Bandra West",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400050",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(Date.now() + 20 * 60 * 1000).toISOString(),
+    actualDeliveryTime: null,
+    notes: "Morning breakfast order",
+    rating: null,
+    review: null,
+    createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+  },
+  {
+    _id: "order-6",
+    orderId: "ORD-006",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-10",
+      name: "Dessert Paradise",
+    },
+    items: [
+      {
+        _id: "item-13",
+        name: "Chocolate Lava Cake",
+        quantity: 2,
+        price: 220,
+        image:
+          "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=300",
+      },
+      {
+        _id: "item-14",
+        name: "Vanilla Ice Cream",
+        quantity: 1,
+        price: 120,
+        image:
+          "https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=300",
+      },
+    ],
+    subtotal: 560,
+    tax: 56,
+    deliveryFee: 30,
+    total: 646,
+    status: "delivered",
+    paymentStatus: "completed",
+    paymentMethod: "Cash",
+    deliveryAddress: {
+      street: "123 User Street, Bandra West",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400050",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(
+      Date.now() - 2 * 24 * 60 * 60 * 1000,
+    ).toISOString(), // 2 days ago
+    actualDeliveryTime: new Date(
+      Date.now() - 2 * 24 * 60 * 60 * 1000 + 10 * 60 * 1000,
+    ).toISOString(),
+    notes: "Birthday celebration desserts",
+    rating: 4,
+    review: "Delicious cakes, though delivery was slightly delayed",
+    createdAt: new Date(
+      Date.now() - 2 * 24 * 60 * 60 * 1000 - 30 * 60 * 1000,
+    ).toISOString(),
+  },
+  {
+    _id: "order-7",
+    orderId: "ORD-007",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-6",
+      name: "Taco Fiesta",
+    },
+    items: [
+      {
+        _id: "item-15",
+        name: "Chicken Tacos",
+        quantity: 4,
+        price: 180,
+        image:
+          "https://images.unsplash.com/photo-1565299585323-38174c4a6663?w=300",
+      },
+      {
+        _id: "item-16",
+        name: "Guacamole & Chips",
+        quantity: 1,
+        price: 150,
+        image:
+          "https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=300",
+      },
+      {
+        _id: "item-17",
+        name: "Mexican Rice",
+        quantity: 2,
+        price: 120,
+        image:
+          "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=300",
+      },
+    ],
+    subtotal: 1110,
+    tax: 111,
+    deliveryFee: 35,
+    total: 1256,
+    status: "cancelled",
+    paymentStatus: "refunded",
+    paymentMethod: "Card",
+    deliveryAddress: {
+      street: "123 User Street, Bandra West",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400050",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(
+      Date.now() - 3 * 24 * 60 * 60 * 1000,
+    ).toISOString(), // 3 days ago
+    actualDeliveryTime: null,
+    notes: "Party order - cancelled due to restaurant closure",
+    rating: null,
+    review: null,
+    createdAt: new Date(
+      Date.now() - 3 * 24 * 60 * 60 * 1000 - 20 * 60 * 1000,
+    ).toISOString(),
+  },
+  {
+    _id: "order-8",
+    orderId: "ORD-008",
+    user: {
+      _id: "user-1",
+      name: "Mohamed Shafik",
+      email: "mohamedshafik2526@gmail.com",
+    },
+    restaurant: {
+      _id: "rest-5",
+      name: "Dragon Wok",
+    },
+    items: [
+      {
+        _id: "item-18",
+        name: "Hakka Noodles",
+        quantity: 2,
+        price: 250,
+        image:
+          "https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=300",
+      },
+      {
+        _id: "item-19",
+        name: "Manchurian Dry",
+        quantity: 1,
+        price: 280,
+        image:
+          "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=300",
+      },
+      {
+        _id: "item-20",
+        name: "Dim Sum Platter",
+        quantity: 1,
+        price: 380,
+        image:
+          "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=300",
+      },
+    ],
+    subtotal: 1160,
+    tax: 116,
+    deliveryFee: 45,
+    total: 1321,
+    status: "delivered",
+    paymentStatus: "completed",
+    paymentMethod: "UPI",
+    deliveryAddress: {
+      street: "123 User Street, Bandra West",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400050",
+      phone: "+91-9876543211",
+    },
+    estimatedDeliveryTime: new Date(
+      Date.now() - 5 * 24 * 60 * 60 * 1000,
+    ).toISOString(), // 5 days ago
+    actualDeliveryTime: new Date(
+      Date.now() - 5 * 24 * 60 * 60 * 1000 + 8 * 60 * 1000,
+    ).toISOString(),
+    notes: "Office lunch order",
+    rating: 4,
+    review: "Good Chinese food, authentic flavors",
+    createdAt: new Date(
+      Date.now() - 5 * 24 * 60 * 60 * 1000 - 35 * 60 * 1000,
+    ).toISOString(),
   },
 ];
 
