@@ -188,5 +188,61 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+/* ========================
+   ✅ Admin Login
+======================== */
+router.post("/admin-login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const admin = await User.findOne({
+      email: email.toLowerCase(),
+      role: "admin",
+    });
+
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Admin not found or unauthorized",
+      });
+    }
+
+    const isMatch = await comparePassword(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Incorrect password",
+      });
+    }
+
+    const token = generateToken(admin);
+
+    res.status(200).json({
+      success: true,
+      message: "Admin login successful",
+      token,
+      user: {
+        id: admin._id,
+        username: admin.username,
+        email: admin.email,
+        role: admin.role,
+        createdAt: admin.createdAt,
+      },
+    });
+  } catch (err) {
+    console.error("Admin login error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
 
 export default router;
