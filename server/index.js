@@ -347,7 +347,19 @@ process.on("SIGTERM", () => {
 // Initialize database and start server
 const startServer = async () => {
   try {
-    await connectDB();
+    if (process.env.NODE_ENV === "production") {
+      await connectDB();
+    } else {
+      // For development, try to connect but don't fail if MongoDB is not available
+      try {
+        await connectDB();
+      } catch (dbError) {
+        console.log(
+          "⚠️ MongoDB not available in development mode - using mock data",
+        );
+      }
+    }
+
     const server = app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(
