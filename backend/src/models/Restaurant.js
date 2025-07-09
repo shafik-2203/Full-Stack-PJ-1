@@ -30,7 +30,6 @@ const restaurantSchema = new mongoose.Schema(
         "Fast Food",
         "Desserts",
         "Beverages",
-        "Healthy",
       ],
     },
     rating: {

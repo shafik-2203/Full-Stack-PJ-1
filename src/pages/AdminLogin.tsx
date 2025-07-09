@@ -1,169 +1,115 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Shield, KeyIcon } from "lucide-react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { ArrowLeft, Shield, Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsAnimating(true);
-  }, []);
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/auth/admin-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      console.log("🟢 Admin login response:", data);
-
-      if (response.ok && data.success) {
-        if (data.token) {
-          localStorage.setItem("fastio_token", data.token);
-          sessionStorage.setItem("adminAuth", data.token);
-          sessionStorage.setItem("adminUser", JSON.stringify(data.user));
-        }
-
-        // Optional debug confirmation
-        console.log("✅ Login successful. Redirecting to /admin...");
-
-        // ✅ Use navigate immediately (you can keep the animation delay if needed)
-        setTimeout(() => {
-          navigate("/admin");
-        }, 1000);
-
-        // Optional fallback: Force redirect if navigate fails (e.g. route not mounted)
-        setTimeout(() => {
-          if (window.location.pathname !== "/admin") {
-            console.warn("⚠️ Fallback redirect triggered");
-            window.location.href = "/admin";
-          }
-        }, 2000);
-      } else {
-        setError(data.message || "Invalid admin credentials");
-        console.warn("⚠️ Admin login failed:", data);
-      }
-    } catch (err) {
-      console.error("🔴 Login error:", err);
-      setError("Failed to authenticate. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    setIsLoading(true);
+    // Simulate login
+    setTimeout(() => {
+      setIsLoading(false);
+      alert("Admin login functionality will be implemented!");
+    }, 2000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600 flex items-center justify-center px-4 py-8">
-      <div
-        className={`max-w-sm sm:max-w-md w-full space-y-6 sm:space-y-8 transition-all duration-1000 ${isAnimating ? "animate-fade-in" : "opacity-0"}`}
-      >
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex items-center justify-center">
-            <div className="relative">
-              <Shield className="w-16 h-16 sm:w-20 sm:h-20 text-white animate-bounce-gentle" />
-              <div className="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 mb-6"
+        >
+          <ArrowLeft size={20} />
+          Back to Home
+        </Link>
+
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-8 h-8 text-white" />
             </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Admin Portal
+            </h1>
+            <p className="text-gray-600">
+              Sign in to access the admin dashboard
+            </p>
           </div>
-          <h2 className="mt-6 text-3xl sm:text-4xl font-bold text-white animate-slide-up">
-            Admin Portal
-          </h2>
-          <p className="mt-2 text-sm sm:text-base text-white/90 animate-fade-in">
-            Secure access for authorized personnel
-          </p>
-        </div>
 
-        {/* Login Form */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
-          <form className="space-y-6" onSubmit={handleLogin}>
-            <div className="space-y-4">
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
-                placeholder="Admin Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="w-full p-4 border-2 border-white/30 rounded-2xl bg-white/90 text-gray-800 placeholder-gray-500 focus:ring-4 focus:ring-white/50 focus:border-white transition-all"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Admin Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Enter admin email"
+                  required
+                />
+              </div>
             </div>
 
-            {error && (
-              <div className="p-4 bg-red-100/90 border-2 border-red-300 text-red-700 rounded-2xl backdrop-blur-sm animate-fade-in">
-                {error}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Enter password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
-            )}
+            </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full flex justify-center py-4 px-6 border-2 border-transparent rounded-2xl shadow-lg text-lg font-semibold text-white bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-white/50 disabled:opacity-50 transform hover:scale-105 transition-all duration-200"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 disabled:opacity-50"
             >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  Authenticating...
-                </div>
-              ) : (
-                "Sign in as Admin"
-              )}
+              {isLoading ? "Signing In..." : "Sign In to Admin Portal"}
             </button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => setShowForgotPassword(!showForgotPassword)}
-                className="flex items-center justify-center gap-2 text-white/90 hover:text-white text-sm transition-colors"
-              >
-                <KeyIcon className="w-4 h-4" />
-                Forgot Password?
-              </button>
-            </div>
-
-            {showForgotPassword && (
-              <div className="bg-white/20 rounded-2xl p-4 animate-fade-in">
-                <p className="text-white text-sm text-center">
-                  Please contact your system administrator for password reset assistance.
-                </p>
-              </div>
-            )}
-
-            <div className="text-center">
-              <Link
-                to="/admin-portal"
-                className="flex items-center justify-center gap-2 text-white/80 hover:text-white text-sm transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Admin Portal
-              </Link>
-            </div>
           </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-gray-600">
+              Need admin access?{" "}
+              <Link
+                to="/admin-signup"
+                className="text-purple-600 hover:text-purple-700 font-medium"
+              >
+                Request Access
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

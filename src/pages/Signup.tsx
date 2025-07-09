@@ -1,51 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Logo from "../components/Logo";
-import { apiClient } from "../lib/api";
-import { AuthConflictResolver } from "../utils/authConflictResolver";
-
-// Password validation function
-const validatePassword = (
-  password: string,
-): { isValid: boolean; message: string } => {
-  if (password.length < 8) {
-    return {
-      isValid: false,
-      message: "Password must be at least 8 characters long",
-    };
-  }
-  if (!/(?=.*[a-z])/.test(password)) {
-    return {
-      isValid: false,
-      message: "Password must contain at least one lowercase letter",
-    };
-  }
-  if (!/(?=.*[A-Z])/.test(password)) {
-    return {
-      isValid: false,
-      message: "Password must contain at least one uppercase letter",
-    };
-  }
-  if (!/(?=.*\d)/.test(password)) {
-    return {
-      isValid: false,
-      message: "Password must contain at least one number",
-    };
-  }
-  if (!/(?=.*[@$!%*?&])/.test(password)) {
-    return {
-      isValid: false,
-      message: "Password must contain at least one special character (@$!%*?&)",
-    };
-  }
-  return { isValid: true, message: "" };
-};
-
-// Phone number validation function
-const validatePhoneNumber = (phone: string): boolean => {
-  const phoneRegex = /^\+?[\d\s\-\(\)]{10,15}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ""));
-};
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { Eye, EyeOff, Mail, Phone, User, Lock, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -55,217 +12,234 @@ export default function Signup() {
     confirmPassword: "",
     mobile: "",
   });
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
-    if (error) setError("");
-  };
+  const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords don't match");
       return;
     }
 
-    // Enhanced password validation
-    const passwordValidation = validatePassword(formData.password);
-    if (!passwordValidation.isValid) {
-      setError(passwordValidation.message);
-      return;
-    }
-
-    // Phone number validation
-    if (!validatePhoneNumber(formData.mobile)) {
-      setError("Please enter a valid phone number (10-15 digits)");
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
     setIsLoading(true);
-    setError("");
-
-    if (
-      !formData.username ||
-      !formData.email ||
-      !formData.password ||
-      !formData.mobile
-    ) {
-      setError("All fields are required");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      console.log("🚀 Starting signup process...");
-      const response = await apiClient.signup({
+      await signup({
         username: formData.username,
         email: formData.email,
         password: formData.password,
         mobile: formData.mobile,
       });
 
-      console.log("✅ Signup response received:", response);
-
-      if (response && response.success) {
-        console.log("🎉 Signup successful, navigating to OTP verification");
-        localStorage.setItem("otp_email", formData.email);
-        navigate("/otp");
-      } else {
-        console.error("❌ Signup failed with response:", response);
-        setError(response?.message || "Signup failed. Please try again.");
-      }
-    } catch (err) {
-      console.error("🚨 Signup error caught:", err);
-
-      let errorMessage = "Signup failed. Please try again.";
-
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      }
-
-      // Handle specific error cases
-      if (errorMessage.includes("already exists")) {
-        setError(
-          "An account with these details already exists. Please try logging in instead.",
-        );
-        setTimeout(() => navigate("/login"), 3000);
-      } else if (errorMessage.includes("Network error")) {
-        setError(
-          "Network connection issue. Please check your internet and try again.",
-        );
-      } else if (errorMessage.includes("Invalid JSON")) {
-        setError("Server communication error. Please try again.");
-      } else {
-        setError(errorMessage);
-      }
+      // Store email for OTP verification
+      localStorage.setItem("signup_email", formData.email);
+      navigate("/otp");
+    } catch (error) {
+      console.error("Signup error:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleBack = () => {
-    navigate("/");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 relative overflow-x-hidden">
-      <div className="absolute top-2 left-2 sm:top-4 sm:left-5 z-10">
-        <Logo size={80} className="sm:hidden" />
-        <Logo size={130} className="hidden sm:block" />
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Back Button */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 mb-6 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span className="font-medium">Back to Home</span>
+        </Link>
 
-      <div className="flex items-center justify-center min-h-screen px-4 py-8 safe-area-top safe-area-bottom">
-        <div className="w-full max-w-sm sm:max-w-md bg-gradient-to-br from-amber-300/30 to-amber-200/30 backdrop-blur-sm rounded-3xl sm:rounded-[50px] p-6 sm:p-10 lg:p-14 shadow-lg">
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-4 sm:space-y-6 lg:space-y-7"
-          >
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-medium text-white text-center">
-              Sign up
+        {/* Main Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 animate-fade-in">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <User className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Create Account
             </h1>
+            <p className="text-gray-600">Join FASTIO for fast food delivery</p>
+          </div>
 
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
-                {error}
-              </div>
-            )}
-
-            <div className="space-y-3 sm:space-y-4 lg:space-y-6">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Username Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Username
+              </label>
               <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
                   name="username"
-                  placeholder="Create your username"
                   value={formData.username}
-                  onChange={handleInputChange}
-                  className="w-full h-12 sm:h-16 lg:h-20 px-4 sm:px-6 bg-white rounded-lg sm:rounded-xl border-2 border-white/30 text-sm sm:text-base lg:text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your username"
                   required
-                  disabled={isLoading}
                 />
               </div>
+            </div>
 
+            {/* Email Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
               <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="email"
                   name="email"
-                  placeholder="Enter your email address"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full h-12 sm:h-16 lg:h-20 px-4 sm:px-6 bg-white rounded-lg sm:rounded-xl border-2 border-white/30 text-sm sm:text-base lg:text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your email"
                   required
-                  disabled={isLoading}
                 />
               </div>
+            </div>
 
+            {/* Mobile Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Mobile Number
+              </label>
               <div className="relative">
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Strong password (8+ chars, mixed case, numbers, symbols)"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full h-12 sm:h-16 lg:h-20 px-4 sm:px-6 bg-white rounded-lg sm:rounded-xl border-2 border-white/30 text-sm sm:text-base lg:text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
-                  required
-                  disabled={isLoading}
-                  minLength={8}
-                />
-              </div>
-
-              <div className="relative">
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  className="w-full h-12 sm:h-16 lg:h-20 px-4 sm:px-6 bg-white rounded-lg sm:rounded-xl border-2 border-white/30 text-sm sm:text-base lg:text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="tel"
                   name="mobile"
-                  placeholder="Enter your mobile number"
                   value={formData.mobile}
-                  onChange={handleInputChange}
-                  className="w-full h-12 sm:h-16 lg:h-20 px-4 sm:px-6 bg-white rounded-lg sm:rounded-xl border-2 border-white/30 text-sm sm:text-base lg:text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your mobile number"
                   required
-                  disabled={isLoading}
                 />
               </div>
             </div>
 
+            {/* Password Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Confirm your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-14 sm:h-16 bg-gradient-to-r from-orange-500 to-orange-400 text-white font-semibold text-lg sm:text-xl rounded-full shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isLoading ? "Creating Account..." : "Sign up"}
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Creating Account...
+                </div>
+              ) : (
+                "Create Account"
+              )}
             </button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="text-white/80 hover:text-white text-sm sm:text-base transition-colors"
-              >
-                ← Back to home
-              </button>
-            </div>
           </form>
+
+          {/* Footer */}
+          <div className="mt-8 text-center">
+            <p className="text-gray-600">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
+              >
+                Sign In
+              </Link>
+            </p>
+          </div>
         </div>
+
+        {/* Terms */}
+        <p className="text-center text-sm text-gray-500 mt-6">
+          By creating an account, you agree to our{" "}
+          <a href="#" className="text-orange-600 hover:text-orange-700">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="#" className="text-orange-600 hover:text-orange-700">
+            Privacy Policy
+          </a>
+        </p>
       </div>
     </div>
   );

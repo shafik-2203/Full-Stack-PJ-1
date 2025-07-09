@@ -1,7 +1,8 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { AlertTriangle, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+/// <reference types="node" />
+declare const process: { env: { NODE_ENV: string } };
+import { Component, ReactNode, ErrorInfo } from "react";
+import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Props {
   children: ReactNode;
@@ -10,10 +11,9 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
-  errorInfo?: ErrorInfo;
 }
 
-class ErrorBoundary extends Component<Props, State> {
+export default class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
   };
@@ -23,62 +23,52 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Error caught by boundary:", error, errorInfo);
-    this.setState({
-      error,
-      errorInfo,
-    });
+    console.error("Uncaught error:", error, errorInfo);
   }
-
-  private handleReload = () => {
-    window.location.reload();
-  };
-
-  private handleReset = () => {
-    this.setState({ hasError: false, error: undefined, errorInfo: undefined });
-  };
 
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-          <div className="max-w-lg w-full">
-            <Alert className="border-red-200 bg-red-50">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertTitle className="text-red-800">
-                Something went wrong
-              </AlertTitle>
-              <AlertDescription className="text-red-700 mt-2">
-                The application has encountered an unexpected error. This might
-                be due to a temporary issue.
-              </AlertDescription>
-            </Alert>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+          <div className="text-center max-w-md animate-scale-in">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle className="w-8 h-8 text-red-600" />
+            </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <Button
-                onClick={this.handleReload}
-                className="flex-1 bg-orange-500 hover:bg-orange-600"
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Something went wrong
+            </h1>
+
+            <p className="text-gray-600 mb-8">
+              We apologize for the inconvenience. Please try refreshing the page
+              or go back home.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center justify-center space-x-2 bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-all duration-200 transform hover:scale-105"
               >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Reload Page
-              </Button>
-              <Button
-                onClick={this.handleReset}
-                variant="outline"
-                className="flex-1"
+                <RefreshCw size={20} />
+                <span>Refresh Page</span>
+              </button>
+
+              <Link
+                to="/"
+                className="inline-flex items-center justify-center space-x-2 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-all duration-200 transform hover:scale-105"
               >
-                Try Again
-              </Button>
+                <Home size={20} />
+                <span>Go Home</span>
+              </Link>
             </div>
 
             {process.env.NODE_ENV === "development" && this.state.error && (
-              <details className="mt-6 p-4 bg-gray-100 rounded-lg">
-                <summary className="cursor-pointer font-medium text-gray-700 mb-2">
-                  Error Details (Development)
+              <details className="mt-8 text-left">
+                <summary className="cursor-pointer text-sm text-gray-500 mb-2">
+                  Error Details (Development Only)
                 </summary>
-                <pre className="text-xs text-gray-600 whitespace-pre-wrap overflow-x-auto">
-                  {this.state.error.toString()}
-                  {this.state.errorInfo?.componentStack}
+                <pre className="bg-gray-100 p-4 rounded text-xs overflow-auto text-red-600">
+                  {this.state.error.stack}
                 </pre>
               </details>
             )}
@@ -90,5 +80,3 @@ class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;

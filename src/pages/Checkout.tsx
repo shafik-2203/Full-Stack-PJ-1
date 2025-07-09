@@ -1,617 +1,326 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { ArrowLeft, CreditCard, MapPin, Clock } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
-import { apiClient } from "../lib/api";
-import { paymentMethods, paymentService, PaymentDetails } from "../lib/payment";
-import Logo from "../components/Logo";
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from "sonner";
 
 export default function Checkout() {
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const { items, totalItems, totalAmount, clearCart } = useCart();
-
-  const [selectedPayment, setSelectedPayment] = useState<string>("");
-  const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [customerInfo, setCustomerInfo] = useState({
-    name: user?.username || "",
-    email: user?.email || "",
-    phone: user?.mobile || "",
-  });
-  const [billingAddress, setBillingAddress] = useState({
-    line1: "",
-    city: "",
-    state: "",
-    postal_code: "",
-    country: "IN",
-  });
-  const [cardDetails, setCardDetails] = useState({
-    number: "",
-    expiry: "",
-    cvc: "",
-    name: "",
-  });
-  const [upiId, setUpiId] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [isLoading, setIsLoading] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [paymentDetails, setPaymentDetails] = useState({
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardholderName: "",
+    upiId: "",
+    phoneNumber: "",
+  });
+  const { items, totalAmount, placeOrder } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  const validateForm = () => {
-    if (!selectedPayment) {
-      setError("Please select a payment method");
-      return false;
-    }
-
-    if (!deliveryAddress.trim()) {
-      setError("Please enter your delivery address");
-      return false;
-    }
-
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      setError("Please fill in all customer information");
-      return false;
-    }
-
-    // Validate payment method specific fields
-    if (selectedPayment === "stripe_card") {
-      if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvc) {
-        setError("Please fill in all card details");
-        return false;
-      }
-    }
-
-    if (selectedPayment === "upi" && !upiId) {
-      setError("Please enter your UPI ID");
-      return false;
-    }
-
-    if (selectedPayment === "bank_transfer") {
-      if (
-        !billingAddress.line1 ||
-        !billingAddress.city ||
-        !billingAddress.state
-      ) {
-        setError("Please fill in billing address for bank transfer");
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const handlePaymentMethodSelect = (methodId: string) => {
-    setSelectedPayment(methodId);
-    setShowPaymentForm(methodId !== "cash_on_delivery");
-    setError("");
-  };
-
-  const handlePlaceOrder = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsProcessing(true);
-    setError("");
-
-    try {
-      // Process payment first (except for cash on delivery)
-      let paymentResult = { success: true, paymentId: "cod_pending" };
-
-      if (selectedPayment !== "cash_on_delivery") {
-        const deliveryFee = 2.99;
-        const tax = totalAmount * 0.08;
-        const finalTotal = totalAmount + deliveryFee + tax;
-
-        const paymentDetails: PaymentDetails = {
-          amount: finalTotal,
-          currency: "INR",
-          paymentMethodId: selectedPayment,
-          customerInfo,
-          billingAddress,
-        };
-
-        paymentResult = await paymentService.processPayment(paymentDetails);
-
-        if (!paymentResult.success) {
-          setError(paymentResult.error || "Payment failed");
-          setIsProcessing(false);
-          return;
-        }
-      }
-
-      // Create order after successful payment
-      const orderData = {
-        restaurantId: items[0]?.restaurantId,
-        items: items.map((item) => ({
-          menuItemId: item.menuItem.id,
-          quantity: item.quantity,
-          price: item.menuItem.price,
-          name: item.menuItem.name,
-        })),
-        deliveryAddress: deliveryAddress.trim(),
-        paymentMethod: selectedPayment,
-      };
-
-      const response = await apiClient.createOrder(orderData);
-
-      if (response.success) {
-        // Clear cart
-        clearCart();
-
-        // Show success message with payment ID
-        const successMessage =
-          selectedPayment === "cash_on_delivery"
-            ? "Order placed successfully! Pay cash upon delivery."
-            : `Payment successful! Transaction ID: ${paymentResult.paymentId}`;
-
-        alert(successMessage);
-
-        // Navigate to orders page
-        navigate("/orders");
-      } else {
-        setError(response.message || "Failed to place order");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to place order");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  if (items.length === 0) {
-    navigate("/cart");
-    return null;
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Please log in to checkout</h2>
+          <Link to="/login" className="text-orange-600 hover:text-orange-700">
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
   }
 
-  const restaurantName = items[0]?.restaurantName || "Restaurant";
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
+          <Link
+            to="/restaurants"
+            className="text-orange-600 hover:text-orange-700"
+          >
+            Browse Restaurants
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const deliveryFee = 2.99;
   const tax = totalAmount * 0.08;
   const finalTotal = totalAmount + deliveryFee + tax;
 
-  const selectedMethod = paymentMethods.find((m) => m.id === selectedPayment);
+  const handlePlaceOrder = async () => {
+    setIsLoading(true);
+    try {
+      const order = await placeOrder();
+      if (order) {
+        toast.success("Order placed successfully!");
+        navigate("/orders");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600">
-      {/* Header */}
-      <header className="bg-white/10 backdrop-blur-sm border-b border-white/20">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Logo size={60} />
-            <h1 className="text-2xl font-bold text-white">FASTIO</h1>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <Link
+          to="/cart"
+          className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 mb-6"
+        >
+          <ArrowLeft size={20} />
+          Back to Cart
+        </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <Link
-              to="/dashboard"
-              className="text-white hover:text-orange-200 transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              to="/cart"
-              className="text-white hover:text-orange-200 transition-colors"
-            >
-              Cart ({totalItems})
-            </Link>
-            <Link
-              to="/orders"
-              className="text-white hover:text-orange-200 transition-colors"
-            >
-              Orders
-            </Link>
-          </nav>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Checkout Form */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-xl font-semibold mb-6">Checkout Details</h2>
 
-          <div className="flex items-center gap-4">
-            <span className="text-white">Welcome, {user?.username}!</span>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+            {/* Delivery Address */}
+            <div className="mb-6">
+              <h3 className="font-medium mb-3 flex items-center gap-2">
+                <MapPin size={18} />
+                Delivery Address
+              </h3>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium">{user.username || user.name}</p>
+                <p className="text-gray-600">123 Demo Street</p>
+                <p className="text-gray-600">Demo City, DC 12345</p>
+                <p className="text-gray-600">{user.mobile || user.phone}</p>
+              </div>
+            </div>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Page Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
-              Secure Checkout
-            </h1>
-            <p className="text-white/80 text-lg">
-              Complete your order with real-time payment processing
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Checkout Form */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Customer Information */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Customer Information
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-gray-700 font-medium mb-2">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={customerInfo.name}
-                      onChange={(e) =>
-                        setCustomerInfo({
-                          ...customerInfo,
-                          name: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      value={customerInfo.email}
-                      onChange={(e) =>
-                        setCustomerInfo({
-                          ...customerInfo,
-                          email: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      required
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-gray-700 font-medium mb-2">
-                      Phone Number *
-                    </label>
-                    <input
-                      type="tel"
-                      value={customerInfo.phone}
-                      onChange={(e) =>
-                        setCustomerInfo({
-                          ...customerInfo,
-                          phone: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      required
-                    />
-                  </div>
-                </div>
+            {/* Payment Method */}
+            <div className="mb-6">
+              <h3 className="font-medium mb-3 flex items-center gap-2">
+                <CreditCard size={18} />
+                Payment Method
+              </h3>
+              <div className="space-y-3">
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    value="card"
+                    checked={paymentMethod === "card"}
+                    onChange={(e) => {
+                      setPaymentMethod(e.target.value);
+                      setShowPaymentForm(true);
+                    }}
+                    className="mr-3"
+                  />
+                  <span>Credit/Debit Card</span>
+                </label>
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    value="upi"
+                    checked={paymentMethod === "upi"}
+                    onChange={(e) => {
+                      setPaymentMethod(e.target.value);
+                      setShowPaymentForm(true);
+                    }}
+                    className="mr-3"
+                  />
+                  <span>UPI</span>
+                </label>
+                <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    value="cod"
+                    checked={paymentMethod === "cod"}
+                    onChange={(e) => {
+                      setPaymentMethod(e.target.value);
+                      setShowPaymentForm(false);
+                    }}
+                    className="mr-3"
+                  />
+                  <span>Cash on Delivery</span>
+                </label>
               </div>
 
-              {/* Delivery Address */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Delivery Address
-                </h2>
-                <textarea
-                  value={deliveryAddress}
-                  onChange={(e) => setDeliveryAddress(e.target.value)}
-                  placeholder="Enter your complete delivery address with landmarks..."
-                  className="w-full p-4 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
-                  rows={3}
-                  required
-                />
-              </div>
-
-              {/* Payment Method */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Payment Method
-                </h2>
-                <div className="space-y-3 mb-6">
-                  {paymentMethods.map((method) => (
-                    <label
-                      key={method.id}
-                      className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${
-                        selectedPayment === method.id
-                          ? "border-orange-500 bg-orange-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      } ${!method.enabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="payment"
-                        value={method.id}
-                        checked={selectedPayment === method.id}
-                        onChange={(e) =>
-                          handlePaymentMethodSelect(e.target.value)
-                        }
-                        disabled={!method.enabled}
-                        className="mr-4 h-4 w-4 text-orange-500"
-                      />
-                      <span className="text-2xl mr-3">{method.icon}</span>
+              {/* Payment Details Form */}
+              {showPaymentForm && (
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                  {paymentMethod === "card" && (
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-900">
+                        Card Details
+                      </h4>
                       <div>
-                        <span className="font-medium text-gray-800">
-                          {method.name}
-                        </span>
-                        {method.type === "digital_wallet" && (
-                          <span className="block text-sm text-gray-500">
-                            Instant payment
-                          </span>
-                        )}
-                        {method.type === "bank_transfer" && (
-                          <span className="block text-sm text-gray-500">
-                            2-3 business days
-                          </span>
-                        )}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-
-                {/* Payment Details Form */}
-                {showPaymentForm && selectedMethod && (
-                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-4">
-                      {selectedMethod.name} Details
-                    </h3>
-
-                    {selectedPayment === "stripe_card" && (
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-gray-700 font-medium mb-2">
-                            Card Number *
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="1234 5678 9012 3456"
-                            value={cardDetails.number}
-                            onChange={(e) =>
-                              setCardDetails({
-                                ...cardDetails,
-                                number: e.target.value,
-                              })
-                            }
-                            className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
-                            maxLength={19}
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-2">
-                              Expiry *
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="MM/YY"
-                              value={cardDetails.expiry}
-                              onChange={(e) =>
-                                setCardDetails({
-                                  ...cardDetails,
-                                  expiry: e.target.value,
-                                })
-                              }
-                              className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
-                              maxLength={5}
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-gray-700 font-medium mb-2">
-                              CVC *
-                            </label>
-                            <input
-                              type="text"
-                              placeholder="123"
-                              value={cardDetails.cvc}
-                              onChange={(e) =>
-                                setCardDetails({
-                                  ...cardDetails,
-                                  cvc: e.target.value,
-                                })
-                              }
-                              className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
-                              maxLength={4}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedPayment === "upi" && (
-                      <div>
-                        <label className="block text-gray-700 font-medium mb-2">
-                          UPI ID *
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Cardholder Name
                         </label>
                         <input
                           type="text"
-                          placeholder="yourname@paytm / yourname@phonepe"
-                          value={upiId}
-                          onChange={(e) => setUpiId(e.target.value)}
-                          className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
+                          value={paymentDetails.cardholderName}
+                          onChange={(e) =>
+                            setPaymentDetails({
+                              ...paymentDetails,
+                              cardholderName: e.target.value,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          placeholder="John Doe"
+                          required
                         />
-                        <p className="text-sm text-gray-600 mt-2">
-                          Enter your UPI ID (PhonePe, Google Pay, Paytm, etc.)
-                        </p>
                       </div>
-                    )}
-
-                    {selectedPayment === "bank_transfer" && (
-                      <div className="space-y-4">
-                        <div className="bg-blue-50 p-4 rounded-lg">
-                          <h4 className="font-semibold text-blue-800 mb-2">
-                            Bank Transfer Details
-                          </h4>
-                          <div className="text-sm text-blue-700 space-y-1">
-                            <p>
-                              <strong>Account Name:</strong> FASTIO Private
-                              Limited
-                            </p>
-                            <p>
-                              <strong>Account Number:</strong> 1234567890
-                            </p>
-                            <p>
-                              <strong>IFSC Code:</strong> FAST0001234
-                            </p>
-                            <p>
-                              <strong>Bank:</strong> FASTIO Bank, Main Branch
-                            </p>
-                          </div>
-                        </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Card Number
+                        </label>
+                        <input
+                          type="text"
+                          value={paymentDetails.cardNumber}
+                          onChange={(e) =>
+                            setPaymentDetails({
+                              ...paymentDetails,
+                              cardNumber: e.target.value,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          placeholder="1234 5678 9012 3456"
+                          maxLength={19}
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-gray-700 font-medium mb-2">
-                            Your Address *
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Expiry Date
                           </label>
                           <input
                             type="text"
-                            placeholder="Street address"
-                            value={billingAddress.line1}
+                            value={paymentDetails.expiryDate}
                             onChange={(e) =>
-                              setBillingAddress({
-                                ...billingAddress,
-                                line1: e.target.value,
+                              setPaymentDetails({
+                                ...paymentDetails,
+                                expiryDate: e.target.value,
                               })
                             }
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500 mb-2"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            placeholder="MM/YY"
+                            maxLength={5}
+                            required
                           />
-                          <div className="grid grid-cols-2 gap-2">
-                            <input
-                              type="text"
-                              placeholder="City"
-                              value={billingAddress.city}
-                              onChange={(e) =>
-                                setBillingAddress({
-                                  ...billingAddress,
-                                  city: e.target.value,
-                                })
-                              }
-                              className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
-                            />
-                            <input
-                              type="text"
-                              placeholder="State"
-                              value={billingAddress.state}
-                              onChange={(e) =>
-                                setBillingAddress({
-                                  ...billingAddress,
-                                  state: e.target.value,
-                                })
-                              }
-                              className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500"
-                            />
-                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            CVV
+                          </label>
+                          <input
+                            type="text"
+                            value={paymentDetails.cvv}
+                            onChange={(e) =>
+                              setPaymentDetails({
+                                ...paymentDetails,
+                                cvv: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            placeholder="123"
+                            maxLength={4}
+                            required
+                          />
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  )}
 
-              {/* Error Message */}
-              {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                  {error}
+                  {paymentMethod === "upi" && (
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-900">UPI Details</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          UPI ID
+                        </label>
+                        <input
+                          type="text"
+                          value={paymentDetails.upiId}
+                          onChange={(e) =>
+                            setPaymentDetails({
+                              ...paymentDetails,
+                              upiId: e.target.value,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                          placeholder="username@paytm"
+                          required
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-4">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">
-                  Order Summary
-                </h2>
-
-                {/* Restaurant Info */}
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                  <h3 className="font-semibold text-gray-800">
-                    From {restaurantName}
-                  </h3>
-                  <p className="text-gray-600 text-sm">{totalItems} items</p>
-                </div>
-
-                {/* Order Items */}
-                <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
-                  {items.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <div>
-                        <span className="font-medium">{item.quantity}x</span>{" "}
-                        {item.menuItem.name}
-                      </div>
-                      <span>
-                        ${(item.menuItem.price * item.quantity).toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Price Breakdown */}
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Subtotal</span>
-                    <span className="font-semibold">
-                      ${totalAmount.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Delivery Fee</span>
-                    <span className="font-semibold">
-                      ${deliveryFee.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Tax (8%)</span>
-                    <span className="font-semibold">${tax.toFixed(2)}</span>
-                  </div>
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between">
-                      <span className="text-lg font-bold">Total</span>
-                      <span className="text-lg font-bold text-orange-500">
-                        ${finalTotal.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Secure Payment Badge */}
-                <div className="mb-6 p-3 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-center gap-2 text-green-700">
-                    <span className="text-lg">🔒</span>
-                    <span className="text-sm font-medium">
-                      Secure Payment Processing
-                    </span>
-                  </div>
-                  <p className="text-xs text-green-600 mt-1">
-                    Your payment information is encrypted and secure
-                  </p>
-                </div>
-
-                {/* Place Order Button */}
-                <button
-                  onClick={handlePlaceOrder}
-                  disabled={isProcessing}
-                  className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold text-lg hover:bg-orange-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isProcessing
-                    ? "Processing Payment..."
-                    : `${selectedPayment === "cash_on_delivery" ? "Place Order" : "Pay"} - ₹${finalTotal.toFixed(2)}`}
-                </button>
-
-                <Link
-                  to="/cart"
-                  className="block w-full text-center mt-4 text-orange-500 hover:text-orange-700 transition-colors"
-                >
-                  Back to Cart
-                </Link>
-              </div>
+            {/* Delivery Time */}
+            <div className="mb-6">
+              <h3 className="font-medium mb-3 flex items-center gap-2">
+                <Clock size={18} />
+                Estimated Delivery
+              </h3>
+              <p className="text-gray-600 p-3 bg-gray-50 rounded-lg">
+                25-35 minutes
+              </p>
             </div>
           </div>
+
+          {/* Order Summary */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+
+            {/* Items */}
+            <div className="space-y-3 mb-6">
+              {items.map((item) => (
+                <div key={item._id} className="flex justify-between">
+                  <div>
+                    <span className="font-medium">{item.name}</span>
+                    <span className="text-gray-600 ml-2">x{item.quantity}</span>
+                  </div>
+                  <span>${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals */}
+            <div className="border-t pt-4 space-y-2">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>${totalAmount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Delivery Fee</span>
+                <span>${deliveryFee.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Tax</span>
+                <span>${tax.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between font-semibold text-lg border-t pt-2">
+                <span>Total</span>
+                <span>${finalTotal.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={handlePlaceOrder}
+              disabled={isLoading}
+              className="w-full mt-6 bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors disabled:opacity-50"
+            >
+              {isLoading ? "Placing Order..." : "Place Order"}
+            </button>
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
