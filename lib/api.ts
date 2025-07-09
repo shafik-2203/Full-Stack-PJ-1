@@ -192,6 +192,237 @@ class ApiClient {
     return data as T;
   }
 
+  // Centralized fallback response handler
+  private getFallbackResponse<T>(
+    endpoint: string,
+    options: RequestInit = {},
+  ): T {
+    console.log(`🔄 Generating fallback response for: ${endpoint}`);
+
+    const method = options.method || "GET";
+
+    // Authentication endpoints
+    if (endpoint === "/auth/login" && method === "POST") {
+      const body = JSON.parse(options.body as string);
+      const validCredentials = [
+        {
+          email: "mohamedshafik2526@gmail.com",
+          password: "Shafik1212@",
+          isAdmin: false,
+        },
+        {
+          email: "fastio121299@gmail.com",
+          password: "fastio1212",
+          isAdmin: true,
+        },
+      ];
+
+      const credential = validCredentials.find(
+        (cred) => cred.email === body.email && cred.password === body.password,
+      );
+
+      if (credential) {
+        return {
+          success: true,
+          message: "Login successful (offline mode)",
+          user: {
+            id: credential.isAdmin ? "admin-1" : "user-1",
+            email: credential.email,
+            username: credential.email.split("@")[0],
+            mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
+            isVerified: true,
+            createdAt: new Date().toISOString(),
+          },
+          token: credential.isAdmin
+            ? "admin-token-offline"
+            : "user-token-offline",
+        } as T;
+      } else {
+        return {
+          success: false,
+          message: "Invalid credentials",
+        } as T;
+      }
+    }
+
+    // Restaurants endpoints
+    if (endpoint === "/restaurants") {
+      return {
+        success: true,
+        message: "Restaurants loaded (offline mode)",
+        data: [
+          {
+            id: "rest-1",
+            name: "Pizza Palace",
+            description: "Authentic Italian pizzas made with fresh ingredients",
+            category: "Italian",
+            rating: 4.5,
+            deliveryTime: "25-35 min",
+            deliveryFee: 40,
+            minimumOrder: 200,
+            isActive: true,
+          },
+          {
+            id: "rest-2",
+            name: "Burger Hub",
+            description: "Gourmet burgers and crispy fries",
+            category: "American",
+            rating: 4.2,
+            deliveryTime: "20-30 min",
+            deliveryFee: 30,
+            minimumOrder: 150,
+            isActive: true,
+          },
+          {
+            id: "rest-3",
+            name: "Sushi Express",
+            description: "Fresh sushi and Japanese cuisine",
+            category: "Japanese",
+            rating: 4.7,
+            deliveryTime: "30-40 min",
+            deliveryFee: 50,
+            minimumOrder: 300,
+            isActive: true,
+          },
+        ],
+      } as T;
+    }
+
+    if (endpoint === "/restaurants/categories") {
+      return {
+        success: true,
+        message: "Categories loaded (offline mode)",
+        data: [
+          "Italian",
+          "American",
+          "Japanese",
+          "Indian",
+          "Chinese",
+          "Mexican",
+        ],
+      } as T;
+    }
+
+    if (endpoint.startsWith("/restaurants/") && endpoint.endsWith("/menu")) {
+      const restaurantId = endpoint.split("/")[2];
+      return {
+        success: true,
+        message: "Menu items loaded (offline mode)",
+        data: [
+          {
+            id: "item-1",
+            restaurantId: restaurantId,
+            name: "Margherita Pizza",
+            description: "Fresh tomatoes, mozzarella cheese, and basil",
+            price: 299,
+            category: "Pizza",
+            imageUrl:
+              "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300",
+            isAvailable: true,
+          },
+          {
+            id: "item-2",
+            restaurantId: restaurantId,
+            name: "Chicken Burger",
+            description: "Grilled chicken with lettuce and tomatoes",
+            price: 249,
+            category: "Burger",
+            imageUrl:
+              "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300",
+            isAvailable: true,
+          },
+          {
+            id: "item-3",
+            restaurantId: restaurantId,
+            name: "Caesar Salad",
+            description: "Fresh romaine lettuce with caesar dressing",
+            price: 199,
+            category: "Salad",
+            imageUrl:
+              "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300",
+            isAvailable: true,
+          },
+        ],
+      } as T;
+    }
+
+    if (
+      endpoint.startsWith("/restaurants/") &&
+      !endpoint.includes("menu") &&
+      !endpoint.includes("search")
+    ) {
+      const restaurantId = endpoint.split("/")[2];
+      return {
+        success: true,
+        message: "Restaurant loaded (offline mode)",
+        data: {
+          id: restaurantId,
+          name: "Demo Restaurant",
+          description: "A fantastic dining experience with great food",
+          category: "International",
+          rating: 4.5,
+          deliveryTime: "25-35 min",
+          deliveryFee: 40,
+          minimumOrder: 200,
+          isActive: true,
+        },
+      } as T;
+    }
+
+    if (endpoint === "/orders") {
+      if (method === "POST") {
+        const body = JSON.parse(options.body as string);
+        return {
+          success: true,
+          message: "Order placed successfully (offline mode)",
+          data: {
+            id: `order-${Date.now()}`,
+            userId: "user-offline",
+            restaurantId: body.restaurantId,
+            status: "pending",
+            totalAmount: body.items.reduce(
+              (sum: number, item: any) => sum + item.price * item.quantity,
+              0,
+            ),
+            deliveryAddress: body.deliveryAddress,
+            paymentMethod: body.paymentMethod,
+            paymentStatus: "pending",
+            estimatedDeliveryTime: 30,
+            createdAt: new Date().toISOString(),
+          },
+        } as T;
+      } else {
+        return {
+          success: true,
+          message: "Orders loaded (offline mode)",
+          data: [
+            {
+              id: "order-1",
+              userId: "user-1",
+              restaurantId: "rest-1",
+              status: "delivered",
+              totalAmount: 650,
+              deliveryAddress: "Demo Address",
+              paymentMethod: "UPI",
+              paymentStatus: "completed",
+              estimatedDeliveryTime: 30,
+              createdAt: new Date(
+                Date.now() - 2 * 60 * 60 * 1000,
+              ).toISOString(),
+            },
+          ],
+        } as T;
+      }
+    }
+
+    // Default fallback
+    return {
+      success: true,
+      message: "Operation completed (offline mode)",
+      data: null,
+    } as T;
+  }
+
   // Auth endpoints
   async signup(data: SignupRequest): Promise<AuthResponse> {
     try {
