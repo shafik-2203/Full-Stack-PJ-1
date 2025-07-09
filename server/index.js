@@ -561,6 +561,252 @@ app.get("/api/admin/signup-requests", (req, res) => {
   });
 });
 
+// Mock restaurants data
+const mockRestaurants = [
+  {
+    _id: "rest-1",
+    name: "Pizza Palace",
+    description: "Authentic Italian pizzas made with fresh ingredients",
+    category: "Italian",
+    rating: 4.5,
+    deliveryTime: "25-35 min",
+    deliveryFee: 40,
+    minimumOrder: 200,
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
+    location: {
+      address: "123 Food Street, Mumbai",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400001",
+    },
+    contact: {
+      phone: "+91-9876543210",
+      email: "info@pizzapalace.com",
+    },
+    timings: {
+      open: "10:00",
+      close: "23:00",
+    },
+    features: ["Pure Veg", "Home Delivery", "Card Payment"],
+    isActive: true,
+  },
+  {
+    _id: "rest-2",
+    name: "Burger Hub",
+    description: "Gourmet burgers and crispy fries",
+    category: "American",
+    rating: 4.2,
+    deliveryTime: "20-30 min",
+    deliveryFee: 30,
+    minimumOrder: 150,
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+    location: {
+      address: "456 Fast Lane, Mumbai",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400002",
+    },
+    contact: {
+      phone: "+91-9876543211",
+      email: "info@burgerhub.com",
+    },
+    timings: {
+      open: "11:00",
+      close: "24:00",
+    },
+    features: ["Home Delivery", "Takeaway", "Cash Payment"],
+    isActive: true,
+  },
+  {
+    _id: "rest-3",
+    name: "Sushi Express",
+    description: "Fresh sushi and Japanese cuisine",
+    category: "Japanese",
+    rating: 4.7,
+    deliveryTime: "30-40 min",
+    deliveryFee: 50,
+    minimumOrder: 300,
+    image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400",
+    location: {
+      address: "789 Sushi Street, Mumbai",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400003",
+    },
+    contact: {
+      phone: "+91-9876543212",
+      email: "info@sushiexpress.com",
+    },
+    timings: {
+      open: "12:00",
+      close: "22:00",
+    },
+    features: ["Home Delivery", "Card Payment"],
+    isActive: true,
+  },
+  {
+    _id: "rest-4",
+    name: "Spice Garden",
+    description: "Authentic Indian curries and biryanis",
+    category: "Indian",
+    rating: 4.3,
+    deliveryTime: "35-45 min",
+    deliveryFee: 35,
+    minimumOrder: 180,
+    image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+    location: {
+      address: "321 Curry Lane, Mumbai",
+      city: "Mumbai",
+      state: "Maharashtra",
+      zipCode: "400004",
+    },
+    contact: {
+      phone: "+91-9876543213",
+      email: "info@spicegarden.com",
+    },
+    timings: {
+      open: "11:30",
+      close: "23:30",
+    },
+    features: ["Veg Options", "Home Delivery", "Online Payment"],
+    isActive: true,
+  },
+];
+
+// Restaurant endpoints
+app.get("/api/restaurants", (req, res) => {
+  const { query, category } = req.query;
+
+  let filteredRestaurants = [...mockRestaurants];
+
+  // Filter by category
+  if (category) {
+    filteredRestaurants = filteredRestaurants.filter(
+      (restaurant) =>
+        restaurant.category.toLowerCase() === category.toLowerCase(),
+    );
+  }
+
+  // Filter by search query
+  if (query) {
+    filteredRestaurants = filteredRestaurants.filter(
+      (restaurant) =>
+        restaurant.name.toLowerCase().includes(query.toLowerCase()) ||
+        restaurant.description.toLowerCase().includes(query.toLowerCase()) ||
+        restaurant.category.toLowerCase().includes(query.toLowerCase()),
+    );
+  }
+
+  res.json({
+    success: true,
+    data: filteredRestaurants,
+  });
+});
+
+app.get("/api/restaurants/categories", (req, res) => {
+  const categories = [...new Set(mockRestaurants.map((r) => r.category))];
+  res.json({
+    success: true,
+    data: categories,
+  });
+});
+
+app.get("/api/restaurants/search", (req, res) => {
+  const { query, category } = req.query;
+
+  let filteredRestaurants = [...mockRestaurants];
+
+  if (category) {
+    filteredRestaurants = filteredRestaurants.filter(
+      (restaurant) =>
+        restaurant.category.toLowerCase() === category.toLowerCase(),
+    );
+  }
+
+  if (query) {
+    filteredRestaurants = filteredRestaurants.filter(
+      (restaurant) =>
+        restaurant.name.toLowerCase().includes(query.toLowerCase()) ||
+        restaurant.description.toLowerCase().includes(query.toLowerCase()),
+    );
+  }
+
+  res.json({
+    success: true,
+    data: filteredRestaurants,
+  });
+});
+
+app.get("/api/restaurants/:id", (req, res) => {
+  const { id } = req.params;
+  const restaurant = mockRestaurants.find((r) => r._id === id);
+
+  if (!restaurant) {
+    return res.status(404).json({
+      success: false,
+      message: "Restaurant not found",
+    });
+  }
+
+  res.json({
+    success: true,
+    data: restaurant,
+  });
+});
+
+app.get("/api/restaurants/:id/menu", (req, res) => {
+  const { id } = req.params;
+  const restaurant = mockRestaurants.find((r) => r._id === id);
+
+  if (!restaurant) {
+    return res.status(404).json({
+      success: false,
+      message: "Restaurant not found",
+    });
+  }
+
+  // Mock menu items for the restaurant
+  const menuItems = [
+    {
+      _id: "item-1",
+      name: "Margherita Pizza",
+      description: "Fresh tomatoes, mozzarella, basil",
+      price: 299,
+      category: "Pizza",
+      image:
+        "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300",
+      isVeg: true,
+      isAvailable: true,
+    },
+    {
+      _id: "item-2",
+      name: "Pepperoni Pizza",
+      description: "Pepperoni, mozzarella cheese",
+      price: 399,
+      category: "Pizza",
+      image:
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=300",
+      isVeg: false,
+      isAvailable: true,
+    },
+    {
+      _id: "item-3",
+      name: "Caesar Salad",
+      description: "Romaine lettuce, croutons, parmesan",
+      price: 199,
+      category: "Salad",
+      image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300",
+      isVeg: true,
+      isAvailable: true,
+    },
+  ];
+
+  res.json({
+    success: true,
+    data: menuItems,
+  });
+});
+
 // Mock update endpoints
 app.put("/api/admin/users/:id", (req, res) => {
   res.json({ success: true, data: req.body });
