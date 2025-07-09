@@ -250,21 +250,24 @@ export default function Index() {
         </div>
       </div>
 
-      {/* Credits Section */}
+      {/* Professional Credits Section */}
       <footer className="absolute bottom-4 left-0 right-0 flex justify-center">
         <div
-          className="text-center animate-fade-in"
+          className="text-center px-4 animate-fade-in"
           style={{ animationDelay: "2s" }}
         >
-          <p className="text-xs sm:text-sm text-black/60 font-medium">
-            Developed with ❤️ by{" "}
-            <span className="text-black font-semibold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-              Mohamed Shafik
-            </span>
-          </p>
-          <p className="text-xs text-black/40 mt-1">
-            Full-Stack Developer & Tech Enthusiast
-          </p>
+          <div className="bg-black/5 backdrop-blur-sm rounded-xl px-4 py-2 border border-black/10">
+            <p className="text-xs sm:text-sm text-black/70 font-medium mb-1">
+              © 2024 FASTIO. All rights reserved.
+            </p>
+            <p className="text-xs text-black/50">
+              Developed by{" "}
+              <span className="text-black/70 font-semibold">
+                Mohamed Shafik
+              </span>{" "}
+              • <span className="text-black/60">Full-Stack Developer</span>
+            </p>
+          </div>
         </div>
       </footer>
     </div>
