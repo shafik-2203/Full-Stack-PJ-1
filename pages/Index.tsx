@@ -11,45 +11,42 @@ export default function Index() {
       </div>
 
       {/* Header Navigation */}
-      <header className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-1 sm:gap-2 md:gap-3 z-10 max-w-xs sm:max-w-none">
-        <Link
-          to="/dashboard"
-          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
-        >
-          📊 Dashboard
-        </Link>
-        <Link
-          to="/data-export"
-          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-green-600 to-green-500 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
-          style={{ animationDelay: "0.1s" }}
-        >
-          📤 Export
-        </Link>
-        <Link
-          to="/fastio-pass"
-          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
-          style={{ animationDelay: "0.2s" }}
-        >
-          🎫 Pass
-        </Link>
+      <header className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 z-10 max-w-xs sm:max-w-none">
+        {/* Premium Admin Button */}
         <Link
           to="/admin-portal"
-          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
-          style={{ animationDelay: "0.3s" }}
+          className="group relative flex items-center justify-center w-20 h-10 px-2 py-1 sm:w-28 sm:h-12 sm:px-3 sm:py-2 md:w-36 md:h-14 md:px-4 md:py-3 rounded-2xl bg-gradient-to-r from-black via-gray-900 to-black text-white font-bold text-xs sm:text-sm md:text-base transition-all hover:scale-110 hover:shadow-2xl animate-fade-in overflow-hidden"
+          style={{ animationDelay: "0.1s" }}
         >
-          🔐 Admin
+          {/* Animated background shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
+          {/* Gold border glow */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-yellow-400/20 via-yellow-300/30 to-yellow-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          {/* Content */}
+          <div className="relative flex items-center gap-1 sm:gap-2">
+            <span className="text-yellow-400 text-lg sm:text-xl">👑</span>
+            <span className="bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text text-transparent font-extrabold">
+              ADMIN
+            </span>
+          </div>
+
+          {/* Premium indicator */}
+          <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-full animate-pulse"></div>
         </Link>
+
         <Link
           to="/login"
-          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-400 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 animate-fade-in"
-          style={{ animationDelay: "0.4s" }}
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-400 text-white font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 shadow-lg hover:shadow-xl animate-fade-in"
+          style={{ animationDelay: "0.2s" }}
         >
           Login
         </Link>
         <Link
           to="/signup"
-          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full border border-orange-500 bg-white text-orange-500 font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 animate-fade-in"
-          style={{ animationDelay: "0.5s" }}
+          className="flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full border border-orange-500 bg-white text-orange-500 font-medium text-xs sm:text-sm md:text-base transition-all hover:scale-105 hover:bg-orange-50 animate-fade-in"
+          style={{ animationDelay: "0.3s" }}
         >
           Sign up
         </Link>
