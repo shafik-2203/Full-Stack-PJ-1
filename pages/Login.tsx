@@ -32,7 +32,7 @@ export default function Login() {
 
     try {
       const response = await apiClient.login({
-        username: formData.email, // Use email as username for backend compatibility
+        email: formData.email,
         password: formData.password,
       });
 
