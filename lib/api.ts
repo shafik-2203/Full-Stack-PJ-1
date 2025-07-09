@@ -122,14 +122,10 @@ class ApiClient {
       response = await fetch(url, config);
     } catch (fetchError) {
       console.error("🚨 Network error:", fetchError);
-      console.log(
-        "🔄 Backend unavailable, throwing error for fallback handling",
-      );
+      console.log("🔄 Fetch failed, returning fallback response directly");
 
-      // Throw a consistent error that individual methods can catch
-      const backendError = new Error("BACKEND_UNAVAILABLE");
-      backendError.name = "BackendUnavailableError";
-      throw backendError;
+      // Return fallback response directly instead of throwing
+      return this.getFallbackResponse<T>(endpoint, options);
     }
 
     console.log(
@@ -144,7 +140,7 @@ class ApiClient {
       // Read response body exactly once
       responseText = await response.text();
       console.log(
-        `📝 Raw response text:`,
+        `���� Raw response text:`,
         responseText.slice(0, 200) + (responseText.length > 200 ? "..." : ""),
       );
 
