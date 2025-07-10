@@ -5,6 +5,9 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
+// In-memory OTP storage (in production, use Redis or database)
+const otpStorage = new Map();
+
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET || "your-secret-key", {
     expiresIn: "7d",
