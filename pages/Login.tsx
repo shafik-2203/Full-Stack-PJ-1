@@ -285,7 +285,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={handleBack}
-                className="w-full h-12 bg-white/10 hover:bg-white/20 text-white font-medium rounded-2xl transition-all duration-300 backdrop-blur-sm border border-white/20"
+                className="w-full h-12 border border-orange-500 bg-white text-orange-500 font-medium rounded-2xl transition-all duration-300 hover:scale-105"
               >
                 Back to Home
               </button>
