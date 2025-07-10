@@ -290,6 +290,7 @@ const seedData = async () => {
         estimatedDeliveryTime: new Date(Date.now() + 25 * 60 * 1000),
       },
       {
+        orderId: "ORD003",
         user: user._id,
         restaurant: restaurants[2]._id,
         items: [
