@@ -274,6 +274,9 @@ export default function Signup() {
               </div>
 
               <div className="relative">
+                <label className="block text-white font-medium mb-2 text-sm">
+                  Confirm Password <span className="text-red-300">*</span>
+                </label>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
