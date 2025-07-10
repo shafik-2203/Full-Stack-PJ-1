@@ -5,6 +5,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 
+// Import routes
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/user.ts";
+import restaurantRoutes from "./routes/restaurants.ts";
+import orderRoutes from "./routes/orders.ts";
+
 // Load environment variables
 dotenv.config();
 
