@@ -43,43 +43,78 @@ export default function Checkout() {
   };
 
   const validateForm = () => {
-    if (!selectedPayment) {
-      setError("Please select a payment method");
-      return false;
+    const errors: Record<string, string> = {};
+
+    // Reset errors
+    setError("");
+    setFieldErrors({});
+
+    // Validate customer information
+    if (!customerInfo.name.trim()) {
+      errors.customerName = "Full name is required";
+    }
+    if (!customerInfo.email.trim()) {
+      errors.customerEmail = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(customerInfo.email)) {
+      errors.customerEmail = "Please enter a valid email address";
+    }
+    if (!customerInfo.phone.trim()) {
+      errors.customerPhone = "Phone number is required";
+    } else if (!/^\+?[\d\s\-\(\)]{10,15}$/.test(customerInfo.phone)) {
+      errors.customerPhone = "Please enter a valid phone number";
     }
 
+    // Validate delivery address
     if (!deliveryAddress.trim()) {
-      setError("Please enter your delivery address");
-      return false;
+      errors.deliveryAddress = "Delivery address is required";
+    } else if (deliveryAddress.trim().length < 10) {
+      errors.deliveryAddress =
+        "Please provide a detailed address (minimum 10 characters)";
     }
 
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      setError("Please fill in all customer information");
-      return false;
+    // Validate payment method
+    if (!selectedPayment) {
+      errors.paymentMethod = "Please select a payment method";
     }
 
     // Validate payment method specific fields
     if (selectedPayment === "stripe_card") {
-      if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvc) {
-        setError("Please fill in all card details");
-        return false;
+      if (!cardDetails.number.trim()) {
+        errors.cardNumber = "Card number is required";
+      }
+      if (!cardDetails.expiry.trim()) {
+        errors.cardExpiry = "Expiry date is required";
+      }
+      if (!cardDetails.cvc.trim()) {
+        errors.cardCvc = "CVC is required";
+      }
+      if (!cardDetails.name.trim()) {
+        errors.cardName = "Cardholder name is required";
       }
     }
 
-    if (selectedPayment === "upi" && !upiId) {
-      setError("Please enter your UPI ID");
-      return false;
+    if (selectedPayment === "upi" && !upiId.trim()) {
+      errors.upiId = "UPI ID is required";
     }
 
     if (selectedPayment === "bank_transfer") {
-      if (
-        !billingAddress.line1 ||
-        !billingAddress.city ||
-        !billingAddress.state
-      ) {
-        setError("Please fill in billing address for bank transfer");
-        return false;
+      if (!billingAddress.line1.trim()) {
+        errors.billingLine1 = "Address line is required";
       }
+      if (!billingAddress.city.trim()) {
+        errors.billingCity = "City is required";
+      }
+      if (!billingAddress.state.trim()) {
+        errors.billingState = "State is required";
+      }
+      if (!billingAddress.postal_code.trim()) {
+        errors.billingPostal = "Postal code is required";
+      }
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return false;
     }
 
     return true;
