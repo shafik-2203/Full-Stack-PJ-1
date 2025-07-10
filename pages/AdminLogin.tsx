@@ -14,6 +14,35 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await apiClient.login({ email, password });
+
+      if (response.success && response.user && response.token) {
+        if (response.user.role !== "admin") {
+          setError("Access denied: Not an admin user.");
+          setLoading(false);
+          return;
+        }
+
+        apiClient.setToken(response.token);
+        navigate("/admin/dashboard");
+      } else {
+        setError(response.message || "Admin login failed");
+      }
+    } catch (err) {
+      console.error("Admin login error:", err);
+      setError("Admin login error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   useEffect(() => {
     setIsAnimating(true);
   }, []);

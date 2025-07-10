@@ -17,14 +17,32 @@ export default function Restaurants() {
   const [error, setError] = useState("");
   const [sortBy, setSortBy] = useState("rating");
   const { user, logout } = useAuth();
+
+  const fetchRestaurants = async () => {
+    try {
+      const res = await apiClient.getRestaurants();
+      setRestaurants(res.restaurants || []);
+      setFilteredRestaurants(res.restaurants || []);
+      setIsLoading(false);
+    } catch (err) {
+      console.error("Failed to load restaurants", err);
+      setError("Failed to load restaurants.");
+      setIsLoading(false);
+    }
+  };
+
   const { totalItems } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
+    fetchRestaurants();
+
     fetchData();
   }, []);
 
   useEffect(() => {
+    fetchRestaurants();
+
     applyFiltersAndSort();
   }, [restaurants, selectedCategory, sortBy]);
 
