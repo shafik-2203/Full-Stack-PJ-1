@@ -185,15 +185,17 @@ class ApiClient {
       }
     } catch (readError) {
       console.error("❌ Failed to read response:", readError);
-      throw new Error("Unable to read server response");
+      console.log("🔄 Response read failed, returning fallback response");
+      return this.getFallbackResponse<T>(endpoint, options);
     }
 
-    // Handle HTTP errors
+    // Handle HTTP errors - but use fallback instead of throwing
     if (!response.ok) {
       const errorMessage =
         data?.message || `HTTP ${response.status}: ${response.statusText}`;
       console.error(`❌ API Error [${response.status}]:`, errorMessage);
-      throw new Error(errorMessage);
+      console.log("🔄 HTTP error, returning fallback response");
+      return this.getFallbackResponse<T>(endpoint, options);
     }
 
     console.log(`✅ API Success: ${url}`);
