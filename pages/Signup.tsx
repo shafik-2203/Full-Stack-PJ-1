@@ -425,12 +425,12 @@ export default function Signup() {
 
                 <div className="group">
                   <label className="block text-white/90 font-medium mb-2 text-sm">
-                    Mobile Number <span className="text-cyan-400">*</span>
+                    Mobile Number <span className="text-orange-400">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <svg
-                        className="h-5 w-5 text-emerald-300"
+                        className="h-5 w-5 text-orange-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
