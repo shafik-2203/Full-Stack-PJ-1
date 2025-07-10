@@ -35,6 +35,7 @@ export default function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const handleLogout = () => {
     logout();
