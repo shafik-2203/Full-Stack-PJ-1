@@ -484,38 +484,11 @@ class ApiClient {
   }
 
   async verifyOTP(data: VerifyOTPRequest): Promise<AuthResponse> {
-    try {
-      // Use XHR for OTP verification to bypass service worker issues
-      return await this.requestXHR<AuthResponse>("/auth/verify-otp", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-    } catch (error) {
-      // Fallback OTP verification for deployed version when backend is unavailable
-      console.log("🔄 Backend unavailable, using fallback OTP verification");
-
-      // Accept demo OTP
-      if (data.otp === "123456") {
-        return {
-          success: true,
-          message: "Account verified successfully (offline mode)",
-          user: {
-            id: `user-${Date.now()}`,
-            email: data.email,
-            username: data.email.split("@")[0],
-            mobile: "+91-9876543211",
-            isVerified: true,
-            createdAt: new Date().toISOString(),
-          },
-          token: `user-token-offline-${Date.now()}`,
-        };
-      } else {
-        return {
-          success: false,
-          message: "Invalid OTP. Use 123456 for demo.",
-        };
-      }
-    }
+    // Use XHR for OTP verification to bypass service worker issues
+    return await this.requestXHR<AuthResponse>("/auth/verify-otp", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   }
 
   async updateProfile(data: {
