@@ -109,20 +109,40 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
-    // Always return fallback for any error - no network calls in production
     try {
-      console.log(`🔄 API Request: ${options.method || "GET"} ${endpoint}`);
-      console.log("🔄 Using fallback response directly (network bypass)");
-      return this.getFallbackResponse<T>(endpoint, options);
-    } catch (fallbackError) {
-      console.error("🚨 Fallback error:", fallbackError);
-      // Ultimate fallback
-      return {
-        success: false,
-        message: "Service temporarily unavailable",
-        error: "FALLBACK_ERROR",
-      } as T;
-    }
+      const url = `${API_BASE_URL}${endpoint}`;
+      const config: RequestInit = {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          "SW-Bypass": "true", // Signal to service worker to skip
+          ...(this.token && { Authorization: `Bearer ${this.token}` }),
+          ...options.headers,
+        },
+        cache: "no-store", // Prevent any caching
+        ...options,
+      };
+
+      console.log(`🔄 API Request: ${config.method || "GET"} ${url}`);
+
+      // Create a timeout promise
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout')), 5000);
+      });
+
+      // Try fetch with timeout
+      let response: Response;
+      try {
+        response = await Promise.race([
+          fetch(url, config),
+          timeoutPromise
+        ]);
+      } catch (fetchError) {
+        console.error("🚨 Network error:", fetchError);
+        console.log("🔄 Fetch failed, returning fallback response directly");
+        return this.getFallbackResponse<T>(endpoint, options);
+      }
 
     console.log(
       `📡 Response status: ${response.status} ${response.statusText}`,
