@@ -103,46 +103,52 @@ router.post("/register", async (req, res) => {
       });
     }
 
+    const emailLower = email.toLowerCase();
+    const usernameLower = username.toLowerCase();
+
     const existingUser = await User.findOne({
-      $or: [
-        { email: email.toLowerCase() },
-        { username: username.toLowerCase() },
-      ],
+      $or: [{ email: emailLower }, { username: usernameLower }],
     });
 
     if (existingUser) {
       return res.status(400).json({
         success: false,
         message:
-          existingUser.email === email.toLowerCase()
+          existingUser.email === emailLower
             ? "User already exists with this email"
             : "Username is already taken",
       });
     }
 
-    const user = new User({
-      email: email.toLowerCase(),
-      username: username.toLowerCase(),
-      password,
-      name,
-      phone,
-      mobile: phone, // Use phone as mobile since they're the same in the frontend
+    // Generate OTP
+    const otp = generateOTP();
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    // Store registration data with OTP
+    otpStorage.set(emailLower, {
+      otp,
+      expiresAt,
+      email: emailLower,
+      registrationData: {
+        email: emailLower,
+        username: usernameLower,
+        password,
+        name,
+        phone,
+        mobile: phone,
+      },
     });
 
-    await user.save();
+    // Send OTP email
+    const emailResult = await sendOTPEmail(emailLower, otp, name);
 
-    const token = generateToken(user._id);
-
-    res.status(201).json({
+    res.json({
       success: true,
-      message: "User registered successfully",
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        isAdmin: user.isAdmin,
-      },
-      token,
+      message:
+        "OTP sent to your email. Please verify to complete registration.",
+      email: emailLower,
+      // In development, include OTP in response
+      ...(process.env.NODE_ENV === "development" && { otp }),
     });
   } catch (error) {
     console.error("Registration error:", error);
