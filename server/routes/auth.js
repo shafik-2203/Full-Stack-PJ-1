@@ -67,26 +67,35 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const { email, password, name, phone } = req.body;
+    const { email, password, name, phone, username } = req.body;
 
-    if (!email || !password || !name || !phone) {
+    if (!email || !password || !name || !phone || !username) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
 
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    const existingUser = await User.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { username: username.toLowerCase() },
+      ],
+    });
 
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "User already exists with this email",
+        message:
+          existingUser.email === email.toLowerCase()
+            ? "User already exists with this email"
+            : "Username is already taken",
       });
     }
 
     const user = new User({
       email: email.toLowerCase(),
+      username: username.toLowerCase(),
       password,
       name,
       phone,
