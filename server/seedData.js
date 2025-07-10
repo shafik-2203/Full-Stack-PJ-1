@@ -40,6 +40,7 @@ const seedData = async () => {
       password: hashedPassword,
       name: "FastIO Admin",
       phone: "+91-9876543210",
+      mobile: "+91-9876543210",
       isAdmin: true,
     });
 
@@ -49,6 +50,7 @@ const seedData = async () => {
       password: hashedUserPassword,
       name: "Mohamed Shafik",
       phone: "+91-9876543211",
+      mobile: "+91-9876543211",
       totalOrders: 5,
       totalSpent: 2450,
     });
