@@ -182,13 +182,15 @@ export default function Checkout() {
         // Show success message with payment ID
         const successMessage =
           selectedPayment === "cash_on_delivery"
-            ? "Order placed successfully! Pay cash upon delivery."
-            : `Payment successful! Transaction ID: ${paymentResult.paymentId}`;
+            ? "Order placed successfully! Pay cash upon delivery. You can track your order status on the Orders page."
+            : `Payment successful! Transaction ID: ${paymentResult.paymentId}. Your order has been placed and you can track it on the Orders page.`;
 
         alert(successMessage);
 
-        // Navigate to orders page
-        navigate("/orders");
+        // Navigate to orders page with a delay to ensure the alert is seen
+        setTimeout(() => {
+          navigate("/orders");
+        }, 1000);
       } else {
         setError(response.message || "Failed to place order");
       }
