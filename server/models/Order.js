@@ -25,6 +25,11 @@ const orderSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    orderNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
