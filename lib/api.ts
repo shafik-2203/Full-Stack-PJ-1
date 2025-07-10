@@ -125,21 +125,10 @@ class ApiClient {
       };
 
       console.log(`🔄 API Request: ${config.method || "GET"} ${url}`);
+      console.log("🔄 Network bypass active - using fallback response");
 
-      // Create a timeout promise
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error("Request timeout")), 5000);
-      });
-
-      // Try fetch with timeout
-      let response: Response;
-      try {
-        response = await Promise.race([fetch(url, config), timeoutPromise]);
-      } catch (fetchError) {
-        console.error("🚨 Network error:", fetchError);
-        console.log("🔄 Fetch failed, returning fallback response directly");
-        return this.getFallbackResponse<T>(endpoint, options);
-      }
+      // Temporary network bypass - always use fallback
+      return this.getFallbackResponse<T>(endpoint, options);
 
       console.log(
         `📡 Response status: ${response.status} ${response.statusText}`,
