@@ -253,6 +253,52 @@ class ApiClient {
       }
     }
 
+    // OTP verification endpoint
+    if (endpoint === "/auth/verify-otp" && method === "POST") {
+      const body = JSON.parse(options.body as string);
+
+      // Accept demo OTP or development OTP
+      if (body.otp === "123456") {
+        return {
+          success: true,
+          message: "Account verified successfully (offline mode)",
+          user: {
+            id: `user-${Date.now()}`,
+            email: body.email,
+            username: body.email.split("@")[0],
+            mobile: "+91-9876543211",
+            isVerified: true,
+            createdAt: new Date().toISOString(),
+          },
+          token: `user-token-offline-${Date.now()}`,
+        } as T;
+      } else {
+        return {
+          success: false,
+          message: "Invalid OTP. Use 123456 for demo.",
+        } as T;
+      }
+    }
+
+    // Resend OTP endpoint
+    if (endpoint === "/auth/resend-otp" && method === "POST") {
+      return {
+        success: true,
+        message: "New OTP sent (offline mode). Use 123456 for demo.",
+      } as T;
+    }
+
+    // Signup endpoint
+    if (endpoint === "/auth/register" && method === "POST") {
+      const body = JSON.parse(options.body as string);
+      return {
+        success: true,
+        message: "OTP sent to your email (offline mode). Use 123456 for demo.",
+        email: body.email,
+        otp: "123456", // Development OTP
+      } as T;
+    }
+
     // Restaurants endpoints
     if (endpoint === "/restaurants") {
       return {
