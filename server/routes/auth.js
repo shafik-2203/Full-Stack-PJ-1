@@ -243,30 +243,51 @@ router.post("/verify-otp", async (req, res) => {
     }
 
     // OTP verified successfully
+    const registrationData = storedData.registrationData;
     otpStorage.delete(emailLower);
 
-    // Generate token for the user
-    const user = await User.findOne({ email: emailLower });
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found.",
+    if (registrationData) {
+      // Complete user registration
+      const user = new User(registrationData);
+      await user.save();
+
+      const token = generateToken(user._id);
+
+      res.json({
+        success: true,
+        message: "Registration completed successfully",
+        user: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          isAdmin: user.isAdmin,
+        },
+        token,
+      });
+    } else {
+      // Handle existing user login (if OTP was for login, not registration)
+      const user = await User.findOne({ email: emailLower });
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found.",
+        });
+      }
+
+      const token = generateToken(user._id);
+
+      res.json({
+        success: true,
+        message: "OTP verified successfully",
+        user: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          isAdmin: user.isAdmin,
+        },
+        token,
       });
     }
-
-    const token = generateToken(user._id);
-
-    res.json({
-      success: true,
-      message: "OTP verified successfully",
-      user: {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        isAdmin: user.isAdmin,
-      },
-      token,
-    });
   } catch (error) {
     console.error("OTP verification error:", error);
     res.status(500).json({
