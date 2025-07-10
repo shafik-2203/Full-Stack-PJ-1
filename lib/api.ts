@@ -79,7 +79,13 @@ class ApiClient {
           const errorMessage =
             data?.message || `HTTP ${xhr.status}: ${xhr.statusText}`;
           console.error(`❌ XHR Error [${xhr.status}]:`, errorMessage);
-          reject(new Error(errorMessage));
+          console.log("🔄 XHR HTTP error, returning fallback response");
+          // Return fallback response instead of rejecting for network-related errors
+          if (xhr.status === 0 || xhr.status >= 500) {
+            resolve(this.getFallbackResponse<T>(endpoint, options));
+          } else {
+            reject(new Error(errorMessage));
+          }
         }
       };
 
