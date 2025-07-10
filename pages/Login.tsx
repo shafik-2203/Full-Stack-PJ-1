@@ -125,6 +125,9 @@ export default function Login() {
             {/* Form Fields */}
             <div className="space-y-4 sm:space-y-6 lg:space-y-7">
               <div className="relative">
+                <label className="block text-white font-medium mb-2 text-sm sm:text-base">
+                  Email Address <span className="text-red-300">*</span>
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -138,6 +141,9 @@ export default function Login() {
               </div>
 
               <div className="relative">
+                <label className="block text-white font-medium mb-2 text-sm sm:text-base">
+                  Password <span className="text-red-300">*</span>
+                </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
