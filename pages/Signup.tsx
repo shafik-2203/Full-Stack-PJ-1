@@ -183,6 +183,9 @@ export default function Signup() {
 
             <div className="space-y-3 sm:space-y-4 lg:space-y-6">
               <div className="relative">
+                <label className="block text-white font-medium mb-2 text-sm">
+                  Username <span className="text-red-300">*</span>
+                </label>
                 <input
                   type="text"
                   name="username"
@@ -196,6 +199,9 @@ export default function Signup() {
               </div>
 
               <div className="relative">
+                <label className="block text-white font-medium mb-2 text-sm">
+                  Email Address <span className="text-red-300">*</span>
+                </label>
                 <input
                   type="email"
                   name="email"
