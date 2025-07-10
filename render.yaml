@@ -1,22 +1,16 @@
 services:
   - type: web
-    name: fastio-backend
+    name: fullstack-pj1-backend
     env: node
-    buildCommand: npm install && npm run build
-    startCommand: npm run server
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    rootDir: backend
     envVars:
-      - key: NODE_ENV
-        value: production
-      - key: MONGODB_URI
-        fromDatabase:
-          name: fastio-mongodb
-          property: connectionString
-      - key: JWT_SECRET
-        generateValue: true
-      - key: PORT
-        value: 5001
-
-databases:
-  - name: fastio-mongodb
-    databaseName: fastio-food-delivery
-    user: fastio-user
+      - key: MONGO_URI
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: FRONTEND_URL
+        value: https://fullstack-pj1-fd.netlify.app

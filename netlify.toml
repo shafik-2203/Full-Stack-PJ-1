@@ -1,7 +1,11 @@
 [build]
-  base = "."              # client is the root when deploying only frontend
-  publish = "dist"
   command = "npm run build"
+  publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  VITE_API_BASE_URL = "https://fullstack-pj1-bd.onrender.com"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
