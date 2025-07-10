@@ -361,14 +361,27 @@ export default function Checkout() {
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">
                   Delivery Address
                 </h2>
+                <label className="block text-gray-700 font-medium mb-2">
+                  Complete Address <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   value={deliveryAddress}
-                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  onChange={(e) => {
+                    setDeliveryAddress(e.target.value);
+                    if (fieldErrors.deliveryAddress) {
+                      setFieldErrors({ ...fieldErrors, deliveryAddress: "" });
+                    }
+                  }}
                   placeholder="Enter your complete delivery address with landmarks..."
-                  className="w-full p-4 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+                  className={`w-full p-4 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none ${fieldErrors.deliveryAddress ? "border-red-500" : "border-gray-300"}`}
                   rows={3}
                   required
                 />
+                {fieldErrors.deliveryAddress && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {fieldErrors.deliveryAddress}
+                  </p>
+                )}
               </div>
 
               {/* Payment Method */}
