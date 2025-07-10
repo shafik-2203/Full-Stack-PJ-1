@@ -36,6 +36,7 @@ const seedData = async () => {
 
     const admin = await User.create({
       email: "fastio121299@gmail.com",
+      username: "fastio_admin",
       password: hashedPassword,
       name: "FastIO Admin",
       phone: "+91-9876543210",
@@ -44,6 +45,7 @@ const seedData = async () => {
 
     const user = await User.create({
       email: "mohamedshafik2526@gmail.com",
+      username: "mohamed_shafik",
       password: hashedUserPassword,
       name: "Mohamed Shafik",
       phone: "+91-9876543211",
