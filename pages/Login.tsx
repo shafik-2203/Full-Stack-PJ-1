@@ -292,11 +292,11 @@ export default function Login() {
 
               {/* Sign Up Link */}
               <div className="text-center pt-4">
-                <p className="text-orange-200 text-sm">
+                <p className="text-white text-lg">
                   Don't have an account?{" "}
                   <Link
                     to="/signup"
-                    className="text-orange-400 hover:text-orange-300 font-medium transition-colors duration-200"
+                    className="text-white hover:text-orange-100 font-medium transition-colors duration-200 underline decoration-white/80"
                   >
                     Sign up here
                   </Link>
