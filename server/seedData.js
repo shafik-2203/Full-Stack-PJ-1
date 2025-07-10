@@ -293,6 +293,7 @@ const seedData = async () => {
       },
       {
         orderId: "ORD003",
+        orderNumber: "ON003",
         user: user._id,
         restaurant: restaurants[2]._id,
         items: [
