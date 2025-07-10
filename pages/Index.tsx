@@ -235,10 +235,7 @@ export default function Index() {
 
       {/* Professional Credits Section */}
       <footer className="absolute bottom-4 left-0 right-0 flex justify-center">
-        <div
-          className="text-center px-4 animate-fade-in"
-          style={{ animationDelay: "2s" }}
-        >
+        <div className="text-center px-4">
           <div className="bg-black/5 backdrop-blur-sm rounded-xl px-4 py-2 border border-black/10">
             <p className="text-xs sm:text-sm text-black/70 font-medium mb-1">
               © 2024 FASTIO. All rights reserved.
