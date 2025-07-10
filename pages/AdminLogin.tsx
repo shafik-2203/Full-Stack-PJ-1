@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Shield, KeyIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { apiClient } from "../lib/api";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("fastio121299@gmail.com");
@@ -23,26 +24,25 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      // Use the standard login endpoint (admin users are handled in backend)
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
+      // Use apiClient for proper error handling and fallback support
+      const response = await apiClient.login({
+        email: email,
+        password: password,
       });
 
-      const data = await response.json();
+      if (response.success && response.user) {
+        // Check if user is admin
+        if (!response.user.isAdmin) {
+          setError("Access denied. Admin privileges required.");
+          return;
+        }
 
-      if (response.ok && data.success) {
         // Store admin token and user info
-        if (data.token) {
-          localStorage.setItem("fastio_token", data.token);
-          sessionStorage.setItem("adminAuth", data.token);
-          sessionStorage.setItem("adminUser", JSON.stringify(data.user));
+        if (response.token) {
+          localStorage.setItem("fastio_token", response.token);
+          sessionStorage.setItem("adminAuth", response.token);
+          sessionStorage.setItem("adminUser", JSON.stringify(response.user));
+          apiClient.setToken(response.token);
         }
 
         // Show success animation before redirect
@@ -51,7 +51,7 @@ export default function AdminLogin() {
           navigate("/admin");
         }, 1000);
       } else {
-        setError(data.message || "Invalid admin credentials");
+        setError(response.message || "Invalid admin credentials");
       }
     } catch (err) {
       setError("Failed to authenticate. Please try again.");
