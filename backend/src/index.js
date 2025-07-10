@@ -31,11 +31,15 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      process.env.FRONTEND_URL, "http://localhost:5173",
+      "https://fullstack-pj1-fd.netlify.app", // ✅ Netlify frontend
+      "http://localhost:5173",                // ✅ Local dev
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
