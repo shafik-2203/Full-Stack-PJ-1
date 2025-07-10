@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: fastio-backend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: fastio-mongodb
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 5001
+
+databases:
+  - name: fastio-mongodb
+    databaseName: fastio-food-delivery
+    user: fastio-user

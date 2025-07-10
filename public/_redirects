@@ -1,0 +1,16 @@
+# API routes to Netlify functions
+/api/*      /.netlify/functions/api/:splat   200
+/health     /.netlify/functions/api/health   200
+
+# Static assets should be served as-is
+/assets/*   /assets/:splat   200
+/icons/*    /icons/:splat    200
+/*.png      /:splat          200
+/*.svg      /:splat          200
+/*.ico      /:splat          200
+/*.json     /:splat          200
+/*.js       /:splat          200
+/*.css      /:splat          200
+
+# SPA routing - all other requests go to index.html
+/*    /index.html   200
