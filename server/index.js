@@ -100,7 +100,13 @@ const mockUsers = new Map([
   ],
 ]);
 
-// Mock auth routes
+// Database routes (will be used when database is connected)
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/restaurants", restaurantRoutes);
+app.use("/api/orders", orderRoutes);
+
+// Mock auth routes (fallback)
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
 
