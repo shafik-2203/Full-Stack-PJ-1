@@ -387,7 +387,7 @@ export default function Checkout() {
               {/* Payment Method */}
               <div className="bg-white rounded-2xl p-6 shadow-lg">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Payment Method
+                  Payment Method <span className="text-red-500">*</span>
                 </h2>
                 <div className="space-y-3 mb-6">
                   {paymentMethods.map((method) => (
