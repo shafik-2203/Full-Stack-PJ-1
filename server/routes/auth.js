@@ -99,6 +99,7 @@ router.post("/register", async (req, res) => {
       password,
       name,
       phone,
+      mobile: phone, // Use phone as mobile since they're the same in the frontend
     });
 
     await user.save();
