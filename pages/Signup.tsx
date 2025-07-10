@@ -181,7 +181,7 @@ export default function Signup() {
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 tracking-tight">
               Join FASTIO
             </h1>
-            <p className="text-emerald-200 text-lg">
+            <p className="text-orange-200 text-lg">
               Create your account and start ordering
             </p>
           </div>
@@ -189,7 +189,7 @@ export default function Signup() {
           {/* Signup Card */}
           <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 relative overflow-hidden">
             {/* Card Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-3xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-3xl"></div>
 
             <form onSubmit={handleSubmit} className="relative space-y-5">
               {/* Error Message */}
