@@ -233,6 +233,7 @@ const seedData = async () => {
 
     const orders = await Order.create([
       {
+        orderId: "ORD001",
         user: user._id,
         restaurant: restaurants[0]._id,
         items: [
