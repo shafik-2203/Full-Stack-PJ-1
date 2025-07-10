@@ -85,7 +85,9 @@ class ApiClient {
 
       xhr.onerror = () => {
         console.error("🚨 XHR Network error");
-        reject(new Error("Network error - please check your connection"));
+        console.log("🔄 XHR failed, returning fallback response");
+        // Return fallback response instead of rejecting
+        resolve(this.getFallbackResponse<T>(endpoint, options));
       };
 
       // Send request
