@@ -5,6 +5,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 
+// Import routes
+import authRoutes from "./routes/auth.js";
+import adminRoutes from "./routes/admin.js";
+
 // Load environment variables
 dotenv.config();
 
@@ -94,7 +98,11 @@ const mockUsers = new Map([
   ],
 ]);
 
-// Mock auth routes
+// Database routes (will be used when database is connected)
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+
+// Mock auth routes (fallback)
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body;
 

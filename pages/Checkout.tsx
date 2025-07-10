@@ -35,6 +35,7 @@ export default function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const handleLogout = () => {
     logout();
@@ -42,43 +43,78 @@ export default function Checkout() {
   };
 
   const validateForm = () => {
-    if (!selectedPayment) {
-      setError("Please select a payment method");
-      return false;
+    const errors: Record<string, string> = {};
+
+    // Reset errors
+    setError("");
+    setFieldErrors({});
+
+    // Validate customer information
+    if (!customerInfo.name.trim()) {
+      errors.customerName = "Full name is required";
+    }
+    if (!customerInfo.email.trim()) {
+      errors.customerEmail = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(customerInfo.email)) {
+      errors.customerEmail = "Please enter a valid email address";
+    }
+    if (!customerInfo.phone.trim()) {
+      errors.customerPhone = "Phone number is required";
+    } else if (!/^\+?[\d\s\-\(\)]{10,15}$/.test(customerInfo.phone)) {
+      errors.customerPhone = "Please enter a valid phone number";
     }
 
+    // Validate delivery address
     if (!deliveryAddress.trim()) {
-      setError("Please enter your delivery address");
-      return false;
+      errors.deliveryAddress = "Delivery address is required";
+    } else if (deliveryAddress.trim().length < 10) {
+      errors.deliveryAddress =
+        "Please provide a detailed address (minimum 10 characters)";
     }
 
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      setError("Please fill in all customer information");
-      return false;
+    // Validate payment method
+    if (!selectedPayment) {
+      errors.paymentMethod = "Please select a payment method";
     }
 
     // Validate payment method specific fields
     if (selectedPayment === "stripe_card") {
-      if (!cardDetails.number || !cardDetails.expiry || !cardDetails.cvc) {
-        setError("Please fill in all card details");
-        return false;
+      if (!cardDetails.number.trim()) {
+        errors.cardNumber = "Card number is required";
+      }
+      if (!cardDetails.expiry.trim()) {
+        errors.cardExpiry = "Expiry date is required";
+      }
+      if (!cardDetails.cvc.trim()) {
+        errors.cardCvc = "CVC is required";
+      }
+      if (!cardDetails.name.trim()) {
+        errors.cardName = "Cardholder name is required";
       }
     }
 
-    if (selectedPayment === "upi" && !upiId) {
-      setError("Please enter your UPI ID");
-      return false;
+    if (selectedPayment === "upi" && !upiId.trim()) {
+      errors.upiId = "UPI ID is required";
     }
 
     if (selectedPayment === "bank_transfer") {
-      if (
-        !billingAddress.line1 ||
-        !billingAddress.city ||
-        !billingAddress.state
-      ) {
-        setError("Please fill in billing address for bank transfer");
-        return false;
+      if (!billingAddress.line1.trim()) {
+        errors.billingLine1 = "Address line is required";
       }
+      if (!billingAddress.city.trim()) {
+        errors.billingCity = "City is required";
+      }
+      if (!billingAddress.state.trim()) {
+        errors.billingState = "State is required";
+      }
+      if (!billingAddress.postal_code.trim()) {
+        errors.billingPostal = "Postal code is required";
+      }
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return false;
     }
 
     return true;
@@ -146,13 +182,15 @@ export default function Checkout() {
         // Show success message with payment ID
         const successMessage =
           selectedPayment === "cash_on_delivery"
-            ? "Order placed successfully! Pay cash upon delivery."
-            : `Payment successful! Transaction ID: ${paymentResult.paymentId}`;
+            ? "Order placed successfully! Pay cash upon delivery. You can track your order status on the Orders page."
+            : `Payment successful! Transaction ID: ${paymentResult.paymentId}. Your order has been placed and you can track it on the Orders page.`;
 
         alert(successMessage);
 
-        // Navigate to orders page
-        navigate("/orders");
+        // Navigate to orders page with a delay to ensure the alert is seen
+        setTimeout(() => {
+          navigate("/orders");
+        }, 1000);
       } else {
         setError(response.message || "Failed to place order");
       }
@@ -241,54 +279,81 @@ export default function Checkout() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">
-                      Full Name *
+                      Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       value={customerInfo.name}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setCustomerInfo({
                           ...customerInfo,
                           name: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        });
+                        if (fieldErrors.customerName) {
+                          setFieldErrors({ ...fieldErrors, customerName: "" });
+                        }
+                      }}
+                      className={`w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${fieldErrors.customerName ? "border-red-500" : "border-gray-300"}`}
+                      placeholder="Enter your full name"
                       required
                     />
+                    {fieldErrors.customerName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldErrors.customerName}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">
-                      Email *
+                      Email <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
                       value={customerInfo.email}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setCustomerInfo({
                           ...customerInfo,
                           email: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        });
+                        if (fieldErrors.customerEmail) {
+                          setFieldErrors({ ...fieldErrors, customerEmail: "" });
+                        }
+                      }}
+                      className={`w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${fieldErrors.customerEmail ? "border-red-500" : "border-gray-300"}`}
+                      placeholder="Enter your email address"
                       required
                     />
+                    {fieldErrors.customerEmail && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldErrors.customerEmail}
+                      </p>
+                    )}
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-gray-700 font-medium mb-2">
-                      Phone Number *
+                      Phone Number <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
                       value={customerInfo.phone}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setCustomerInfo({
                           ...customerInfo,
                           phone: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        });
+                        if (fieldErrors.customerPhone) {
+                          setFieldErrors({ ...fieldErrors, customerPhone: "" });
+                        }
+                      }}
+                      className={`w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${fieldErrors.customerPhone ? "border-red-500" : "border-gray-300"}`}
+                      placeholder="Enter your phone number"
                       required
                     />
+                    {fieldErrors.customerPhone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldErrors.customerPhone}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -298,20 +363,33 @@ export default function Checkout() {
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">
                   Delivery Address
                 </h2>
+                <label className="block text-gray-700 font-medium mb-2">
+                  Complete Address <span className="text-red-500">*</span>
+                </label>
                 <textarea
                   value={deliveryAddress}
-                  onChange={(e) => setDeliveryAddress(e.target.value)}
+                  onChange={(e) => {
+                    setDeliveryAddress(e.target.value);
+                    if (fieldErrors.deliveryAddress) {
+                      setFieldErrors({ ...fieldErrors, deliveryAddress: "" });
+                    }
+                  }}
                   placeholder="Enter your complete delivery address with landmarks..."
-                  className="w-full p-4 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+                  className={`w-full p-4 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none ${fieldErrors.deliveryAddress ? "border-red-500" : "border-gray-300"}`}
                   rows={3}
                   required
                 />
+                {fieldErrors.deliveryAddress && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {fieldErrors.deliveryAddress}
+                  </p>
+                )}
               </div>
 
               {/* Payment Method */}
               <div className="bg-white rounded-2xl p-6 shadow-lg">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                  Payment Method
+                  Payment Method <span className="text-red-500">*</span>
                 </h2>
                 <div className="space-y-3 mb-6">
                   {paymentMethods.map((method) => (
@@ -353,6 +431,11 @@ export default function Checkout() {
                     </label>
                   ))}
                 </div>
+                {fieldErrors.paymentMethod && (
+                  <p className="text-red-500 text-sm mb-4">
+                    {fieldErrors.paymentMethod}
+                  </p>
+                )}
 
                 {/* Payment Details Form */}
                 {showPaymentForm && selectedMethod && (

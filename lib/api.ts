@@ -451,7 +451,7 @@ class ApiClient {
   async signup(data: SignupRequest): Promise<AuthResponse> {
     try {
       // Use XHR for signup to bypass service worker issues
-      return await this.requestXHR<AuthResponse>("/auth/signup", {
+      return await this.requestXHR<AuthResponse>("/auth/register", {
         method: "POST",
         body: JSON.stringify(data),
       });

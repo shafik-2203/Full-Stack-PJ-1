@@ -36,17 +36,21 @@ const seedData = async () => {
 
     const admin = await User.create({
       email: "fastio121299@gmail.com",
+      username: "fastio_admin",
       password: hashedPassword,
       name: "FastIO Admin",
       phone: "+91-9876543210",
+      mobile: "+91-9876543210",
       isAdmin: true,
     });
 
     const user = await User.create({
       email: "mohamedshafik2526@gmail.com",
+      username: "mohamed_shafik",
       password: hashedUserPassword,
       name: "Mohamed Shafik",
       phone: "+91-9876543211",
+      mobile: "+91-9876543211",
       totalOrders: 5,
       totalSpent: 2450,
     });
@@ -229,6 +233,8 @@ const seedData = async () => {
 
     const orders = await Order.create([
       {
+        orderId: "ORD001",
+        orderNumber: "ON001",
         user: user._id,
         restaurant: restaurants[0]._id,
         items: [
@@ -258,6 +264,8 @@ const seedData = async () => {
         review: "Excellent pizza!",
       },
       {
+        orderId: "ORD002",
+        orderNumber: "ON002",
         user: user._id,
         restaurant: restaurants[1]._id,
         items: [
@@ -284,6 +292,8 @@ const seedData = async () => {
         estimatedDeliveryTime: new Date(Date.now() + 25 * 60 * 1000),
       },
       {
+        orderId: "ORD003",
+        orderNumber: "ON003",
         user: user._id,
         restaurant: restaurants[2]._id,
         items: [
@@ -315,6 +325,7 @@ const seedData = async () => {
 
     const payments = await Payment.create([
       {
+        transactionId: "TXN001",
         order: orders[0]._id,
         user: user._id,
         amount: 697.8,
@@ -325,6 +336,7 @@ const seedData = async () => {
         processedAt: new Date(),
       },
       {
+        transactionId: "TXN002",
         order: orders[1]._id,
         user: user._id,
         amount: 308.9,
@@ -335,6 +347,7 @@ const seedData = async () => {
         processedAt: new Date(),
       },
       {
+        transactionId: "TXN003",
         order: orders[2]._id,
         user: user._id,
         amount: 428.9,

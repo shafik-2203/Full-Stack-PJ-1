@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     name: {
       type: String,
       required: true,
@@ -23,6 +29,11 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
+    },
+    mobile: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
     address: {
       street: String,

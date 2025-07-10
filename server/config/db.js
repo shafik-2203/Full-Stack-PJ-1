@@ -10,8 +10,6 @@ const connectDB = async () => {
       "mongodb://localhost:27017/fastio-food-delivery";
 
     const conn = await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
