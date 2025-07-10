@@ -211,7 +211,7 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-orange-300 hover:text-white transition-colors duration-200"
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-700 transition-colors duration-200"
                       disabled={isLoading}
                     >
                       {showPassword ? (
