@@ -429,6 +429,11 @@ export default function Checkout() {
                     </label>
                   ))}
                 </div>
+                {fieldErrors.paymentMethod && (
+                  <p className="text-red-500 text-sm mb-4">
+                    {fieldErrors.paymentMethod}
+                  </p>
+                )}
 
                 {/* Payment Details Form */}
                 {showPaymentForm && selectedMethod && (
