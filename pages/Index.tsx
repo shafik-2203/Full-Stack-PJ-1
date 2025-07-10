@@ -49,46 +49,33 @@ export default function Index() {
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 sm:pt-0">
         {/* Hero Content */}
-        <div className="flex flex-col items-center gap-3 sm:gap-5 max-w-xs sm:max-w-md md:max-w-lg text-center animate-fade-in">
-          {/* Brand Name with Animation */}
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide animate-slide-up">
+        <div className="flex flex-col items-center gap-3 sm:gap-5 max-w-xs sm:max-w-md md:max-w-lg text-center">
+          {/* Brand Name */}
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide">
             FASTIO
           </h1>
 
-          {/* Animated Divider Line */}
-          <div
-            className="w-32 sm:w-64 md:w-88 h-px bg-black animate-fade-in"
-            style={{ animationDelay: "0.5s" }}
-          ></div>
+          {/* Divider Line */}
+          <div className="w-32 sm:w-64 md:w-88 h-px bg-black"></div>
 
-          {/* Tagline with Delayed Animation */}
-          <p
-            className="text-lg sm:text-xl md:text-2xl font-medium text-black animate-fade-in"
-            style={{ animationDelay: "0.8s" }}
-          >
+          {/* Tagline */}
+          <p className="text-lg sm:text-xl md:text-2xl font-medium text-black">
             Fast Moves, Fresh Choices.
           </p>
 
-          {/* Additional animated tagline */}
-          <p
-            className="text-sm sm:text-base md:text-lg text-black/80 animate-fade-in"
-            style={{ animationDelay: "1s" }}
-          >
+          {/* Additional tagline */}
+          <p className="text-sm sm:text-base md:text-lg text-black/80">
             🚀 Experience lightning-fast food delivery
           </p>
         </div>
 
-        {/* App Download Buttons with Enhanced Animations */}
-        <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20 animate-fade-in"
-          style={{ animationDelay: "1.2s" }}
-        >
+        {/* App Download Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20">
           <a
             href="https://apps.apple.com/app/zomato-food-delivery-dining/id434613896"
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl animate-slide-in-left"
-            style={{ animationDelay: "1.4s" }}
+            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl"
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/c341f6a999ef369acd139927b58eea53c555c282?width=400"
@@ -101,8 +88,7 @@ export default function Index() {
             href="https://play.google.com/store/apps/details?id=com.application.zomato"
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl animate-slide-in-right"
-            style={{ animationDelay: "1.6s" }}
+            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl"
           >
             <svg
               viewBox="0 0 200 60"
