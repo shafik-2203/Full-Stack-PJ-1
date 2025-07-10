@@ -193,9 +193,9 @@ export default function Signup() {
           </div>
 
           {/* Signup Card */}
-          <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 relative overflow-hidden">
+          <div className="bg-gradient-to-br from-amber-300/30 to-amber-200/30 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20 relative overflow-hidden">
             {/* Card Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-3xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 to-amber-400/10 rounded-3xl"></div>
 
             <form onSubmit={handleSubmit} className="relative space-y-5">
               {/* Error Message */}
