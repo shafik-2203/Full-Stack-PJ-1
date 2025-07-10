@@ -88,146 +88,216 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 relative overflow-x-hidden">
-      {/* Logo */}
-      <div className="absolute top-2 left-2 sm:top-4 sm:left-5 z-10">
-        <Logo size={80} className="sm:hidden" />
-        <Logo size={130} className="hidden sm:block" />
+    <div className="min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-pink-500 to-violet-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-96 h-96 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-40 w-80 h-80 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000"></div>
       </div>
 
-      {/* Login Form */}
-      <div className="flex items-center justify-center min-h-screen px-4 py-8 safe-area-top safe-area-bottom">
-        <div className="w-full max-w-sm sm:max-w-md bg-gradient-to-br from-amber-300/30 to-amber-200/30 backdrop-blur-sm rounded-3xl sm:rounded-[50px] p-8 sm:p-12 lg:p-16 shadow-lg">
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-6 sm:space-y-8 lg:space-y-11"
-          >
-            {/* Title */}
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-medium text-white text-center">
-              Login
+      {/* Logo */}
+      <div className="absolute top-6 left-6 z-20">
+        <Logo size={60} className="sm:hidden" />
+        <Logo size={80} className="hidden sm:block" />
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div className="w-full max-w-md">
+          {/* Welcome Text */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-3 tracking-tight">
+              Welcome Back
             </h1>
+            <p className="text-purple-200 text-lg">
+              Sign in to continue your journey
+            </p>
+          </div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
-                <div>{error}</div>
-                {(error.includes("Invalid") || error.includes("not found")) && (
-                  <button
-                    onClick={() => setShowTroubleshooter(true)}
-                    className="mt-2 text-sm underline hover:no-underline"
-                  >
-                    🔧 Fix Authentication Issues
-                  </button>
-                )}
+          {/* Login Card */}
+          <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 relative overflow-hidden">
+            {/* Card Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-3xl"></div>
+
+            <form onSubmit={handleSubmit} className="relative space-y-6">
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-100 px-4 py-3 rounded-2xl text-center">
+                  <div>{error}</div>
+                  {(error.includes("Invalid") ||
+                    error.includes("not found")) && (
+                    <button
+                      onClick={() => setShowTroubleshooter(true)}
+                      className="mt-2 text-sm underline hover:no-underline text-red-200"
+                    >
+                      🔧 Fix Authentication Issues
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Form Fields */}
+              <div className="space-y-5">
+                <div className="group">
+                  <label className="block text-white/90 font-medium mb-2 text-sm">
+                    Email Address <span className="text-pink-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <svg
+                        className="h-5 w-5 text-purple-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter your email address"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full h-14 pl-12 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
+                      required
+                      disabled={isLoading}
+                    />
+                  </div>
+                </div>
+
+                <div className="group">
+                  <label className="block text-white/90 font-medium mb-2 text-sm">
+                    Password <span className="text-pink-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <svg
+                        className="h-5 w-5 text-purple-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Enter your password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="w-full h-14 pl-12 pr-14 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
+                      required
+                      disabled={isLoading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-purple-300 hover:text-white transition-colors duration-200"
+                      disabled={isLoading}
+                    >
+                      {showPassword ? (
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
-            )}
 
-            {/* Form Fields */}
-            <div className="space-y-4 sm:space-y-6 lg:space-y-7">
-              <div className="relative">
-                <label className="block text-white font-medium mb-2 text-sm sm:text-base">
-                  Email Address <span className="text-red-300">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email address"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full h-14 sm:h-16 lg:h-20 px-4 sm:px-6 bg-white rounded-lg sm:rounded-xl border-2 border-white/30 text-base sm:text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="relative">
-                <label className="block text-white font-medium mb-2 text-sm sm:text-base">
-                  Password <span className="text-red-300">*</span>
-                </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Enter the Password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full h-14 sm:h-16 lg:h-20 px-4 sm:px-6 pr-12 sm:pr-14 bg-white rounded-lg sm:rounded-xl border-2 border-white/30 text-base sm:text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
-                  required
-                  disabled={isLoading}
-                />
+              {/* Forgot Password */}
+              <div className="text-center">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200 p-1"
-                  disabled={isLoading}
+                  onClick={() => navigate("/forgot-password")}
+                  className="text-purple-200 hover:text-white transition-colors duration-200 text-sm font-medium underline decoration-purple-300"
                 >
-                  {showPassword ? (
-                    <svg
-                      className="w-5 h-5 sm:w-6 sm:h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-5 h-5 sm:w-6 sm:h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  )}
+                  Forgot your password?
                 </button>
               </div>
-            </div>
 
-            {/* Forgot Password Link */}
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => navigate("/forgot-password")}
-                className="text-white hover:text-orange-200 underline text-lg transition-colors"
-              >
-                Forgot Password?
-              </button>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex items-center gap-3 justify-center">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="w-44 h-15 px-8 py-3 rounded-lg border border-orange-500 bg-white text-orange-500 font-medium text-xl transition-all hover:scale-105"
-              >
-                Back
-              </button>
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-44 h-15 px-14 py-3 rounded-full bg-gradient-to-r from-orange-500 to-orange-400 text-white font-medium text-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-14 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                {isLoading ? "Logging in..." : "Submit"}
+                {isLoading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    <span>Signing in...</span>
+                  </div>
+                ) : (
+                  "Sign In"
+                )}
               </button>
-            </div>
-          </form>
+
+              {/* Back Button */}
+              <button
+                type="button"
+                onClick={handleBack}
+                className="w-full h-12 bg-white/10 hover:bg-white/20 text-white font-medium rounded-2xl transition-all duration-300 backdrop-blur-sm border border-white/20"
+              >
+                Back to Home
+              </button>
+
+              {/* Sign Up Link */}
+              <div className="text-center pt-4">
+                <p className="text-purple-200 text-sm">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/signup"
+                    className="text-pink-400 hover:text-pink-300 font-medium transition-colors duration-200"
+                  >
+                    Sign up here
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
