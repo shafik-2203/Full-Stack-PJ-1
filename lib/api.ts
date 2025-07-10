@@ -109,30 +109,38 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const config: RequestInit = {
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        "SW-Bypass": "true", // Signal to service worker to skip
-        ...(this.token && { Authorization: `Bearer ${this.token}` }),
-        ...options.headers,
-      },
-      cache: "no-store", // Prevent any caching
-      ...options,
-    };
-
-    console.log(`🔄 API Request: ${config.method || "GET"} ${url}`);
-
-    let response: Response;
     try {
-      response = await fetch(url, config);
-    } catch (fetchError) {
-      console.error("🚨 Network error:", fetchError);
-      console.log("🔄 Fetch failed, returning fallback response directly");
+      const url = `${API_BASE_URL}${endpoint}`;
+      const config: RequestInit = {
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          "SW-Bypass": "true", // Signal to service worker to skip
+          ...(this.token && { Authorization: `Bearer ${this.token}` }),
+          ...options.headers,
+        },
+        cache: "no-store", // Prevent any caching
+        ...options,
+      };
 
-      // Return fallback response directly instead of throwing
+      console.log(`🔄 API Request: ${config.method || "GET"} ${url}`);
+
+      let response: Response;
+      try {
+        response = await fetch(url, config);
+      } catch (fetchError) {
+        console.error("🚨 Network error:", fetchError);
+        console.log("🔄 Fetch failed, returning fallback response directly");
+
+        // Return fallback response directly instead of throwing
+        return this.getFallbackResponse<T>(endpoint, options);
+      }
+    } catch (overallError) {
+      console.error("🚨 Overall request error:", overallError);
+      console.log("🔄 Request failed completely, returning fallback response");
+
+      // Ensure we always return a fallback response, never throw
       return this.getFallbackResponse<T>(endpoint, options);
     }
 
