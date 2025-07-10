@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    mobile: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     address: {
       street: String,
       city: String,
