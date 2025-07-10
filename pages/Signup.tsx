@@ -347,7 +347,7 @@ export default function Signup() {
                       )}
                     </button>
                   </div>
-                  <p className="text-emerald-300 text-xs mt-1">
+                  <p className="text-white text-xs mt-1">
                     8+ characters with uppercase, lowercase, numbers & symbols
                   </p>
                 </div>
