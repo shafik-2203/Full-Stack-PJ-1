@@ -325,6 +325,7 @@ const seedData = async () => {
 
     const payments = await Payment.create([
       {
+        transactionId: "TXN001",
         order: orders[0]._id,
         user: user._id,
         amount: 697.8,
@@ -335,6 +336,7 @@ const seedData = async () => {
         processedAt: new Date(),
       },
       {
+        transactionId: "TXN002",
         order: orders[1]._id,
         user: user._id,
         amount: 308.9,
@@ -345,6 +347,7 @@ const seedData = async () => {
         processedAt: new Date(),
       },
       {
+        transactionId: "TXN003",
         order: orders[2]._id,
         user: user._id,
         amount: 428.9,
