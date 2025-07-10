@@ -203,12 +203,12 @@ export default function Signup() {
               <div className="space-y-4">
                 <div className="group">
                   <label className="block text-white/90 font-medium mb-2 text-sm">
-                    Username <span className="text-cyan-400">*</span>
+                    Username <span className="text-orange-400">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <svg
-                        className="h-5 w-5 text-emerald-300"
+                        className="h-5 w-5 text-orange-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -227,7 +227,7 @@ export default function Signup() {
                       placeholder="Create your username"
                       value={formData.username}
                       onChange={handleInputChange}
-                      className="w-full h-12 pl-12 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
+                      className="w-full h-12 pl-12 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
                       required
                       disabled={isLoading}
                     />
