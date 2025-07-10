@@ -298,7 +298,7 @@ export default function Login() {
                     to="/signup"
                     className="text-white hover:text-orange-100 font-medium transition-colors duration-200 underline decoration-white/80"
                   >
-                    Sign up here
+                    Create
                   </Link>
                 </p>
               </div>
