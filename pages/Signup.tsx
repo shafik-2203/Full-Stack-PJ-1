@@ -118,7 +118,7 @@ export default function Signup() {
       console.log("✅ Signup response received:", response);
 
       if (response && response.success) {
-        console.log("🎉 Signup successful, navigating to OTP verification");
+        console.log("��� Signup successful, navigating to OTP verification");
         localStorage.setItem("otp_email", formData.email);
         navigate("/otp");
       } else {
@@ -484,11 +484,11 @@ export default function Signup() {
 
               {/* Login Link */}
               <div className="text-center pt-4">
-                <p className="text-emerald-200 text-sm">
+                <p className="text-orange-200 text-sm">
                   Already have an account?{" "}
                   <Link
                     to="/login"
-                    className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors duration-200"
+                    className="text-orange-400 hover:text-orange-300 font-medium transition-colors duration-200"
                   >
                     Sign in here
                   </Link>
