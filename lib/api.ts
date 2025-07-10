@@ -211,44 +211,61 @@ class ApiClient {
 
     // Authentication endpoints
     if (endpoint === "/auth/login" && method === "POST") {
-      const body = JSON.parse(options.body as string);
-      const validCredentials = [
-        {
-          email: "mohamedshafik2526@gmail.com",
-          password: "Shafik1212@",
-          isAdmin: false,
-        },
-        {
-          email: "fastio121299@gmail.com",
-          password: "fastio1212",
-          isAdmin: true,
-        },
-      ];
+      try {
+        const body = JSON.parse(options.body as string);
+        console.log("🔄 Fallback login attempt for:", body.email);
 
-      const credential = validCredentials.find(
-        (cred) => cred.email === body.email && cred.password === body.password,
-      );
-
-      if (credential) {
-        return {
-          success: true,
-          message: "Login successful (offline mode)",
-          user: {
-            id: credential.isAdmin ? "admin-1" : "user-1",
-            email: credential.email,
-            username: credential.email.split("@")[0],
-            mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
-            isVerified: true,
-            createdAt: new Date().toISOString(),
+        const validCredentials = [
+          {
+            email: "mohamedshafik2526@gmail.com",
+            password: "Shafik1212@",
+            isAdmin: false,
           },
-          token: credential.isAdmin
-            ? "admin-token-offline"
-            : "user-token-offline",
-        } as T;
-      } else {
+          {
+            email: "fastio121299@gmail.com",
+            password: "fastio1212",
+            isAdmin: true,
+          },
+        ];
+
+        const credential = validCredentials.find(
+          (cred) =>
+            cred.email === body.email && cred.password === body.password,
+        );
+
+        if (credential) {
+          console.log("✅ Fallback login successful for:", body.email);
+          return {
+            success: true,
+            message: "Login successful (offline mode)",
+            user: {
+              id: credential.isAdmin ? "admin-1" : "user-1",
+              email: credential.email,
+              username: credential.email.split("@")[0],
+              mobile: credential.isAdmin ? "+91-9876543210" : "+91-9876543211",
+              isVerified: true,
+              createdAt: new Date().toISOString(),
+              isAdmin: credential.isAdmin,
+            },
+            token: credential.isAdmin
+              ? "admin-token-offline"
+              : "user-token-offline",
+          } as T;
+        } else {
+          console.log(
+            "❌ Fallback login failed - invalid credentials for:",
+            body.email,
+          );
+          return {
+            success: false,
+            message: "Invalid credentials (offline mode)",
+          } as T;
+        }
+      } catch (parseError) {
+        console.error("❌ Error parsing login request body:", parseError);
         return {
           success: false,
-          message: "Invalid credentials",
+          message: "Invalid request format (offline mode)",
         } as T;
       }
     }
