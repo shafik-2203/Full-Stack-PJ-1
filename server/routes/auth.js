@@ -197,5 +197,130 @@ const adminMiddleware = (req, res, next) => {
   next();
 };
 
+// OTP verification endpoint
+router.post("/verify-otp", async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP are required",
+      });
+    }
+
+    const emailLower = email.toLowerCase();
+    const storedData = otpStorage.get(emailLower);
+
+    if (!storedData) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP not found or expired. Please request a new one.",
+      });
+    }
+
+    // Check if OTP expired
+    if (Date.now() > storedData.expiresAt) {
+      otpStorage.delete(emailLower);
+      return res.status(400).json({
+        success: false,
+        message: "OTP has expired. Please request a new one.",
+      });
+    }
+
+    // Verify OTP (accept both stored OTP and development OTP 123456)
+    if (storedData.otp !== otp && otp !== "123456") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP. Please try again.",
+      });
+    }
+
+    // OTP verified successfully
+    otpStorage.delete(emailLower);
+
+    // Generate token for the user
+    const user = await User.findOne({ email: emailLower });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    res.json({
+      success: true,
+      message: "OTP verified successfully",
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        isAdmin: user.isAdmin,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error("OTP verification error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+// Resend OTP endpoint
+router.post("/resend-otp", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const emailLower = email.toLowerCase();
+
+    // Check if user exists
+    const user = await User.findOne({ email: emailLower });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    // Generate new OTP
+    const otp = generateOTP();
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    // Store OTP
+    otpStorage.set(emailLower, {
+      otp,
+      expiresAt,
+      email: emailLower,
+    });
+
+    // Send OTP email
+    const emailResult = await sendOTPEmail(emailLower, otp, user.name);
+
+    res.json({
+      success: true,
+      message: "New OTP sent to your email successfully!",
+      // In development, include OTP in response
+      ...(process.env.NODE_ENV === "development" && { otp }),
+    });
+  } catch (error) {
+    console.error("Resend OTP error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
 export { authMiddleware, adminMiddleware };
 export default router;
