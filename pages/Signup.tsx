@@ -436,7 +436,7 @@ export default function Signup() {
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <svg
-                        className="h-5 w-5 text-orange-300"
+                        className="h-5 w-5 text-gray-500"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -455,7 +455,7 @@ export default function Signup() {
                       placeholder="Enter your mobile number"
                       value={formData.mobile}
                       onChange={handleInputChange}
-                      className="w-full h-12 pl-12 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
+                      className="w-full h-12 pl-12 pr-4 bg-white rounded-2xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-300 border-2 border-white/30"
                       required
                       disabled={isLoading}
                     />
