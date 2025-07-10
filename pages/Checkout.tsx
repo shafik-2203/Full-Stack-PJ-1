@@ -277,54 +277,81 @@ export default function Checkout() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">
-                      Full Name *
+                      Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       value={customerInfo.name}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setCustomerInfo({
                           ...customerInfo,
                           name: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        });
+                        if (fieldErrors.customerName) {
+                          setFieldErrors({ ...fieldErrors, customerName: "" });
+                        }
+                      }}
+                      className={`w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${fieldErrors.customerName ? "border-red-500" : "border-gray-300"}`}
+                      placeholder="Enter your full name"
                       required
                     />
+                    {fieldErrors.customerName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldErrors.customerName}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">
-                      Email *
+                      Email <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
                       value={customerInfo.email}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setCustomerInfo({
                           ...customerInfo,
                           email: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        });
+                        if (fieldErrors.customerEmail) {
+                          setFieldErrors({ ...fieldErrors, customerEmail: "" });
+                        }
+                      }}
+                      className={`w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${fieldErrors.customerEmail ? "border-red-500" : "border-gray-300"}`}
+                      placeholder="Enter your email address"
                       required
                     />
+                    {fieldErrors.customerEmail && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldErrors.customerEmail}
+                      </p>
+                    )}
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-gray-700 font-medium mb-2">
-                      Phone Number *
+                      Phone Number <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
                       value={customerInfo.phone}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setCustomerInfo({
                           ...customerInfo,
                           phone: e.target.value,
-                        })
-                      }
-                      className="w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        });
+                        if (fieldErrors.customerPhone) {
+                          setFieldErrors({ ...fieldErrors, customerPhone: "" });
+                        }
+                      }}
+                      className={`w-full p-3 border rounded-lg bg-white text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 ${fieldErrors.customerPhone ? "border-red-500" : "border-gray-300"}`}
+                      placeholder="Enter your phone number"
                       required
                     />
+                    {fieldErrors.customerPhone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldErrors.customerPhone}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
