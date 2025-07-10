@@ -567,29 +567,10 @@ class ApiClient {
   }
 
   async resendOTP(email: string): Promise<ApiResponse> {
-    try {
-      return await this.request<ApiResponse>("/auth/resend-otp", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      });
-    } catch (error) {
-      // Check if this is a backend unavailable error
-      if (
-        error.name === "BackendUnavailableError" ||
-        error.message === "BACKEND_UNAVAILABLE"
-      ) {
-        // Fallback resend OTP for deployed version
-        console.log("🔄 Backend unavailable, using fallback resend OTP");
-
-        return {
-          success: true,
-          message: "New OTP sent (offline mode). Use 123456 for demo.",
-        };
-      } else {
-        // Re-throw other types of errors
-        throw error;
-      }
-    }
+    return await this.request<ApiResponse>("/auth/resend-otp", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
   }
 
   // Restaurant endpoints
