@@ -263,6 +263,7 @@ const seedData = async () => {
         review: "Excellent pizza!",
       },
       {
+        orderId: "ORD002",
         user: user._id,
         restaurant: restaurants[1]._id,
         items: [
