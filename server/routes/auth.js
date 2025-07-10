@@ -8,6 +8,30 @@ const router = express.Router();
 // In-memory OTP storage (in production, use Redis or database)
 const otpStorage = new Map();
 
+// OTP utilities
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+const sendOTPEmail = async (email, otp, username = "User") => {
+  try {
+    // Log OTP for development
+    console.log(`🔑 =====================================`);
+    console.log(`🔑 FASTIO OTP for ${email} (${username}): ${otp}`);
+    console.log(`🔑 =====================================`);
+
+    // In development, return success with OTP visible
+    return {
+      success: true,
+      method: "development_console",
+      otp: process.env.NODE_ENV === "development" ? otp : undefined,
+    };
+  } catch (error) {
+    console.error("Error sending OTP email:", error);
+    return { success: false, method: "failed" };
+  }
+};
+
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET || "your-secret-key", {
     expiresIn: "7d",
