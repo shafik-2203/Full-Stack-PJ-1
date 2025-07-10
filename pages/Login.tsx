@@ -141,12 +141,12 @@ export default function Login() {
               <div className="space-y-5">
                 <div className="group">
                   <label className="block text-white/90 font-medium mb-2 text-sm">
-                    Email Address <span className="text-pink-400">*</span>
+                    Email Address <span className="text-orange-400">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <svg
-                        className="h-5 w-5 text-purple-300"
+                        className="h-5 w-5 text-orange-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -165,7 +165,7 @@ export default function Login() {
                       placeholder="Enter your email address"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full h-14 pl-12 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
+                      className="w-full h-14 pl-12 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
                       required
                       disabled={isLoading}
                     />
@@ -174,12 +174,12 @@ export default function Login() {
 
                 <div className="group">
                   <label className="block text-white/90 font-medium mb-2 text-sm">
-                    Password <span className="text-pink-400">*</span>
+                    Password <span className="text-orange-400">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <svg
-                        className="h-5 w-5 text-purple-300"
+                        className="h-5 w-5 text-orange-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -198,14 +198,14 @@ export default function Login() {
                       placeholder="Enter your password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="w-full h-14 pl-12 pr-14 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
+                      className="w-full h-14 pl-12 pr-14 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-300 hover:bg-white/15"
                       required
                       disabled={isLoading}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-purple-300 hover:text-white transition-colors duration-200"
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-orange-300 hover:text-white transition-colors duration-200"
                       disabled={isLoading}
                     >
                       {showPassword ? (
