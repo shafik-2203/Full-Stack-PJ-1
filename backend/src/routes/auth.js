@@ -172,9 +172,9 @@ router.post("/verify-otp", async (req, res) => {
 // ✅ Login
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
+    if (!email || !password) {
       return res.status(400).json({
         success: false,
         message: "Username/email and password required",
@@ -182,7 +182,7 @@ router.post("/login", async (req, res) => {
     }
 
     const user = await User.findOne({
-      $or: [{ email: username.toLowerCase() }, { username }],
+      email: email.toLowerCase(),
     });
 
     if (!user || !(await comparePassword(password, user.password))) {
