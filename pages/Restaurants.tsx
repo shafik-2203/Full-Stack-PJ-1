@@ -21,8 +21,10 @@ export default function Restaurants() {
   const fetchRestaurants = async () => {
     try {
       const res = await apiClient.getRestaurants();
-      setRestaurants(res.restaurants || []);
-      setFilteredRestaurants(res.restaurants || []);
+      if (res.success) {
+        setRestaurants(res.data || []);
+        setFilteredRestaurants(res.data || []);
+      }
       setIsLoading(false);
     } catch (err) {
       console.error("Failed to load restaurants", err);
