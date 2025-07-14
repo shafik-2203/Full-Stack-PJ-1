@@ -156,6 +156,7 @@ router.post("/verify-otp", async (req, res) => {
         mobile: user.mobile,
         isVerified: user.isVerified,
         role: user.role,
+        isAdmin: user.role === "admin" || user.role === "super_admin",
         createdAt: user.createdAt,
       },
       token,
