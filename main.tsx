@@ -96,7 +96,11 @@ const App = () => (
               <Route path="/AdminSignup" element={<AdminSignup />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/Admin" element={<Admin />} />
+              <Route path="/admin/dashboard" element={<Admin />} />
+              <Route path="/Admin/Dashboard" element={<Admin />} />
+              <Route path="/admin-dashboard" element={<Admin />} />
               <Route path="/debug" element={<Debug />} />
+              <Route path="/Debug" element={<Debug />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
