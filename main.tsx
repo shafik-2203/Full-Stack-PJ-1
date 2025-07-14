@@ -52,8 +52,16 @@ const App = () => (
             <Routes>
               <Route path="/" element={<TestIndex />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/Login" element={<Login />} />
+              <Route path="/signin" element={<Login />} />
+              <Route path="/SignIn" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/Signup" element={<Signup />} />
+              <Route path="/register" element={<Signup />} />
+              <Route path="/Register" element={<Signup />} />
               <Route path="/otp" element={<OTP />} />
+              <Route path="/OTP" element={<OTP />} />
+              <Route path="/verify" element={<OTP />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/restaurants" element={<Restaurants />} />
