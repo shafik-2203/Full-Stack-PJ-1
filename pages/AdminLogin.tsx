@@ -23,56 +23,22 @@ export default function AdminLogin() {
       const response = await apiClient.login({ email, password });
 
       if (response.success && response.user && response.token) {
-        if (response.user.role !== "admin") {
-          setError("Access denied: Not an admin user.");
+        // Check if user is admin
+        if (
+          !response.user.isAdmin &&
+          response.user.role !== "admin" &&
+          response.user.role !== "super_admin"
+        ) {
+          setError("Access denied. Admin privileges required.");
           setLoading(false);
           return;
         }
 
-        apiClient.setToken(response.token);
-        navigate("/admin/dashboard");
-      } else {
-        setError(response.message || "Admin login failed");
-      }
-    } catch (err) {
-      console.error("Admin login error:", err);
-      setError("Admin login error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  useEffect(() => {
-    setIsAnimating(true);
-  }, []);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      // Use apiClient for proper error handling and fallback support
-      const response = await apiClient.login({
-        email: email,
-        password: password,
-      });
-
-      if (response.success && response.user) {
-        // Check if user is admin
-        if (!response.user.isAdmin) {
-          setError("Access denied. Admin privileges required.");
-          return;
-        }
-
         // Store admin token and user info
-        if (response.token) {
-          localStorage.setItem("fastio_token", response.token);
-          sessionStorage.setItem("adminAuth", response.token);
-          sessionStorage.setItem("adminUser", JSON.stringify(response.user));
-          apiClient.setToken(response.token);
-        }
+        localStorage.setItem("fastio_token", response.token);
+        sessionStorage.setItem("adminAuth", response.token);
+        sessionStorage.setItem("adminUser", JSON.stringify(response.user));
+        apiClient.setToken(response.token);
 
         // Show success animation before redirect
         setIsAnimating(true);
@@ -80,14 +46,21 @@ export default function AdminLogin() {
           navigate("/admin");
         }, 1000);
       } else {
-        setError(response.message || "Invalid admin credentials");
+        setError(response.message || "Admin login failed");
       }
     } catch (err) {
-      setError("Failed to authenticate. Please try again.");
+      console.error("Admin login error:", err);
+      const errorMessage =
+        err instanceof Error ? err.message : "Admin login failed";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setIsAnimating(true);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900 relative overflow-hidden">
