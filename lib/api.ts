@@ -3,6 +3,317 @@ import axios from "axios";
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
+// Mock fallback data for when backend is empty
+const mockRestaurants = [
+  {
+    _id: "mock1",
+    name: "Pizza Palace",
+    description: "Authentic Italian pizzas made with fresh ingredients",
+    category: "Italian",
+    rating: 4.5,
+    deliveryTime: "25-35 min",
+    deliveryFee: 49,
+    minimumOrder: 199,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: "mock2",
+    name: "Burger Hub",
+    description: "Gourmet burgers and crispy fries",
+    category: "American",
+    rating: 4.2,
+    deliveryTime: "20-30 min",
+    deliveryFee: 29,
+    minimumOrder: 149,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: "mock3",
+    name: "Sushi Express",
+    description: "Fresh sushi and Japanese cuisine",
+    category: "Japanese",
+    rating: 4.7,
+    deliveryTime: "30-40 min",
+    deliveryFee: 59,
+    minimumOrder: 299,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: "mock4",
+    name: "Spice Garden",
+    description: "Traditional Indian cuisine with authentic flavors",
+    category: "Indian",
+    rating: 4.6,
+    deliveryTime: "35-45 min",
+    deliveryFee: 39,
+    minimumOrder: 249,
+    isActive: true,
+    createdAt: new Date().toISOString(),
+  },
+];
+
+const mockMenuItems = {
+  mock1: {
+    success: true,
+    data: {
+      restaurant: "Pizza Palace",
+      menu: {
+        Pizza: [
+          {
+            _id: "menu1",
+            name: "Margherita Pizza",
+            description: "Classic tomato, mozzarella, and basil",
+            price: 299,
+            category: "Pizza",
+            restaurant: "mock1",
+            isAvailable: true,
+          },
+          {
+            _id: "menu2",
+            name: "Pepperoni Pizza",
+            description: "Pepperoni with mozzarella cheese",
+            price: 399,
+            category: "Pizza",
+            restaurant: "mock1",
+            isAvailable: true,
+          },
+        ],
+        Salads: [
+          {
+            _id: "menu3",
+            name: "Caesar Salad",
+            description: "Fresh romaine with caesar dressing",
+            price: 199,
+            category: "Salads",
+            restaurant: "mock1",
+            isAvailable: true,
+          },
+        ],
+      },
+      items: [
+        {
+          _id: "menu1",
+          name: "Margherita Pizza",
+          description: "Classic tomato, mozzarella, and basil",
+          price: 299,
+          category: "Pizza",
+          restaurant: "mock1",
+          isAvailable: true,
+        },
+        {
+          _id: "menu2",
+          name: "Pepperoni Pizza",
+          description: "Pepperoni with mozzarella cheese",
+          price: 399,
+          category: "Pizza",
+          restaurant: "mock1",
+          isAvailable: true,
+        },
+        {
+          _id: "menu3",
+          name: "Caesar Salad",
+          description: "Fresh romaine with caesar dressing",
+          price: 199,
+          category: "Salads",
+          restaurant: "mock1",
+          isAvailable: true,
+        },
+      ],
+    },
+  },
+  mock2: {
+    success: true,
+    data: {
+      restaurant: "Burger Hub",
+      menu: {
+        Burgers: [
+          {
+            _id: "menu4",
+            name: "Classic Burger",
+            description: "Beef patty with lettuce, tomato, onion",
+            price: 249,
+            category: "Burgers",
+            restaurant: "mock2",
+            isAvailable: true,
+          },
+          {
+            _id: "menu5",
+            name: "Chicken Burger",
+            description: "Grilled chicken breast with avocado",
+            price: 279,
+            category: "Burgers",
+            restaurant: "mock2",
+            isAvailable: true,
+          },
+        ],
+        Snacks: [
+          {
+            _id: "menu6",
+            name: "French Fries",
+            description: "Crispy golden fries",
+            price: 99,
+            category: "Snacks",
+            restaurant: "mock2",
+            isAvailable: true,
+          },
+        ],
+      },
+      items: [
+        {
+          _id: "menu4",
+          name: "Classic Burger",
+          description: "Beef patty with lettuce, tomato, onion",
+          price: 249,
+          category: "Burgers",
+          restaurant: "mock2",
+          isAvailable: true,
+        },
+        {
+          _id: "menu5",
+          name: "Chicken Burger",
+          description: "Grilled chicken breast with avocado",
+          price: 279,
+          category: "Burgers",
+          restaurant: "mock2",
+          isAvailable: true,
+        },
+        {
+          _id: "menu6",
+          name: "French Fries",
+          description: "Crispy golden fries",
+          price: 99,
+          category: "Snacks",
+          restaurant: "mock2",
+          isAvailable: true,
+        },
+      ],
+    },
+  },
+  mock3: {
+    success: true,
+    data: {
+      restaurant: "Sushi Express",
+      menu: {
+        Sushi: [
+          {
+            _id: "menu7",
+            name: "California Roll",
+            description: "Crab, avocado, cucumber",
+            price: 399,
+            category: "Sushi",
+            restaurant: "mock3",
+            isAvailable: true,
+          },
+          {
+            _id: "menu8",
+            name: "Salmon Sashimi",
+            description: "Fresh salmon slices",
+            price: 599,
+            category: "Sushi",
+            restaurant: "mock3",
+            isAvailable: true,
+          },
+        ],
+        Soup: [
+          {
+            _id: "menu9",
+            name: "Miso Soup",
+            description: "Traditional soybean soup",
+            price: 149,
+            category: "Soup",
+            restaurant: "mock3",
+            isAvailable: true,
+          },
+        ],
+      },
+      items: [
+        {
+          _id: "menu7",
+          name: "California Roll",
+          description: "Crab, avocado, cucumber",
+          price: 399,
+          category: "Sushi",
+          restaurant: "mock3",
+          isAvailable: true,
+        },
+        {
+          _id: "menu8",
+          name: "Salmon Sashimi",
+          description: "Fresh salmon slices",
+          price: 599,
+          category: "Sushi",
+          restaurant: "mock3",
+          isAvailable: true,
+        },
+        {
+          _id: "menu9",
+          name: "Miso Soup",
+          description: "Traditional soybean soup",
+          price: 149,
+          category: "Soup",
+          restaurant: "mock3",
+          isAvailable: true,
+        },
+      ],
+    },
+  },
+  mock4: {
+    success: true,
+    data: {
+      restaurant: "Spice Garden",
+      menu: {
+        "Main Course": [
+          {
+            _id: "menu10",
+            name: "Butter Chicken",
+            description: "Creamy tomato-based curry with tender chicken",
+            price: 349,
+            category: "Main Course",
+            restaurant: "mock4",
+            isAvailable: true,
+          },
+        ],
+        Rice: [
+          {
+            _id: "menu11",
+            name: "Biryani",
+            description: "Aromatic basmati rice with spices and meat",
+            price: 299,
+            category: "Rice",
+            restaurant: "mock4",
+            isAvailable: true,
+          },
+        ],
+      },
+      items: [
+        {
+          _id: "menu10",
+          name: "Butter Chicken",
+          description: "Creamy tomato-based curry with tender chicken",
+          price: 349,
+          category: "Main Course",
+          restaurant: "mock4",
+          isAvailable: true,
+        },
+        {
+          _id: "menu11",
+          name: "Biryani",
+          description: "Aromatic basmati rice with spices and meat",
+          price: 299,
+          category: "Rice",
+          restaurant: "mock4",
+          isAvailable: true,
+        },
+      ],
+    },
+  },
+};
+
+const mockCategories = ["Italian", "American", "Japanese", "Indian"];
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
