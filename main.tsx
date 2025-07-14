@@ -67,12 +67,19 @@ const App = () => (
               <Route path="/restaurant/:id" element={<Restaurant />} />
               <Route path="/restaurants/:id" element={<Restaurant />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/Cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/Checkout" element={<Checkout />} />
               <Route path="/orders" element={<Orders />} />
+              <Route path="/Orders" element={<Orders />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/Profile" element={<Profile />} />
               <Route path="/fastio-pass" element={<FastioPass />} />
+              <Route path="/FastioPass" element={<FastioPass />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/ForgotPassword" element={<ForgotPassword />} />
               <Route path="/data-export" element={<DataExport />} />
+              <Route path="/DataExport" element={<DataExport />} />
               <Route path="/admin-portal" element={<AdminPortal />} />
               <Route path="/AdminPortal" element={<AdminPortal />} />
               <Route path="/admin-login" element={<AdminLogin />} />
