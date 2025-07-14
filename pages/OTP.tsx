@@ -166,6 +166,15 @@ export default function OTP() {
                 />
               </div>
 
+              {/* Development Helper */}
+              {!import.meta.env.PROD && (
+                <div className="text-center">
+                  <p className="text-xs text-white/60 bg-blue-500/20 px-3 py-2 rounded-lg">
+                    🧪 Development: Use "000000" to bypass OTP verification
+                  </p>
+                </div>
+              )}
+
               {/* Resend OTP */}
               <div className="text-center">
                 <button
