@@ -48,10 +48,15 @@ export default function Login() {
         setError(response.message || "Login failed");
       }
     } catch (err) {
+      console.error("Login error details:", err);
       const errorMessage = err instanceof Error ? err.message : "Login failed";
 
       // Handle specific error cases with intelligent resolution
-      if (errorMessage.includes("Account not found")) {
+      if (errorMessage.includes("Invalid credentials")) {
+        setError(
+          "Invalid email or password. Please check your credentials or sign up if you don't have an account.",
+        );
+      } else if (errorMessage.includes("Account not found")) {
         setError("Checking account details...");
 
         try {
