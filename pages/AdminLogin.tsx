@@ -95,7 +95,7 @@ export default function AdminLogin() {
             {/* Card Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-3xl"></div>
 
-            <form onSubmit={handleLogin} className="relative space-y-6">
+            <form onSubmit={handleSubmit} className="relative space-y-6">
               {/* Error Message */}
               {error && (
                 <div className="bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-100 px-4 py-3 rounded-2xl text-center">
