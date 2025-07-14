@@ -101,6 +101,20 @@ const App = () => (
               <Route path="/admin-dashboard" element={<Admin />} />
               <Route path="/debug" element={<Debug />} />
               <Route path="/Debug" element={<Debug />} />
+
+              {/* Common variations and redirects */}
+              <Route path="/home" element={<TestIndex />} />
+              <Route path="/Home" element={<TestIndex />} />
+              <Route path="/index" element={<TestIndex />} />
+              <Route path="/Index" element={<TestIndex />} />
+              <Route path="/menu" element={<Restaurants />} />
+              <Route path="/Menu" element={<Restaurants />} />
+              <Route path="/account" element={<Profile />} />
+              <Route path="/Account" element={<Profile />} />
+              <Route path="/settings" element={<Profile />} />
+              <Route path="/Settings" element={<Profile />} />
+
+              {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
