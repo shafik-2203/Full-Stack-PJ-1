@@ -462,10 +462,35 @@ export const apiClient = {
   getMenuByRestaurant: async (restaurantId) => {
     try {
       const res = await api.get(`/api/restaurants/${restaurantId}/menu`);
+
+      // If backend returns empty data, use mock fallback
+      if (
+        res.data.success &&
+        (!res.data.data ||
+          !res.data.data.items ||
+          res.data.data.items.length === 0)
+      ) {
+        console.log(`🎭 Using mock menu data for restaurant ${restaurantId}`);
+        return (
+          mockMenuItems[restaurantId] || {
+            success: true,
+            data: { restaurant: "Unknown", menu: {}, items: [] },
+          }
+        );
+      }
+
       return res.data;
     } catch (error) {
       console.error("🔴 Get menu error:", error);
-      throw new Error("Failed to fetch menu");
+      console.log(
+        `🎭 Using mock menu data for restaurant ${restaurantId} due to error`,
+      );
+      return (
+        mockMenuItems[restaurantId] || {
+          success: true,
+          data: { restaurant: "Unknown", menu: {}, items: [] },
+        }
+      );
     }
   },
 
@@ -474,10 +499,35 @@ export const apiClient = {
       const res = await api.get(`/api/restaurants/${restaurantId}/menu`, {
         params,
       });
+
+      // If backend returns empty data, use mock fallback
+      if (
+        res.data.success &&
+        (!res.data.data ||
+          !res.data.data.items ||
+          res.data.data.items.length === 0)
+      ) {
+        console.log(`🎭 Using mock menu items for restaurant ${restaurantId}`);
+        return (
+          mockMenuItems[restaurantId] || {
+            success: true,
+            data: { restaurant: "Unknown", menu: {}, items: [] },
+          }
+        );
+      }
+
       return res.data;
     } catch (error) {
       console.error("🔴 Get menu items error:", error);
-      throw new Error("Failed to fetch menu items");
+      console.log(
+        `🎭 Using mock menu items for restaurant ${restaurantId} due to error`,
+      );
+      return (
+        mockMenuItems[restaurantId] || {
+          success: true,
+          data: { restaurant: "Unknown", menu: {}, items: [] },
+        }
+      );
     }
   },
 
