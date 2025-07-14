@@ -9,6 +9,8 @@ export interface User {
   username: string;
   mobile: string;
   isVerified: boolean;
+  role: string;
+  isAdmin?: boolean;
   createdAt: string;
 }
 
