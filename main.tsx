@@ -55,12 +55,15 @@ const App = () => (
               <Route path="/signup" element={<Signup />} />
               <Route path="/otp" element={<OTP />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/Dashboard" element={<Dashboard />} />
               <Route path="/restaurants" element={<Restaurants />} />
+              <Route path="/Restaurants" element={<Restaurants />} />
               <Route
                 path="/restaurants-enhanced"
                 element={<EnhancedRestaurants />}
               />
               <Route path="/food" element={<Food />} />
+              <Route path="/Food" element={<Food />} />
               <Route path="/restaurant/:id" element={<Restaurant />} />
               <Route path="/restaurants/:id" element={<Restaurant />} />
               <Route path="/cart" element={<Cart />} />
