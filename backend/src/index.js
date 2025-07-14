@@ -77,6 +77,11 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/otp", otpRoutes);
 app.use("/api/users", userRoutes);
 
+// Development routes (only in dev mode)
+if (process.env.NODE_ENV !== "production") {
+  app.use("/api/dev", devRoutes);
+}
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, {
