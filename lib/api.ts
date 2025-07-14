@@ -325,13 +325,34 @@ const api = axios.create({
 export const apiClient = {
   login: async (data) => {
     try {
+      console.log("🔄 Attempting login for:", data.email);
       const res = await api.post("/api/auth/login", data);
+      console.log("✅ Login successful:", res.data);
       return res.data;
     } catch (error) {
       console.error("🔴 Login error:", error);
+      console.error("🔴 Login error response:", error.response?.data);
+      console.error("🔴 Login error status:", error.response?.status);
+
+      if (error.response?.status === 404) {
+        throw new Error(
+          "Authentication service not available. Please check backend connection.",
+        );
+      }
+
       if (error.response?.data) {
         throw new Error(error.response.data.message || "Login failed");
       }
+
+      if (
+        error.code === "ECONNREFUSED" ||
+        error.message.includes("Network Error")
+      ) {
+        throw new Error(
+          "Cannot connect to server. Please check your internet connection.",
+        );
+      }
+
       throw new Error("Network error occurred");
     }
   },
