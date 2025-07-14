@@ -416,9 +416,31 @@ export const apiClient = {
   getRestaurant: async (id) => {
     try {
       const res = await api.get(`/api/restaurants/${id}`);
+
+      // If restaurant not found, try mock data
+      if (!res.data.success || !res.data.data) {
+        console.log(`🎭 Using mock restaurant data for ${id}`);
+        const mockRestaurant = mockRestaurants.find((r) => r._id === id);
+        if (mockRestaurant) {
+          return {
+            success: true,
+            data: mockRestaurant,
+          };
+        }
+        throw new Error("Restaurant not found");
+      }
+
       return res.data;
     } catch (error) {
       console.error("🔴 Get restaurant error:", error);
+      console.log(`🎭 Trying mock restaurant data for ${id}`);
+      const mockRestaurant = mockRestaurants.find((r) => r._id === id);
+      if (mockRestaurant) {
+        return {
+          success: true,
+          data: mockRestaurant,
+        };
+      }
       throw new Error("Failed to fetch restaurant details");
     }
   },
