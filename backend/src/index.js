@@ -12,7 +12,10 @@ dotenv.config();
 
 // ✅ Debugging .env loading
 console.log("🧪 EMAIL_USER:", process.env.EMAIL_USER);
-console.log("🧪 EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌");
+console.log(
+  "🧪 EMAIL_PASS:",
+  process.env.EMAIL_PASS ? "Loaded ✅" : "Missing ❌",
+);
 
 // Routes
 import authRoutes from "./routes/auth.js";
@@ -20,6 +23,7 @@ import restaurantRoutes from "./routes/restaurants.js";
 import orderRoutes from "./routes/orders.js";
 import otpRoutes from "./routes/otp.js";
 import userRoutes from "./routes/users.js";
+import devRoutes from "./routes/dev.js";
 
 // Initialize app
 const app = express();
@@ -32,19 +36,19 @@ app.use(
   cors({
     origin: [
       "https://fullstack-pj1-fd.netlify.app", // ✅ Netlify frontend
-      "http://localhost:5173",                // ✅ Local dev
+      "http://localhost:5173", // ✅ Local dev
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
+  }),
 );
 
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
-  })
+  }),
 );
 
 // Health check route
