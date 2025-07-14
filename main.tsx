@@ -71,9 +71,13 @@ const App = () => (
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/data-export" element={<DataExport />} />
               <Route path="/admin-portal" element={<AdminPortal />} />
+              <Route path="/AdminPortal" element={<AdminPortal />} />
               <Route path="/admin-login" element={<AdminLogin />} />
+              <Route path="/AdminLogin" element={<AdminLogin />} />
               <Route path="/admin-signup" element={<AdminSignup />} />
+              <Route path="/AdminSignup" element={<AdminSignup />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/Admin" element={<Admin />} />
               <Route path="/debug" element={<Debug />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
