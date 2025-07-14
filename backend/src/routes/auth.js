@@ -210,6 +210,8 @@ router.post("/login", async (req, res) => {
         email: user.email,
         mobile: user.mobile,
         role: user.role,
+        isAdmin: user.role === "admin" || user.role === "super_admin",
+        isVerified: user.isVerified,
         createdAt: user.createdAt,
       },
       token,
