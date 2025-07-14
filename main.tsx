@@ -50,6 +50,7 @@ const App = () => (
       <AuthProvider>
         <CartProvider>
           <BrowserRouter>
+            <TestAuth />
             <Routes>
               <Route path="/" element={<TestIndex />} />
               <Route path="/login" element={<Login />} />
