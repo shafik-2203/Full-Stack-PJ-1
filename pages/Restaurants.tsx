@@ -37,14 +37,10 @@ export default function Restaurants() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchRestaurants();
-
     fetchData();
   }, []);
 
   useEffect(() => {
-    fetchRestaurants();
-
     applyFiltersAndSort();
   }, [restaurants, selectedCategory, sortBy]);
 
