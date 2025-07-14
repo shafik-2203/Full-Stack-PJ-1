@@ -44,7 +44,31 @@ export default function OTP() {
     }
 
     try {
-      const response = await apiClient.verifyOTP({ email, otp });
+      // For development testing, allow bypass with special OTP
+      if (otp === "000000" && !import.meta.env.PROD) {
+        // Mock successful verification for development
+        const mockUser = {
+          id: "dev-user-" + Date.now(),
+          email: email,
+          username: email.split("@")[0],
+          mobile: "9999999999",
+          role: email.includes("admin") ? "admin" : "user",
+          isAdmin: email.includes("admin"),
+          isVerified: true,
+          createdAt: new Date().toISOString(),
+        };
+        const mockToken = "dev-token-" + Date.now();
+
+        apiClient.setToken(mockToken);
+        login(mockUser, mockToken);
+        localStorage.removeItem("otp_email");
+
+        setNewUser(mockUser);
+        setShowWelcome(true);
+        return;
+      }
+
+      const response = await apiClient.verifyOtp({ email, otp });
 
       if (response.success && response.user && response.token) {
         // Update API client token
@@ -141,6 +165,15 @@ export default function OTP() {
                   maxLength={6}
                 />
               </div>
+
+              {/* Development Helper */}
+              {!import.meta.env.PROD && (
+                <div className="text-center">
+                  <p className="text-xs text-white/60 bg-blue-500/20 px-3 py-2 rounded-lg">
+                    🧪 Development: Use "000000" to bypass OTP verification
+                  </p>
+                </div>
+              )}
 
               {/* Resend OTP */}
               <div className="text-center">
