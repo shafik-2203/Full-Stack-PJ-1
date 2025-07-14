@@ -201,16 +201,18 @@ async function seedData() {
     const admin = await User.create({
       username: "admin",
       email: "fastio121299@gmail.com",
-      password: "Shafik1212@",
+      password: await hashPassword("fastio1212"),
       mobile: "9999999999",
       role: "admin",
+      isVerified: true,
     });
     const user = await User.create({
       username: "mohamedshafik",
       email: "mohamedshafik2526@gmail.com",
-      password: "Shafik1212@",
+      password: await hashPassword("Shafik1212@"),
       mobile: "8888888888",
       role: "user",
+      isVerified: true,
     });
     await PendingSignup.create({
       username: "pendinguser",
