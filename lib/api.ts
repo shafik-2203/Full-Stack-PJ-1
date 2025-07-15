@@ -351,6 +351,19 @@ const mockMenuItems = {
           category: "Rice",
           restaurant: "mock4",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2Fbe498c79250c45e5954485c8b25b6c6d?format=webp&width=800",
+        },
+        {
+          _id: "menu12",
+          name: "Paneer Tikka",
+          description: "Grilled cottage cheese with spices and herbs",
+          price: 279,
+          category: "Appetizers",
+          restaurant: "mock4",
+          isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
         },
       ],
     },
