@@ -699,6 +699,44 @@ export const apiClient = {
     }
   },
 
+  updateProfile: async (
+    data: { username: string; email: string; mobile: string },
+    token?: string,
+  ) => {
+    try {
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await api.put("/api/auth/profile", data, { headers });
+      return res.data;
+    } catch (error) {
+      console.error("🔴 Update profile error:", error);
+      if (error.response?.data) {
+        throw new Error(
+          error.response.data.message || "Failed to update profile",
+        );
+      }
+      throw new Error("Network error occurred");
+    }
+  },
+
+  changePassword: async (
+    data: { currentPassword: string; newPassword: string },
+    token?: string,
+  ) => {
+    try {
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await api.put("/api/auth/change-password", data, { headers });
+      return res.data;
+    } catch (error) {
+      console.error("🔴 Change password error:", error);
+      if (error.response?.data) {
+        throw new Error(
+          error.response.data.message || "Failed to change password",
+        );
+      }
+      throw new Error("Network error occurred");
+    }
+  },
+
   setToken: (token: string | null) => {
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
