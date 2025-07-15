@@ -54,6 +54,34 @@ export default function TestAuth() {
     }
   };
 
+  const refreshData = async () => {
+    try {
+      setStatus("🔄 Checking restaurant data...");
+      const restaurants = await apiClient.getRestaurants();
+      const count = restaurants.data?.length || 0;
+      setStatus(`✅ Found ${count} restaurants in database`);
+    } catch (error) {
+      setStatus(`❌ Data fetch failed: ${error.message}`);
+    }
+  };
+
+  const testLogin = async () => {
+    try {
+      setStatus("🔄 Testing login...");
+      const response = await apiClient.login({
+        email: "fastio121299@gmail.com",
+        password: "Fastio1212@",
+      });
+      if (response.success) {
+        setStatus("✅ Admin login working!");
+      } else {
+        setStatus("❌ Login failed");
+      }
+    } catch (error) {
+      setStatus(`❌ Login test failed: ${error.message}`);
+    }
+  };
+
   // Only show in development
   if (import.meta.env.PROD) {
     return null;
