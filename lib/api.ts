@@ -520,19 +520,21 @@ export const apiClient = {
     try {
       const res = await api.get("/api/restaurants/categories");
 
-      // If backend returns empty data, use mock fallback
-      if (res.data.success && (!res.data.data || res.data.data.length === 0)) {
-        console.log("🎭 Using mock categories as fallback");
-        return {
-          success: true,
-          data: mockCategories,
-        };
+      // If backend returns real data, use it
+      if (res.data.success && res.data.data && res.data.data.length > 0) {
+        console.log("✅ Using real categories from backend");
+        return res.data;
       }
 
-      return res.data;
+      // Use mock fallback for empty data
+      console.log("🎭 Using mock categories as fallback - empty response");
+      return {
+        success: true,
+        data: mockCategories,
+      };
     } catch (error) {
       console.error("🔴 Get categories error:", error);
-      console.log("🎭 Using mock categories due to error");
+      console.log("🎭 Using mock categories due to network error");
       return {
         success: true,
         data: mockCategories,
