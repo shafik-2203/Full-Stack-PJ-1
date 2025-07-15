@@ -70,6 +70,8 @@ const mockMenuItems = {
             category: "Pizza",
             restaurant: "mock1",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
           },
           {
             _id: "menu2",
@@ -79,6 +81,8 @@ const mockMenuItems = {
             category: "Pizza",
             restaurant: "mock1",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
           },
         ],
         Salads: [
@@ -90,6 +94,8 @@ const mockMenuItems = {
             category: "Salads",
             restaurant: "mock1",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
           },
         ],
       },
