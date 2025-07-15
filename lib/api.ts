@@ -16,6 +16,8 @@ const mockRestaurants = [
     minimumOrder: 199,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
   },
   {
     _id: "mock2",
@@ -28,6 +30,8 @@ const mockRestaurants = [
     minimumOrder: 149,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
   },
   {
     _id: "mock3",
@@ -40,6 +44,8 @@ const mockRestaurants = [
     minimumOrder: 299,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
   },
   {
     _id: "mock4",
@@ -52,6 +58,8 @@ const mockRestaurants = [
     minimumOrder: 249,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
   },
 ];
 
