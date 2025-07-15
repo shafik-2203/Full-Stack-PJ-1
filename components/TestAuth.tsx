@@ -67,7 +67,7 @@ export default function TestAuth() {
 
   const testLogin = async () => {
     try {
-      setStatus("🔄 Testing login...");
+      setStatus("���� Testing login...");
       const response = await apiClient.login({
         email: "fastio121299@gmail.com",
         password: "Fastio1212@",
@@ -119,6 +119,18 @@ export default function TestAuth() {
               className="w-full bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600"
             >
               Test Backend Connection
+            </button>
+            <button
+              onClick={refreshData}
+              className="w-full bg-orange-500 text-white px-3 py-1 rounded text-xs hover:bg-orange-600"
+            >
+              Check Restaurant Data
+            </button>
+            <button
+              onClick={testLogin}
+              className="w-full bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600"
+            >
+              Test Admin Login
             </button>
           </div>
 
