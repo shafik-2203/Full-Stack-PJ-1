@@ -355,7 +355,17 @@ api.interceptors.response.use(
       status: error.response?.status,
       message: error.message,
       code: error.code,
+      isCorsError: error.message.includes("Network Error"),
     });
+
+    // Log CORS-specific guidance
+    if (error.message.includes("Network Error")) {
+      console.warn(
+        "🌐 This appears to be a CORS or network connectivity issue.",
+      );
+      console.warn("🎭 Falling back to mock data for development/testing.");
+    }
+
     return Promise.reject(error);
   },
 );
