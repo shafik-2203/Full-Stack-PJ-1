@@ -230,6 +230,8 @@ const mockMenuItems = {
             category: "Sushi",
             restaurant: "mock3",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
           },
           {
             _id: "menu8",
@@ -239,6 +241,8 @@ const mockMenuItems = {
             category: "Sushi",
             restaurant: "mock3",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
           },
         ],
         Soup: [
@@ -298,6 +302,8 @@ const mockMenuItems = {
             category: "Main Course",
             restaurant: "mock4",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
           },
         ],
         Rice: [
