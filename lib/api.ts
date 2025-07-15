@@ -16,6 +16,8 @@ const mockRestaurants = [
     minimumOrder: 199,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
   },
   {
     _id: "mock2",
@@ -28,6 +30,8 @@ const mockRestaurants = [
     minimumOrder: 149,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
   },
   {
     _id: "mock3",
@@ -40,6 +44,8 @@ const mockRestaurants = [
     minimumOrder: 299,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
   },
   {
     _id: "mock4",
@@ -52,6 +58,8 @@ const mockRestaurants = [
     minimumOrder: 249,
     isActive: true,
     createdAt: new Date().toISOString(),
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
   },
 ];
 
@@ -70,6 +78,8 @@ const mockMenuItems = {
             category: "Pizza",
             restaurant: "mock1",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
           },
           {
             _id: "menu2",
@@ -79,6 +89,8 @@ const mockMenuItems = {
             category: "Pizza",
             restaurant: "mock1",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
           },
         ],
         Salads: [
@@ -90,6 +102,8 @@ const mockMenuItems = {
             category: "Salads",
             restaurant: "mock1",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
           },
         ],
       },
@@ -102,6 +116,8 @@ const mockMenuItems = {
           category: "Pizza",
           restaurant: "mock1",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
         },
         {
           _id: "menu2",
@@ -111,6 +127,8 @@ const mockMenuItems = {
           category: "Pizza",
           restaurant: "mock1",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
         },
         {
           _id: "menu3",
@@ -120,6 +138,8 @@ const mockMenuItems = {
           category: "Salads",
           restaurant: "mock1",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
         },
       ],
     },
@@ -138,6 +158,8 @@ const mockMenuItems = {
             category: "Burgers",
             restaurant: "mock2",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
           },
           {
             _id: "menu5",
@@ -147,6 +169,8 @@ const mockMenuItems = {
             category: "Burgers",
             restaurant: "mock2",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2Fbe498c79250c45e5954485c8b25b6c6d?format=webp&width=800",
           },
         ],
         Snacks: [
@@ -158,6 +182,8 @@ const mockMenuItems = {
             category: "Snacks",
             restaurant: "mock2",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
           },
         ],
       },
@@ -170,6 +196,8 @@ const mockMenuItems = {
           category: "Burgers",
           restaurant: "mock2",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
         },
         {
           _id: "menu5",
@@ -179,6 +207,8 @@ const mockMenuItems = {
           category: "Burgers",
           restaurant: "mock2",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2Fbe498c79250c45e5954485c8b25b6c6d?format=webp&width=800",
         },
         {
           _id: "menu6",
@@ -188,6 +218,8 @@ const mockMenuItems = {
           category: "Snacks",
           restaurant: "mock2",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
         },
       ],
     },
@@ -206,6 +238,8 @@ const mockMenuItems = {
             category: "Sushi",
             restaurant: "mock3",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
           },
           {
             _id: "menu8",
@@ -215,6 +249,8 @@ const mockMenuItems = {
             category: "Sushi",
             restaurant: "mock3",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
           },
         ],
         Soup: [
@@ -238,6 +274,8 @@ const mockMenuItems = {
           category: "Sushi",
           restaurant: "mock3",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
         },
         {
           _id: "menu8",
@@ -247,6 +285,8 @@ const mockMenuItems = {
           category: "Sushi",
           restaurant: "mock3",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
         },
         {
           _id: "menu9",
@@ -256,6 +296,8 @@ const mockMenuItems = {
           category: "Soup",
           restaurant: "mock3",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
         },
       ],
     },
@@ -274,6 +316,8 @@ const mockMenuItems = {
             category: "Main Course",
             restaurant: "mock4",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
           },
         ],
         Rice: [
@@ -285,6 +329,21 @@ const mockMenuItems = {
             category: "Rice",
             restaurant: "mock4",
             isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2Fbe498c79250c45e5954485c8b25b6c6d?format=webp&width=800",
+          },
+        ],
+        Appetizers: [
+          {
+            _id: "menu12",
+            name: "Paneer Tikka",
+            description: "Grilled cottage cheese with spices and herbs",
+            price: 279,
+            category: "Appetizers",
+            restaurant: "mock4",
+            isAvailable: true,
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
           },
         ],
       },
@@ -297,6 +356,8 @@ const mockMenuItems = {
           category: "Main Course",
           restaurant: "mock4",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
         },
         {
           _id: "menu11",
@@ -306,6 +367,19 @@ const mockMenuItems = {
           category: "Rice",
           restaurant: "mock4",
           isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2Fbe498c79250c45e5954485c8b25b6c6d?format=webp&width=800",
+        },
+        {
+          _id: "menu12",
+          name: "Paneer Tikka",
+          description: "Grilled cottage cheese with spices and herbs",
+          price: 279,
+          category: "Appetizers",
+          restaurant: "mock4",
+          isAvailable: true,
+          image:
+            "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
         },
       ],
     },
@@ -681,7 +755,12 @@ export const apiClient = {
       return res.data;
     } catch (error) {
       console.error("🔴 Get orders error:", error);
-      throw new Error("Failed to fetch orders");
+      // Return empty orders instead of throwing error
+      return {
+        success: true,
+        data: [],
+        message: "No orders found",
+      };
     }
   },
 
@@ -696,6 +775,44 @@ export const apiClient = {
     } catch (error) {
       console.error("🔴 Place order error:", error);
       throw new Error("Failed to place order");
+    }
+  },
+
+  updateProfile: async (
+    data: { username: string; email: string; mobile: string },
+    token?: string,
+  ) => {
+    try {
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await api.put("/api/auth/profile", data, { headers });
+      return res.data;
+    } catch (error) {
+      console.error("🔴 Update profile error:", error);
+      if (error.response?.data) {
+        throw new Error(
+          error.response.data.message || "Failed to update profile",
+        );
+      }
+      throw new Error("Network error occurred");
+    }
+  },
+
+  changePassword: async (
+    data: { currentPassword: string; newPassword: string },
+    token?: string,
+  ) => {
+    try {
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await api.put("/api/auth/change-password", data, { headers });
+      return res.data;
+    } catch (error) {
+      console.error("🔴 Change password error:", error);
+      if (error.response?.data) {
+        throw new Error(
+          error.response.data.message || "Failed to change password",
+        );
+      }
+      throw new Error("Network error occurred");
     }
   },
 

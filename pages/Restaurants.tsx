@@ -257,8 +257,23 @@ export default function Restaurants() {
               to={`/restaurants/${restaurant._id || restaurant.id}`}
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
-              <div className="h-48 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center relative">
-                <div className="text-white text-6xl">🍽️</div>
+              <div className="h-48 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center relative overflow-hidden">
+                {(restaurant as any).image ? (
+                  <img
+                    src={(restaurant as any).image}
+                    alt={restaurant.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling.style.display = "flex";
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`absolute inset-0 text-white text-6xl ${(restaurant as any).image ? "hidden" : "flex"} items-center justify-center`}
+                >
+                  🍽️
+                </div>
                 <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-sm">
                   {restaurant.deliveryTime}
                 </div>

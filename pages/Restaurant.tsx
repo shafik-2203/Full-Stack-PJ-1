@@ -44,6 +44,7 @@ export default function Restaurant() {
         console.log("✅ Restaurant data loaded successfully");
       } else {
         console.warn("⚠️ Restaurant data not available");
+        setError("Restaurant data not available");
       }
 
       if (menuResponse.success && menuResponse.data) {
@@ -57,8 +58,60 @@ export default function Restaurant() {
       }
     } catch (err) {
       console.error("Error fetching restaurant data:", err);
-      setError("Using offline data due to network issues");
-      // Don't show error if we have mock data working
+      // If we have mock data, try to use it
+      try {
+        const mockRestaurants = [
+          {
+            _id: "mock1",
+            name: "Pizza Palace",
+            description: "Authentic Italian pizzas",
+            rating: 4.5,
+            deliveryTime: "25-35 min",
+            deliveryFee: 49,
+            minimumOrder: 199,
+          },
+          {
+            _id: "mock2",
+            name: "Burger Hub",
+            description: "Gourmet burgers and fries",
+            rating: 4.2,
+            deliveryTime: "20-30 min",
+            deliveryFee: 29,
+            minimumOrder: 149,
+          },
+          {
+            _id: "mock3",
+            name: "Sushi Express",
+            description: "Fresh sushi and Japanese cuisine",
+            rating: 4.7,
+            deliveryTime: "30-40 min",
+            deliveryFee: 59,
+            minimumOrder: 299,
+          },
+          {
+            _id: "mock4",
+            name: "Spice Garden",
+            description: "Traditional Indian cuisine",
+            rating: 4.6,
+            deliveryTime: "35-45 min",
+            deliveryFee: 39,
+            minimumOrder: 249,
+          },
+        ];
+        const mockRestaurant = mockRestaurants.find((r) => r._id === id);
+        if (mockRestaurant) {
+          setRestaurant(mockRestaurant as any);
+          console.log(
+            "🎭 Using mock restaurant data for:",
+            mockRestaurant.name,
+          );
+          setError(""); // Clear error since we have mock data
+        } else {
+          setError("Restaurant not found in mock data");
+        }
+      } catch {
+        setError("Failed to load restaurant data");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +119,8 @@ export default function Restaurant() {
 
   const handleAddToCart = (menuItem: MenuItem) => {
     if (restaurant) {
-      addItem(menuItem, restaurant._id || restaurant.id, restaurant.name);
+      const restaurantId = (restaurant as any)._id || restaurant.id;
+      addItem(menuItem, restaurantId, restaurant.name);
       // Show success feedback
       alert(`${menuItem.name} added to cart!`);
     }
@@ -90,11 +144,18 @@ export default function Restaurant() {
     );
   }
 
-  if (error || !restaurant) {
+  // Only show error if no restaurant data AND there's a real error (not just network issues)
+  if (
+    !restaurant &&
+    error &&
+    !error.includes("offline") &&
+    !error.includes("network")
+  ) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 flex items-center justify-center">
         <div className="text-center">
           <div className="text-white text-2xl mb-4">Restaurant not found</div>
+          <div className="text-white/80 mb-4">{error}</div>
           <button
             onClick={() => navigate("/dashboard")}
             className="px-6 py-3 bg-white text-orange-500 rounded-lg hover:bg-orange-100 transition-all"
@@ -157,8 +218,23 @@ export default function Restaurant() {
       <main className="container mx-auto px-4 py-8">
         {/* Restaurant Info */}
         <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-8">
-          <div className="h-64 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center">
-            <div className="text-white text-8xl">🍽️</div>
+          <div className="h-64 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center overflow-hidden relative">
+            {(restaurant as any).image ? (
+              <img
+                src={(restaurant as any).image}
+                alt={restaurant.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling.style.display = "flex";
+                }}
+              />
+            ) : null}
+            <div
+              className={`absolute inset-0 text-white text-8xl ${(restaurant as any).image ? "hidden" : "flex"} items-center justify-center`}
+            >
+              🍽️
+            </div>
           </div>
 
           <div className="p-8">
@@ -232,11 +308,26 @@ export default function Restaurant() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <div
-              key={item.id}
+              key={(item as any)._id || item.id}
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
             >
-              <div className="h-48 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center">
-                <div className="text-white text-4xl">🍽️</div>
+              <div className="h-48 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center overflow-hidden">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling.style.display = "flex";
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`text-white text-4xl ${item.image ? "hidden" : "flex"} items-center justify-center w-full h-full`}
+                >
+                  🍽️
+                </div>
               </div>
 
               <div className="p-6">

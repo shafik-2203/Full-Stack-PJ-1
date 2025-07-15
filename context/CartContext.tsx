@@ -75,7 +75,7 @@ export function CartProvider({ children }: CartProviderProps) {
       if (prevItems.length > 0 && prevItems[0].restaurantId !== restaurantId) {
         // Clear cart and add new item from different restaurant
         const newItem: CartItem = {
-          id: `${menuItem.id}_${Date.now()}`,
+          id: `${(menuItem as any)._id || menuItem.id}_${Date.now()}`,
           menuItem,
           quantity: 1,
           restaurantId,
@@ -86,7 +86,9 @@ export function CartProvider({ children }: CartProviderProps) {
 
       // Check if item already exists in cart
       const existingItemIndex = prevItems.findIndex(
-        (item) => item.menuItem.id === menuItem.id,
+        (item) =>
+          (item.menuItem._id || item.menuItem.id) ===
+          (menuItem._id || menuItem.id),
       );
 
       if (existingItemIndex > -1) {
@@ -97,7 +99,7 @@ export function CartProvider({ children }: CartProviderProps) {
       } else {
         // Add new item to cart
         const newItem: CartItem = {
-          id: `${menuItem.id}_${Date.now()}`,
+          id: `${(menuItem as any)._id || menuItem.id}_${Date.now()}`,
           menuItem,
           quantity: 1,
           restaurantId,

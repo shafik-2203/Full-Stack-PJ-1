@@ -22,16 +22,29 @@ export default function Orders() {
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
-      const response = await apiClient.getUserOrders();
+      setError("");
+
+      // Get auth token from localStorage or user context
+      const token = localStorage.getItem("fastio_token") || user?.token;
+
+      if (!token) {
+        setError("Please log in to view orders");
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await apiClient.getOrders(token);
 
       if (response.success) {
         setOrders(response.data || []);
       } else {
-        setError(response.message || "Failed to load orders");
+        setError(response.message || "No orders found");
+        setOrders([]); // Set empty orders instead of keeping loading state
       }
     } catch (err) {
-      setError("Failed to load orders");
       console.error("Error fetching orders:", err);
+      setError("Unable to load orders at the moment");
+      setOrders([]); // Set empty orders for graceful handling
     } finally {
       setIsLoading(false);
     }
