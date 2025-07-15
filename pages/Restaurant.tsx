@@ -66,7 +66,8 @@ export default function Restaurant() {
 
   const handleAddToCart = (menuItem: MenuItem) => {
     if (restaurant) {
-      addItem(menuItem, restaurant._id || restaurant.id, restaurant.name);
+      const restaurantId = (restaurant as any)._id || restaurant.id;
+      addItem(menuItem, restaurantId, restaurant.name);
       // Show success feedback
       alert(`${menuItem.name} added to cart!`);
     }
@@ -232,7 +233,7 @@ export default function Restaurant() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <div
-              key={item.id}
+              key={(item as any)._id || item.id}
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
             >
               <div className="h-48 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center overflow-hidden">
