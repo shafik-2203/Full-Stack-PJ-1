@@ -151,6 +151,12 @@ export default function TestAuth() {
             >
               Test Admin Login
             </button>
+            <button
+              onClick={testRestaurantDetail}
+              className="w-full bg-purple-500 text-white px-3 py-1 rounded text-xs hover:bg-purple-600"
+            >
+              Test Restaurant Detail
+            </button>
           </div>
 
           <div className="text-xs">
