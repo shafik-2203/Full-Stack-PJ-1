@@ -505,7 +505,7 @@ const seedComprehensiveData = async () => {
         description:
           "Fresh romaine lettuce with parmesan cheese, croutons and our special caesar dressing",
         price: 199,
-        category: "Salads",
+        category: "Salad",
         restaurant: restaurants[0]._id,
         image:
           "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=300&h=200&fit=crop",
@@ -534,7 +534,7 @@ const seedComprehensiveData = async () => {
         description:
           "Juicy beef patty with cheddar cheese, lettuce, tomato, onions and our special sauce",
         price: 249,
-        category: "Burgers",
+        category: "Burger",
         restaurant: restaurants[1]._id,
         image:
           "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&h=200&fit=crop",
@@ -564,7 +564,7 @@ const seedComprehensiveData = async () => {
         description:
           "Plant-based patty with fresh vegetables, avocado and herb mayo in whole wheat bun",
         price: 229,
-        category: "Burgers",
+        category: "Burger",
         restaurant: restaurants[1]._id,
         image:
           "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=300&h=200&fit=crop",
@@ -618,7 +618,7 @@ const seedComprehensiveData = async () => {
         description:
           "Fresh crab meat, avocado, and cucumber wrapped in seasoned rice and nori",
         price: 399,
-        category: "Sushi Rolls",
+        category: "Main Course",
         restaurant: restaurants[2]._id,
         image:
           "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=300&h=200&fit=crop",
@@ -648,7 +648,7 @@ const seedComprehensiveData = async () => {
         description:
           "Fresh Atlantic salmon sliced thin and served with wasabi and pickled ginger",
         price: 599,
-        category: "Sashimi",
+        category: "Main Course",
         restaurant: restaurants[2]._id,
         image:
           "https://images.unsplash.com/photo-1553621042-f6e147245754?w=300&h=200&fit=crop",
@@ -671,7 +671,7 @@ const seedComprehensiveData = async () => {
         description:
           "Traditional Japanese soup with miso paste, tofu, seaweed and scallions",
         price: 149,
-        category: "Soups",
+        category: "Soup",
         restaurant: restaurants[2]._id,
         image:
           "https://images.unsplash.com/photo-1606850196854-d13cdec95358?w=300&h=200&fit=crop",
@@ -755,7 +755,7 @@ const seedComprehensiveData = async () => {
         description:
           "Grilled cottage cheese cubes marinated in yogurt and spices",
         price: 279,
-        category: "Starters",
+        category: "Appetizers",
         restaurant: restaurants[3]._id,
         image:
           "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=300&h=200&fit=crop",
@@ -785,7 +785,7 @@ const seedComprehensiveData = async () => {
         description:
           "Grilled chicken with fresh salsa, lettuce and cheese in soft tortillas (3 pieces)",
         price: 199,
-        category: "Tacos",
+        category: "Main Course",
         restaurant: restaurants[4]._id,
         image:
           "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=300&h=200&fit=crop",
@@ -815,7 +815,7 @@ const seedComprehensiveData = async () => {
         description:
           "Black beans, rice, guacamole, salsa, cheese and fresh vegetables in a bowl",
         price: 219,
-        category: "Bowls",
+        category: "Main Course",
         restaurant: restaurants[4]._id,
         image:
           "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&h=200&fit=crop",
@@ -877,7 +877,7 @@ const seedComprehensiveData = async () => {
         description:
           "Creamy coconut curry with vegetables and choice of protein",
         price: 289,
-        category: "Curries",
+        category: "Main Course",
         restaurant: restaurants[5]._id,
         image:
           "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=300&h=200&fit=crop",
