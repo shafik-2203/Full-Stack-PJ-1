@@ -8,7 +8,9 @@
     "start": "node server.js",
     "dev": "nodemon src/server.js",
     "build": "echo 'No build needed for Node.js'",
-    "test": "echo 'Tests not implemented yet'"
+    "test": "echo 'Tests not implemented yet'",
+    "seed": "node comprehensive-seed.js",
+    "seed:full": "node comprehensive-seed.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

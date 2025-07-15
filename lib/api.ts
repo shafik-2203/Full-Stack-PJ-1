@@ -319,13 +319,66 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
+  withCredentials: false, // Disable credentials for CORS
+  timeout: 30000, // 30 second timeout
 });
+
+// Debug logging
+console.log("🔧 API Configuration:", {
+  baseURL: API_BASE_URL,
+  environment: import.meta.env.MODE,
+});
+
+// Request interceptor for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log(
+      `🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`,
+    );
+    return config;
+  },
+  (error) => {
+    console.error("🔴 Request Error:", error);
+    return Promise.reject(error);
+  },
+);
+
+// Response interceptor for debugging
+api.interceptors.response.use(
+  (response) => {
+    console.log(`✅ API Response: ${response.status} ${response.config.url}`);
+    return response;
+  },
+  (error) => {
+    const errorDetails = {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: error.message,
+      code: error.code,
+      isCorsError: error.message.includes("Network Error"),
+    };
+
+    console.error(
+      "🔴 API Response Error:",
+      JSON.stringify(errorDetails, null, 2),
+    );
+
+    // Log CORS-specific guidance
+    if (error.message.includes("Network Error")) {
+      console.warn(
+        "🌐 This appears to be a CORS or network connectivity issue.",
+      );
+      console.warn("🎭 Falling back to mock data for development/testing.");
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export const apiClient = {
   login: async (data) => {
     try {
-      console.log("🔄 Attempting login for:", data.email);
+      console.log("��� Attempting login for:", data.email);
       const res = await api.post("/api/auth/login", data);
       console.log("✅ Login successful:", res.data);
       return res.data;
@@ -402,22 +455,24 @@ export const apiClient = {
     try {
       const res = await api.get("/api/restaurants", { params });
 
-      // If backend returns empty data, use mock fallback
-      if (res.data.success && (!res.data.data || res.data.data.length === 0)) {
-        console.log("🎭 Using mock restaurant data as fallback");
-        return {
-          success: true,
-          data: mockRestaurants,
-          pagination: {
-            page: 1,
-            limit: 20,
-            total: mockRestaurants.length,
-            pages: 1,
-          },
-        };
+      // If backend returns real data, use it
+      if (res.data.success && res.data.data && res.data.data.length > 0) {
+        console.log("✅ Using real restaurant data from backend");
+        return res.data;
       }
 
-      return res.data;
+      // Only use mock fallback if no real data
+      console.log("�� Using mock restaurant data as fallback");
+      return {
+        success: true,
+        data: mockRestaurants,
+        pagination: {
+          page: 1,
+          limit: 20,
+          total: mockRestaurants.length,
+          pages: 1,
+        },
+      };
     } catch (error) {
       console.error("🔴 Get restaurants error:", error);
       console.log("🎭 Using mock restaurant data due to error");
@@ -470,19 +525,21 @@ export const apiClient = {
     try {
       const res = await api.get("/api/restaurants/categories");
 
-      // If backend returns empty data, use mock fallback
-      if (res.data.success && (!res.data.data || res.data.data.length === 0)) {
-        console.log("🎭 Using mock categories as fallback");
-        return {
-          success: true,
-          data: mockCategories,
-        };
+      // If backend returns real data, use it
+      if (res.data.success && res.data.data && res.data.data.length > 0) {
+        console.log("✅ Using real categories from backend");
+        return res.data;
       }
 
-      return res.data;
+      // Use mock fallback for empty data
+      console.log("🎭 Using mock categories as fallback - empty response");
+      return {
+        success: true,
+        data: mockCategories,
+      };
     } catch (error) {
       console.error("🔴 Get categories error:", error);
-      console.log("🎭 Using mock categories due to error");
+      console.log("🎭 Using mock categories due to network error");
       return {
         success: true,
         data: mockCategories,

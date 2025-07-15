@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import TestAuth from "./components/TestAuth";
+import NetworkStatus from "./components/NetworkStatus";
 
 // Import pages
 import TestIndex from "./pages/Index";
@@ -50,6 +51,7 @@ const App = () => (
       <AuthProvider>
         <CartProvider>
           <BrowserRouter>
+            <NetworkStatus />
             <TestAuth />
             <Routes>
               <Route path="/" element={<TestIndex />} />

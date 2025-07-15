@@ -27,21 +27,38 @@ export default function Restaurant() {
   const fetchRestaurantData = async () => {
     try {
       setIsLoading(true);
+      setError(""); // Clear previous errors
+
+      console.log(`🔍 Fetching restaurant data for ID: ${id}`);
+
       const [restaurantResponse, menuResponse] = await Promise.all([
         apiClient.getRestaurant(id!),
         apiClient.getMenuItems(id!),
       ]);
 
-      if (restaurantResponse.success) {
+      console.log("Restaurant Response:", restaurantResponse);
+      console.log("Menu Response:", menuResponse);
+
+      if (restaurantResponse.success && restaurantResponse.data) {
         setRestaurant(restaurantResponse.data);
+        console.log("✅ Restaurant data loaded successfully");
+      } else {
+        console.warn("⚠️ Restaurant data not available");
       }
 
-      if (menuResponse.success) {
-        setMenuItems(menuResponse.data || []);
+      if (menuResponse.success && menuResponse.data) {
+        // Handle both formats: direct items array or data.items structure
+        const items = menuResponse.data.items || menuResponse.data || [];
+        setMenuItems(Array.isArray(items) ? items : []);
+        console.log(`✅ Menu items loaded: ${items.length} items`);
+      } else {
+        console.warn("⚠️ Menu data not available");
+        setMenuItems([]);
       }
     } catch (err) {
-      setError("Failed to load restaurant data");
       console.error("Error fetching restaurant data:", err);
+      setError("Using offline data due to network issues");
+      // Don't show error if we have mock data working
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +66,7 @@ export default function Restaurant() {
 
   const handleAddToCart = (menuItem: MenuItem) => {
     if (restaurant) {
-      addItem(menuItem, restaurant.id, restaurant.name);
+      addItem(menuItem, restaurant._id || restaurant.id, restaurant.name);
       // Show success feedback
       alert(`${menuItem.name} added to cart!`);
     }

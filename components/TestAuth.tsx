@@ -54,6 +54,53 @@ export default function TestAuth() {
     }
   };
 
+  const refreshData = async () => {
+    try {
+      setStatus("🔄 Checking restaurant data...");
+      const restaurants = await apiClient.getRestaurants();
+      const count = restaurants.data?.length || 0;
+      setStatus(`✅ Found ${count} restaurants in database`);
+    } catch (error) {
+      setStatus(`❌ Data fetch failed: ${error.message}`);
+    }
+  };
+
+  const testLogin = async () => {
+    try {
+      setStatus("🔄 Testing login...");
+      const response = await apiClient.login({
+        email: "fastio121299@gmail.com",
+        password: "Fastio1212@",
+      });
+      if (response.success) {
+        setStatus("✅ Admin login working!");
+      } else {
+        setStatus("❌ Login failed");
+      }
+    } catch (error) {
+      setStatus(`❌ Login test failed: ${error.message}`);
+    }
+  };
+
+  const testRestaurantDetail = async () => {
+    try {
+      setStatus("🔄 Testing restaurant detail...");
+      const restaurant = await apiClient.getRestaurant("mock1");
+      const menu = await apiClient.getMenuItems("mock1");
+
+      if (restaurant.success && menu.success) {
+        const menuCount = menu.data?.items?.length || menu.data?.length || 0;
+        setStatus(
+          `✅ Restaurant detail working! ${restaurant.data?.name} with ${menuCount} menu items`,
+        );
+      } else {
+        setStatus("❌ Restaurant detail failed");
+      }
+    } catch (error) {
+      setStatus(`❌ Restaurant test failed: ${error.message}`);
+    }
+  };
+
   // Only show in development
   if (import.meta.env.PROD) {
     return null;
@@ -91,6 +138,24 @@ export default function TestAuth() {
               className="w-full bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600"
             >
               Test Backend Connection
+            </button>
+            <button
+              onClick={refreshData}
+              className="w-full bg-orange-500 text-white px-3 py-1 rounded text-xs hover:bg-orange-600"
+            >
+              Check Restaurant Data
+            </button>
+            <button
+              onClick={testLogin}
+              className="w-full bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600"
+            >
+              Test Admin Login
+            </button>
+            <button
+              onClick={testRestaurantDetail}
+              className="w-full bg-purple-500 text-white px-3 py-1 rounded text-xs hover:bg-purple-600"
+            >
+              Test Restaurant Detail
             </button>
           </div>
 

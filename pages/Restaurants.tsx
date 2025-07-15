@@ -251,10 +251,10 @@ export default function Restaurants() {
 
         {/* Restaurants Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRestaurants.map((restaurant) => (
+          {filteredRestaurants.map((restaurant, index) => (
             <Link
-              key={restaurant.id}
-              to={`/restaurants/${restaurant.id}`}
+              key={restaurant._id || restaurant.id || index}
+              to={`/restaurants/${restaurant._id || restaurant.id}`}
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <div className="h-48 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center relative">
