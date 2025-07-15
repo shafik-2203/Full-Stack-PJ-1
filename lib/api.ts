@@ -350,13 +350,18 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error("🔴 API Response Error:", {
+    const errorDetails = {
       url: error.config?.url,
       status: error.response?.status,
       message: error.message,
       code: error.code,
       isCorsError: error.message.includes("Network Error"),
-    });
+    };
+
+    console.error(
+      "🔴 API Response Error:",
+      JSON.stringify(errorDetails, null, 2),
+    );
 
     // Log CORS-specific guidance
     if (error.message.includes("Network Error")) {
