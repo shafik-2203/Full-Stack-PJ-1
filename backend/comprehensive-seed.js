@@ -222,12 +222,7 @@ const seedComprehensiveData = async () => {
           open: "10:00",
           close: "23:00",
         },
-        features: [
-          "Pure Veg Available",
-          "Home Delivery",
-          "Card Payment",
-          "Digital Payment",
-        ],
+        features: ["Pure Veg", "Home Delivery", "Card Payment"],
         images: {
           logo: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=100&h=100&fit=crop&crop=center",
           banner:
