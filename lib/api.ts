@@ -458,8 +458,6 @@ export const apiClient = {
           pages: 1,
         },
       };
-
-      return res.data;
     } catch (error) {
       console.error("🔴 Get restaurants error:", error);
       console.log("🎭 Using mock restaurant data due to error");
