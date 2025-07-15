@@ -158,8 +158,23 @@ export default function Restaurant() {
       <main className="container mx-auto px-4 py-8">
         {/* Restaurant Info */}
         <div className="bg-white rounded-2xl overflow-hidden shadow-lg mb-8">
-          <div className="h-64 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center">
-            <div className="text-white text-8xl">🍽️</div>
+          <div className="h-64 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center overflow-hidden relative">
+            {(restaurant as any).image ? (
+              <img
+                src={(restaurant as any).image}
+                alt={restaurant.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling.style.display = "flex";
+                }}
+              />
+            ) : null}
+            <div
+              className={`absolute inset-0 text-white text-8xl ${(restaurant as any).image ? "hidden" : "flex"} items-center justify-center`}
+            >
+              🍽️
+            </div>
           </div>
 
           <div className="p-8">
