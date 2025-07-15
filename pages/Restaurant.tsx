@@ -49,7 +49,7 @@ export default function Restaurant() {
 
   const handleAddToCart = (menuItem: MenuItem) => {
     if (restaurant) {
-      addItem(menuItem, restaurant.id, restaurant.name);
+      addItem(menuItem, restaurant._id || restaurant.id, restaurant.name);
       // Show success feedback
       alert(`${menuItem.name} added to cart!`);
     }
