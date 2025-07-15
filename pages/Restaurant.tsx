@@ -29,6 +29,8 @@ export default function Restaurant() {
       setIsLoading(true);
       setError(""); // Clear previous errors
 
+      console.log(`🔍 Fetching restaurant data for ID: ${id}`);
+
       const [restaurantResponse, menuResponse] = await Promise.all([
         apiClient.getRestaurant(id!),
         apiClient.getMenuItems(id!),
