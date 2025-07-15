@@ -67,7 +67,7 @@ export default function TestAuth() {
 
   const testLogin = async () => {
     try {
-      setStatus("���� Testing login...");
+      setStatus("🔄 Testing login...");
       const response = await apiClient.login({
         email: "fastio121299@gmail.com",
         password: "Fastio1212@",
@@ -79,6 +79,25 @@ export default function TestAuth() {
       }
     } catch (error) {
       setStatus(`❌ Login test failed: ${error.message}`);
+    }
+  };
+
+  const testRestaurantDetail = async () => {
+    try {
+      setStatus("🔄 Testing restaurant detail...");
+      const restaurant = await apiClient.getRestaurant("mock1");
+      const menu = await apiClient.getMenuItems("mock1");
+
+      if (restaurant.success && menu.success) {
+        const menuCount = menu.data?.items?.length || menu.data?.length || 0;
+        setStatus(
+          `✅ Restaurant detail working! ${restaurant.data?.name} with ${menuCount} menu items`,
+        );
+      } else {
+        setStatus("❌ Restaurant detail failed");
+      }
+    } catch (error) {
+      setStatus(`❌ Restaurant test failed: ${error.message}`);
     }
   };
 
