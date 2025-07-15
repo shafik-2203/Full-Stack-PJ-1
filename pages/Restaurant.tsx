@@ -235,8 +235,23 @@ export default function Restaurant() {
               key={item.id}
               className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
             >
-              <div className="h-48 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center">
-                <div className="text-white text-4xl">🍽️</div>
+              <div className="h-48 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center overflow-hidden">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling.style.display = "flex";
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`text-white text-4xl ${item.image ? "hidden" : "flex"} items-center justify-center w-full h-full`}
+                >
+                  🍽️
+                </div>
               </div>
 
               <div className="p-6">
