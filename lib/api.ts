@@ -319,13 +319,51 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
+  withCredentials: false, // Disable credentials for CORS
+  timeout: 30000, // 30 second timeout
 });
+
+// Debug logging
+console.log("🔧 API Configuration:", {
+  baseURL: API_BASE_URL,
+  environment: import.meta.env.MODE,
+});
+
+// Request interceptor for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log(
+      `🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`,
+    );
+    return config;
+  },
+  (error) => {
+    console.error("🔴 Request Error:", error);
+    return Promise.reject(error);
+  },
+);
+
+// Response interceptor for debugging
+api.interceptors.response.use(
+  (response) => {
+    console.log(`✅ API Response: ${response.status} ${response.config.url}`);
+    return response;
+  },
+  (error) => {
+    console.error("🔴 API Response Error:", {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: error.message,
+      code: error.code,
+    });
+    return Promise.reject(error);
+  },
+);
 
 export const apiClient = {
   login: async (data) => {
     try {
-      console.log("🔄 Attempting login for:", data.email);
+      console.log("��� Attempting login for:", data.email);
       const res = await api.post("/api/auth/login", data);
       console.log("✅ Login successful:", res.data);
       return res.data;
