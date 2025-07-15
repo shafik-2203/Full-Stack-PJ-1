@@ -914,7 +914,7 @@ const seedComprehensiveData = async () => {
         orderNumber: "ORD001",
         status: "delivered",
         paymentMethod: "card",
-        paymentStatus: "completed",
+        paymentStatus: "paid",
         deliveryAddress: {
           street: "456 User Colony",
           city: "Mumbai",
@@ -951,7 +951,7 @@ const seedComprehensiveData = async () => {
         orderNumber: "ORD002",
         status: "preparing",
         paymentMethod: "upi",
-        paymentStatus: "completed",
+        paymentStatus: "paid",
         deliveryAddress: {
           street: "456 User Colony",
           city: "Mumbai",
@@ -1019,7 +1019,7 @@ const seedComprehensiveData = async () => {
         orderNumber: "ORD004",
         status: "confirmed",
         paymentMethod: "wallet",
-        paymentStatus: "completed",
+        paymentStatus: "paid",
         deliveryAddress: {
           street: "202 Sample Avenue",
           city: "Bangalore",
