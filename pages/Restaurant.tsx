@@ -144,11 +144,18 @@ export default function Restaurant() {
     );
   }
 
-  if (error || !restaurant) {
+  // Only show error if no restaurant data AND there's a real error (not just network issues)
+  if (
+    !restaurant &&
+    error &&
+    !error.includes("offline") &&
+    !error.includes("network")
+  ) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 flex items-center justify-center">
         <div className="text-center">
           <div className="text-white text-2xl mb-4">Restaurant not found</div>
+          <div className="text-white/80 mb-4">{error}</div>
           <button
             onClick={() => navigate("/dashboard")}
             className="px-6 py-3 bg-white text-orange-500 rounded-lg hover:bg-orange-100 transition-all"
