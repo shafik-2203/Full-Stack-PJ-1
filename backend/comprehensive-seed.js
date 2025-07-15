@@ -210,8 +210,8 @@ const seedComprehensiveData = async () => {
           state: "Maharashtra",
           zipCode: "400001",
           coordinates: {
-            latitude: 19.076,
-            longitude: 72.8777,
+            lat: 19.076,
+            lng: 72.8777,
           },
         },
         contact: {
@@ -250,8 +250,8 @@ const seedComprehensiveData = async () => {
           state: "Maharashtra",
           zipCode: "400002",
           coordinates: {
-            latitude: 19.076,
-            longitude: 72.8777,
+            lat: 19.076,
+            lng: 72.8777,
           },
         },
         contact: {
@@ -290,8 +290,8 @@ const seedComprehensiveData = async () => {
           state: "Maharashtra",
           zipCode: "400003",
           coordinates: {
-            latitude: 19.076,
-            longitude: 72.8777,
+            lat: 19.076,
+            lng: 72.8777,
           },
         },
         contact: {
@@ -330,8 +330,8 @@ const seedComprehensiveData = async () => {
           state: "Maharashtra",
           zipCode: "400004",
           coordinates: {
-            latitude: 19.076,
-            longitude: 72.8777,
+            lat: 19.076,
+            lng: 72.8777,
           },
         },
         contact: {
@@ -370,8 +370,8 @@ const seedComprehensiveData = async () => {
           state: "Maharashtra",
           zipCode: "400005",
           coordinates: {
-            latitude: 19.076,
-            longitude: 72.8777,
+            lat: 19.076,
+            lng: 72.8777,
           },
         },
         contact: {
@@ -410,8 +410,8 @@ const seedComprehensiveData = async () => {
           state: "Maharashtra",
           zipCode: "400006",
           coordinates: {
-            latitude: 19.076,
-            longitude: 72.8777,
+            lat: 19.076,
+            lng: 72.8777,
           },
         },
         contact: {
