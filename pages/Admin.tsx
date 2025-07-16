@@ -1963,14 +1963,48 @@ export default function Admin() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <div className="flex gap-2">
-                              <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                              <button
+                                title="View Payment Details"
+                                className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                              >
                                 <Eye className="w-4 h-4" />
                               </button>
-                              <button className="text-green-600 hover:text-green-900 transition-colors">
+                              <button
+                                title="Download Receipt"
+                                className="text-green-600 hover:text-green-900 transition-colors p-1"
+                              >
                                 <Download className="w-4 h-4" />
                               </button>
                               {payment.status === "pending" && (
-                                <button className="text-orange-600 hover:text-orange-900 transition-colors">
+                                <button
+                                  title="Mark as Completed"
+                                  onClick={() =>
+                                    updatePaymentStatus(payment.id, "completed")
+                                  }
+                                  className="text-orange-600 hover:text-orange-900 transition-colors p-1"
+                                >
+                                  <CheckSquare className="w-4 h-4" />
+                                </button>
+                              )}
+                              {payment.status === "completed" && (
+                                <button
+                                  title="Process Refund"
+                                  onClick={() =>
+                                    processRefund(payment.id, payment.amount)
+                                  }
+                                  className="text-red-600 hover:text-red-900 transition-colors p-1"
+                                >
+                                  <RefreshCw className="w-4 h-4" />
+                                </button>
+                              )}
+                              {payment.status === "failed" && (
+                                <button
+                                  title="Retry Payment"
+                                  onClick={() =>
+                                    updatePaymentStatus(payment.id, "pending")
+                                  }
+                                  className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                                >
                                   <RefreshCw className="w-4 h-4" />
                                 </button>
                               )}
