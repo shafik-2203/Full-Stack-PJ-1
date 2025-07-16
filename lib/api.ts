@@ -745,13 +745,10 @@ export const apiClient = {
     }
   },
 
-  getOrders: async (token) => {
+  getOrders: async (token?: string) => {
     try {
-      const res = await api.get("/api/orders", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await api.get("/api/orders", { headers });
       return res.data;
     } catch (error) {
       console.error("🔴 Get orders error:", error);
