@@ -42,6 +42,7 @@ export default function Food() {
   >("all");
   const [dietFilter, setDietFilter] = useState<"all" | "veg" | "nonveg">("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const { user, logout } = useAuth();
   const { totalItems, addToCart, cartItems } = useCart();
