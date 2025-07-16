@@ -381,6 +381,133 @@ app.post("/api/auth/reset-password", (req, res) => {
   });
 });
 
+// Mock profile update route
+app.put("/api/auth/profile", (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      message: "Access token required",
+    });
+  }
+
+  const token = authHeader.substring(7);
+  // Simple token validation (extract user ID from token)
+  const userId = token.split("-")[1];
+
+  const { username, email, mobile } = req.body;
+
+  if (!username || !email || !mobile) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
+    });
+  }
+
+  // Find user and update
+  let userToUpdate = null;
+  for (const [userEmail, userData] of mockUsers.entries()) {
+    if (userData.id === userId) {
+      userToUpdate = userData;
+      break;
+    }
+  }
+
+  if (!userToUpdate) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  // Update user data
+  userToUpdate.name = username;
+  userToUpdate.email = email.toLowerCase();
+  userToUpdate.phone = mobile;
+
+  // If email changed, update the map key
+  const oldEmail = Object.keys(Object.fromEntries(mockUsers.entries())).find(
+    (key) => mockUsers.get(key).id === userId,
+  );
+
+  if (oldEmail && oldEmail !== email.toLowerCase()) {
+    mockUsers.delete(oldEmail);
+    mockUsers.set(email.toLowerCase(), userToUpdate);
+  }
+
+  const { password: _, ...userWithoutPassword } = userToUpdate;
+
+  res.json({
+    success: true,
+    message: "Profile updated successfully",
+    user: {
+      id: userWithoutPassword.id,
+      email: userWithoutPassword.email,
+      username: userWithoutPassword.name,
+      mobile: userWithoutPassword.phone,
+      isVerified: userWithoutPassword.isVerified,
+      role: userWithoutPassword.isAdmin ? "admin" : "user",
+      createdAt: userWithoutPassword.createdAt || new Date().toISOString(),
+    },
+  });
+});
+
+// Mock change password route
+app.put("/api/auth/change-password", (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      message: "Access token required",
+    });
+  }
+
+  const token = authHeader.substring(7);
+  // Simple token validation (extract user ID from token)
+  const userId = token.split("-")[1];
+
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Current password and new password are required",
+    });
+  }
+
+  // Find user
+  let userToUpdate = null;
+  for (const [userEmail, userData] of mockUsers.entries()) {
+    if (userData.id === userId) {
+      userToUpdate = userData;
+      break;
+    }
+  }
+
+  if (!userToUpdate) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  // Verify current password
+  if (userToUpdate.password !== currentPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Current password is incorrect",
+    });
+  }
+
+  // Update password
+  userToUpdate.password = newPassword;
+
+  res.json({
+    success: true,
+    message: "Password changed successfully",
+  });
+});
+
 // Mock admin dashboard stats
 app.get("/api/admin/dashboard", (req, res) => {
   res.json({
