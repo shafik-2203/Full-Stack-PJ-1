@@ -541,6 +541,102 @@ export default function Admin() {
     setNewAdminEmail("");
   };
 
+  const refreshSection = async (section: string) => {
+    setSectionLoading((prev) => ({ ...prev, [section]: true }));
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      switch (section) {
+        case "users":
+          const usersResponse = await fetch("/api/admin/users", { headers });
+          if (usersResponse.ok) {
+            const usersData = await usersResponse.json();
+            if (usersData.success && usersData.data) {
+              setUsers(usersData.data);
+            }
+          }
+          break;
+        case "restaurants":
+          const restaurantsResponse = await fetch("/api/admin/restaurants", {
+            headers,
+          });
+          if (restaurantsResponse.ok) {
+            const restaurantsData = await restaurantsResponse.json();
+            if (restaurantsData.success && restaurantsData.data) {
+              setRestaurants(restaurantsData.data);
+            }
+          }
+          break;
+        case "orders":
+          const ordersResponse = await fetch("/api/admin/orders", { headers });
+          if (ordersResponse.ok) {
+            const ordersData = await ordersResponse.json();
+            if (ordersData.success && ordersData.data) {
+              setOrders(ordersData.data);
+            }
+          }
+          break;
+        case "payments":
+          const paymentsResponse = await fetch("/api/admin/payments", {
+            headers,
+          });
+          if (paymentsResponse.ok) {
+            const paymentsData = await paymentsResponse.json();
+            if (paymentsData.success && paymentsData.data) {
+              setPayments(
+                paymentsData.data.map((payment: any) => ({
+                  id: payment._id,
+                  order_id: payment.order?._id || "unknown",
+                  amount: payment.amount,
+                  method: payment.method,
+                  status: payment.status,
+                  created_at: payment.createdAt,
+                })),
+              );
+            }
+          }
+          break;
+        case "food":
+          const foodResponse = await fetch("/api/admin/food-items", {
+            headers,
+          });
+          if (foodResponse.ok) {
+            const foodData = await foodResponse.json();
+            if (foodData.success && foodData.data) {
+              setMenuItems(
+                foodData.data.map((item: any) => ({
+                  id: item._id,
+                  name: item.name,
+                  restaurant_id: item.restaurant?._id || "unknown",
+                  price: item.price,
+                  category: item.category,
+                  status: item.isAvailable ? "available" : "unavailable",
+                })),
+              );
+            }
+          }
+          break;
+      }
+    } catch (err) {
+      console.error(`Error refreshing ${section}:`, err);
+    } finally {
+      setSectionLoading((prev) => ({ ...prev, [section]: false }));
+    }
+  };
+
+  // Auto-refresh data every 30 seconds for live updates
+  useEffect(() => {
+    if (activeTab !== "dashboard") return;
+
+    const interval = setInterval(() => {
+      fetchUserData();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [activeTab]);
+
   const removeUser = async (userId: string, userEmail: string) => {
     if (!confirm(`Are you sure you want to remove user ${userEmail}?`)) {
       return;
@@ -561,7 +657,7 @@ export default function Admin() {
 
       if (data.success) {
         alert(`User ${userEmail} removed successfully`);
-        fetchUserData();
+        refreshSection("users");
       } else {
         alert("Failed to remove user: " + data.message);
       }
