@@ -171,6 +171,7 @@ export default function Checkout() {
         })),
         deliveryAddress: deliveryAddress.trim(),
         paymentMethod: selectedPayment,
+        totalAmount: finalTotal,
       };
 
       const response = await apiClient.createOrder(orderData, token);
