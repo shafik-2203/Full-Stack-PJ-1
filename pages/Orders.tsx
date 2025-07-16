@@ -8,7 +8,7 @@ import Logo from "../components/Logo";
 
 export default function Orders() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const { totalItems } = useCart();
 
   const [orders, setOrders] = useState<Order[]>([]);
