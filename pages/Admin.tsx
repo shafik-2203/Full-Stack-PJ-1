@@ -112,6 +112,7 @@ export default function Admin() {
     [],
   );
   const [adminRequests, setAdminRequests] = useState<AdminRequest[]>([]);
+  const [signupRequests, setSignupRequests] = useState<any[]>([]);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
