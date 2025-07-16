@@ -1807,18 +1807,46 @@ export default function Admin() {
                       <p className="text-xs text-gray-500 mb-3">
                         Restaurant ID: {item.restaurant_id.slice(-6)}
                       </p>
-                      <div className="flex gap-2">
-                        <button className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors">
+                      <div className="flex gap-1 flex-wrap">
+                        <button
+                          onClick={() =>
+                            updateFoodItemStatus(item.id, item.status)
+                          }
+                          className={`flex items-center gap-1 px-2 py-1 text-white text-xs rounded transition-colors ${
+                            item.status === "available"
+                              ? "bg-orange-600 hover:bg-orange-700"
+                              : "bg-green-600 hover:bg-green-700"
+                          }`}
+                          title={
+                            item.status === "available"
+                              ? "Mark Unavailable"
+                              : "Mark Available"
+                          }
+                        >
+                          {item.status === "available" ? (
+                            <XSquare className="w-3 h-3" />
+                          ) : (
+                            <CheckSquare className="w-3 h-3" />
+                          )}
+                        </button>
+                        <button
+                          title="Edit Item"
+                          className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                        >
                           <Edit className="w-3 h-3" />
-                          Edit
                         </button>
-                        <button className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors">
+                        <button
+                          title="Delete Item"
+                          onClick={() => deleteFoodItem(item.id, item.name)}
+                          className="flex items-center gap-1 px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                        >
                           <Trash2 className="w-3 h-3" />
-                          Remove
                         </button>
-                        <button className="flex items-center gap-1 px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors">
+                        <button
+                          title="View Details"
+                          className="flex items-center gap-1 px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                        >
                           <Eye className="w-3 h-3" />
-                          View
                         </button>
                       </div>
                     </div>
