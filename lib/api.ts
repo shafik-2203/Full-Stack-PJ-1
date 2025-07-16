@@ -79,7 +79,7 @@ const mockMenuItems = {
             restaurant: "mock1",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
+              "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop",
           },
           {
             _id: "menu2",
@@ -90,7 +90,7 @@ const mockMenuItems = {
             restaurant: "mock1",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
+              "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
           },
         ],
         Salads: [
@@ -103,7 +103,7 @@ const mockMenuItems = {
             restaurant: "mock1",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
+              "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop",
           },
         ],
       },
@@ -159,7 +159,7 @@ const mockMenuItems = {
             restaurant: "mock2",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
+              "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
           },
           {
             _id: "menu5",
@@ -170,7 +170,7 @@ const mockMenuItems = {
             restaurant: "mock2",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2Fbe498c79250c45e5954485c8b25b6c6d?format=webp&width=800",
+              "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&h=300&fit=crop",
           },
         ],
         Snacks: [
@@ -183,7 +183,7 @@ const mockMenuItems = {
             restaurant: "mock2",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
+              "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=300&fit=crop",
           },
         ],
       },
@@ -239,7 +239,7 @@ const mockMenuItems = {
             restaurant: "mock3",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F0f0ddbe81a464777837612f8944652c5?format=webp&width=800",
+              "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=300&fit=crop",
           },
           {
             _id: "menu8",
@@ -250,7 +250,7 @@ const mockMenuItems = {
             restaurant: "mock3",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F4add3be688194023badd7296ac77cfec?format=webp&width=800",
+              "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=400&h=300&fit=crop",
           },
         ],
         Soup: [
@@ -262,6 +262,8 @@ const mockMenuItems = {
             category: "Soup",
             restaurant: "mock3",
             isAvailable: true,
+            image:
+              "https://images.unsplash.com/photo-1603969072881-b0fc7f3d77d7?w=400&h=300&fit=crop",
           },
         ],
       },
@@ -317,7 +319,7 @@ const mockMenuItems = {
             restaurant: "mock4",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F1a1808666b2740d78d5ea55d22e086a8?format=webp&width=800",
+              "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop",
           },
         ],
         Rice: [
@@ -330,7 +332,7 @@ const mockMenuItems = {
             restaurant: "mock4",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2Fbe498c79250c45e5954485c8b25b6c6d?format=webp&width=800",
+              "https://images.unsplash.com/photo-1563379091339-03246963d96c?w=400&h=300&fit=crop",
           },
         ],
         Appetizers: [
@@ -343,7 +345,7 @@ const mockMenuItems = {
             restaurant: "mock4",
             isAvailable: true,
             image:
-              "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
+              "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=300&fit=crop",
           },
         ],
       },
