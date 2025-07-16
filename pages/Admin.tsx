@@ -637,6 +637,7 @@ export default function Admin() {
     return () => clearInterval(interval);
   }, [activeTab]);
 
+  // User CRUD Operations
   const removeUser = async (userId: string, userEmail: string) => {
     if (!confirm(`Are you sure you want to remove user ${userEmail}?`)) {
       return;
@@ -663,6 +664,258 @@ export default function Admin() {
       }
     } catch (err) {
       alert("Error removing user");
+      console.error("Error:", err);
+    }
+  };
+
+  const updateUserStatus = async (userId: string, isVerified: boolean) => {
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ is_verified: !isVerified }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`User verification status updated`);
+        refreshSection("users");
+      } else {
+        alert("Failed to update user: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating user");
+      console.error("Error:", err);
+    }
+  };
+
+  // Restaurant CRUD Operations
+  const updateRestaurantStatus = async (
+    restaurantId: string,
+    currentStatus: string,
+  ) => {
+    const newStatus = currentStatus === "active" ? "inactive" : "active";
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Restaurant status updated to ${newStatus}`);
+        refreshSection("restaurants");
+      } else {
+        alert("Failed to update restaurant: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating restaurant");
+      console.error("Error:", err);
+    }
+  };
+
+  const deleteRestaurant = async (
+    restaurantId: string,
+    restaurantName: string,
+  ) => {
+    if (
+      !confirm(
+        `Are you sure you want to delete restaurant "${restaurantName}"? This action cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
+        method: "DELETE",
+        headers,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Restaurant "${restaurantName}" deleted successfully`);
+        refreshSection("restaurants");
+      } else {
+        alert("Failed to delete restaurant: " + data.message);
+      }
+    } catch (err) {
+      alert("Error deleting restaurant");
+      console.error("Error:", err);
+    }
+  };
+
+  // Food Item CRUD Operations
+  const updateFoodItemStatus = async (
+    itemId: string,
+    currentStatus: string,
+  ) => {
+    const newStatus =
+      currentStatus === "available" ? "unavailable" : "available";
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/food-items/${itemId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ isAvailable: newStatus === "available" }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Food item status updated to ${newStatus}`);
+        refreshSection("food");
+      } else {
+        alert("Failed to update food item: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating food item");
+      console.error("Error:", err);
+    }
+  };
+
+  const deleteFoodItem = async (itemId: string, itemName: string) => {
+    if (!confirm(`Are you sure you want to delete "${itemName}"?`)) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/food-items/${itemId}`, {
+        method: "DELETE",
+        headers,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Food item "${itemName}" deleted successfully`);
+        refreshSection("food");
+      } else {
+        alert("Failed to delete food item: " + data.message);
+      }
+    } catch (err) {
+      alert("Error deleting food item");
+      console.error("Error:", err);
+    }
+  };
+
+  // Order CRUD Operations
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Order status updated to ${newStatus}`);
+        refreshSection("orders");
+      } else {
+        alert("Failed to update order: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating order");
+      console.error("Error:", err);
+    }
+  };
+
+  const cancelOrder = async (orderId: string) => {
+    if (
+      !confirm(`Are you sure you want to cancel order #${orderId.slice(-6)}?`)
+    ) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: "cancelled" }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Order cancelled successfully`);
+        refreshSection("orders");
+      } else {
+        alert("Failed to cancel order: " + data.message);
+      }
+    } catch (err) {
+      alert("Error cancelling order");
+      console.error("Error:", err);
+    }
+  };
+
+  // Payment CRUD Operations
+  const updatePaymentStatus = async (paymentId: string, newStatus: string) => {
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/payments/${paymentId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Payment status updated to ${newStatus}`);
+        refreshSection("payments");
+      } else {
+        alert("Failed to update payment: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating payment");
+      console.error("Error:", err);
+    }
+  };
+
+  const processRefund = async (paymentId: string, amount: number) => {
+    if (!confirm(`Are you sure you want to process refund of ₹${amount}?`)) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/payments/${paymentId}/refund`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ refund_amount: amount }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Refund of ₹${amount} processed successfully`);
+        refreshSection("payments");
+      } else {
+        alert("Failed to process refund: " + data.message);
+      }
+    } catch (err) {
+      alert("Error processing refund");
       console.error("Error:", err);
     }
   };
