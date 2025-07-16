@@ -1461,10 +1461,22 @@ export default function Admin() {
                 <h2 className="text-xl font-semibold text-gray-900">
                   Food Items Management
                 </h2>
-                <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
-                  <Plus className="w-4 h-4" />
-                  Add Food Item
-                </button>
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    Add Food Item
+                  </button>
+                  <button
+                    onClick={() => refreshSection("food")}
+                    disabled={sectionLoading.food}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.food ? "animate-spin" : ""}`}
+                    />
+                    Refresh
+                  </button>
+                </div>
               </div>
               {loading || sectionLoading.food ? (
                 <div className="text-center py-12">
