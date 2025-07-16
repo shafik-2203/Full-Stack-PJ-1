@@ -51,7 +51,6 @@ const App = () => (
         <CartProvider>
           <BrowserRouter>
             <NetworkStatus />
-            <TestAuth />
             <Routes>
               <Route path="/" element={<TestIndex />} />
               <Route path="/login" element={<Login />} />
