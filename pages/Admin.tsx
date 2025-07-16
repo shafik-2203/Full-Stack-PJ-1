@@ -1687,18 +1687,21 @@ export default function Admin() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             <select
                               value={order.status}
-                              className={`text-xs font-semibold rounded-full px-3 py-1 border-0 ${
+                              onChange={(e) =>
+                                updateOrderStatus(order.id, e.target.value)
+                              }
+                              className={`text-xs font-semibold rounded-full px-3 py-1 border-0 cursor-pointer transition-colors ${
                                 order.status === "delivered"
-                                  ? "bg-green-100 text-green-800"
+                                  ? "bg-green-100 text-green-800 hover:bg-green-200"
                                   : order.status === "cancelled"
-                                    ? "bg-red-100 text-red-800"
+                                    ? "bg-red-100 text-red-800 hover:bg-red-200"
                                     : order.status === "out_for_delivery"
-                                      ? "bg-purple-100 text-purple-800"
+                                      ? "bg-purple-100 text-purple-800 hover:bg-purple-200"
                                       : order.status === "preparing"
-                                        ? "bg-orange-100 text-orange-800"
+                                        ? "bg-orange-100 text-orange-800 hover:bg-orange-200"
                                         : order.status === "confirmed"
-                                          ? "bg-blue-100 text-blue-800"
-                                          : "bg-yellow-100 text-yellow-800"
+                                          ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                                          : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
                               }`}
                             >
                               <option value="pending">Pending</option>
@@ -1718,15 +1721,28 @@ export default function Admin() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <div className="flex gap-2">
-                              <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                              <button
+                                title="View Order Details"
+                                className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                              >
                                 <Eye className="w-4 h-4" />
                               </button>
-                              <button className="text-green-600 hover:text-green-900 transition-colors">
+                              <button
+                                title="Track Delivery"
+                                className="text-green-600 hover:text-green-900 transition-colors p-1"
+                              >
                                 <Truck className="w-4 h-4" />
                               </button>
-                              <button className="text-orange-600 hover:text-orange-900 transition-colors">
-                                <Edit className="w-4 h-4" />
-                              </button>
+                              {order.status !== "cancelled" &&
+                                order.status !== "delivered" && (
+                                  <button
+                                    title="Cancel Order"
+                                    onClick={() => cancelOrder(order.id)}
+                                    className="text-red-600 hover:text-red-900 transition-colors p-1"
+                                  >
+                                    <XSquare className="w-4 h-4" />
+                                  </button>
+                                )}
                             </div>
                           </td>
                         </tr>
