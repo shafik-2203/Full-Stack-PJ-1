@@ -1,36 +1,7 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
 
 export default function Index() {
-  const [animationStage, setAnimationStage] = useState(0);
-  const [showContent, setShowContent] = useState(false);
-  const [particles, setParticles] = useState<
-    Array<{ id: number; x: number; y: number; delay: number }>
-  >([]);
-
-  useEffect(() => {
-    // Generate particles with random positions
-    const newParticles = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 3,
-    }));
-    setParticles(newParticles);
-
-    // New animation sequence with different timings
-    const timeouts = [
-      setTimeout(() => setAnimationStage(1), 300), // Initial fade in
-      setTimeout(() => setAnimationStage(2), 800), // Logo entrance
-      setTimeout(() => setAnimationStage(3), 1400), // Text reveal
-      setTimeout(() => setAnimationStage(4), 2200), // Navigation
-      setTimeout(() => setShowContent(true), 2800), // Final content
-    ];
-
-    return () => timeouts.forEach(clearTimeout);
-  }, []);
-
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Dynamic Animated Background */}
