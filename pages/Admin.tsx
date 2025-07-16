@@ -817,67 +817,177 @@ export default function Admin() {
           </div>
         )}
 
+        {/* Food Items Tab */}
+        {activeTab === "food" && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Food Items Management
+                </h2>
+                <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                  <Plus className="w-4 h-4" />
+                  Add Food Item
+                </button>
+              </div>
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Loading food items...</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {menuItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border rounded-lg p-4 hover:shadow-lg transition-all duration-300 bg-white"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          {item.name}
+                        </h3>
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            item.status === "available"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        Category: {item.category}
+                      </p>
+                      <p className="text-lg font-bold text-orange-600 mb-2">
+                        ₹{item.price}
+                      </p>
+                      <p className="text-xs text-gray-500 mb-3">
+                        Restaurant ID: {item.restaurant_id.slice(-6)}
+                      </p>
+                      <div className="flex gap-2">
+                        <button className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors">
+                          <Edit className="w-3 h-3" />
+                          Edit
+                        </button>
+                        <button className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors">
+                          <Trash2 className="w-3 h-3" />
+                          Remove
+                        </button>
+                        <button className="flex items-center gap-1 px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors">
+                          <Eye className="w-3 h-3" />
+                          View
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Payments Tab */}
         {activeTab === "payments" && (
           <div className="space-y-6 animate-fade-in">
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Payment Management
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Payment ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Method
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {payments.map((payment) => (
-                      <tr key={payment.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {payment.id.slice(-6)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          #{payment.order_id.slice(-6)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₹{payment.amount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {payment.method}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              payment.status === "completed"
-                                ? "bg-green-100 text-green-800"
-                                : payment.status === "failed"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {payment.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Payment Management
+                </h2>
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <Download className="w-4 h-4" />
+                    Export
+                  </button>
+                  <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                    <RefreshCw className="w-4 h-4" />
+                    Refresh
+                  </button>
+                </div>
               </div>
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Loading payments...</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Payment ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Order ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Amount
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Method
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {payments.map((payment) => (
+                        <tr
+                          key={payment.id}
+                          className="hover:bg-gray-50 transition-colors"
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {payment.id.slice(-6)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            #{payment.order_id.slice(-6)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                            ₹{payment.amount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {payment.method}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                payment.status === "completed"
+                                  ? "bg-green-100 text-green-800"
+                                  : payment.status === "failed"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                              }`}
+                            >
+                              {payment.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div className="flex gap-2">
+                              <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button className="text-green-600 hover:text-green-900 transition-colors">
+                                <Download className="w-4 h-4" />
+                              </button>
+                              {payment.status === "pending" && (
+                                <button className="text-orange-600 hover:text-orange-900 transition-colors">
+                                  <RefreshCw className="w-4 h-4" />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         )}
