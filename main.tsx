@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import ErrorBoundary from "./components/ErrorBoundary";
-import TestAuth from "./components/TestAuth";
 import NetworkStatus from "./components/NetworkStatus";
 
 // Import pages
