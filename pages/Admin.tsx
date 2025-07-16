@@ -264,44 +264,48 @@ export default function Admin() {
         console.warn("Some admin endpoints failed:", fetchError);
       }
 
-      // Set default mock data for menu items and payments (endpoints don't exist yet)
-      setMenuItems([
-        {
-          id: "item_1",
-          name: "Margherita Pizza",
-          restaurant_id: "rest-1",
-          price: 299,
-          category: "Pizza",
-          status: "available",
-        },
-        {
-          id: "item_2",
-          name: "Chicken Burger",
-          restaurant_id: "rest-2",
-          price: 249,
-          category: "Burger",
-          status: "available",
-        },
-      ]);
+      // Set fallback data if endpoints failed
+      if (menuItems.length === 0) {
+        setMenuItems([
+          {
+            id: "item_1",
+            name: "Margherita Pizza",
+            restaurant_id: "rest-1",
+            price: 299,
+            category: "Pizza",
+            status: "available",
+          },
+          {
+            id: "item_2",
+            name: "Chicken Burger",
+            restaurant_id: "rest-2",
+            price: 249,
+            category: "Burger",
+            status: "available",
+          },
+        ]);
+      }
 
-      setPayments([
-        {
-          id: "pay_1",
-          order_id: "order-1",
-          amount: 916.7,
-          method: "UPI",
-          status: "completed",
-          created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: "pay_2",
-          order_id: "order-2",
-          amount: 412.8,
-          method: "Card",
-          status: "completed",
-          created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
-        },
-      ]);
+      if (payments.length === 0) {
+        setPayments([
+          {
+            id: "pay_1",
+            order_id: "order-1",
+            amount: 916.7,
+            method: "UPI",
+            status: "completed",
+            created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "pay_2",
+            order_id: "order-2",
+            amount: 412.8,
+            method: "Card",
+            status: "completed",
+            created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+          },
+        ]);
+      }
     } catch (err) {
       setError("Failed to fetch user data");
       console.error("Error fetching user data:", err);
