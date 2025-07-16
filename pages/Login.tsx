@@ -43,8 +43,15 @@ export default function Login() {
         apiClient.setToken(response.token);
         // Update auth context
         login(response.user, response.token);
-        // Navigate to dashboard
-        navigate("/dashboard");
+
+        // Show success animation
+        setShowSuccess(true);
+        setIsLoading(false);
+
+        // Navigate after animation
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
       } else {
         setError(response.message || "Login failed");
       }
