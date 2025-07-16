@@ -65,16 +65,74 @@ export default function RealTimeDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Initialize with empty data - in real app this would come from API
-      setStats({
-        activeOrders: 0,
-        avgDeliveryTime: 0,
-        topRestaurants: [],
-        deliveryPartners: 0,
-        promotions: [],
-      });
+      // Simulate real-time data with realistic values
+      const mockStats = {
+        activeOrders: Math.floor(Math.random() * 50) + 15, // 15-65 active orders
+        avgDeliveryTime: Math.floor(Math.random() * 20) + 20, // 20-40 minutes
+        topRestaurants: [
+          {
+            id: "1",
+            name: "Pizza Palace",
+            orders: Math.floor(Math.random() * 30) + 20,
+            rating: 4.5,
+          },
+          {
+            id: "2",
+            name: "Burger Hub",
+            orders: Math.floor(Math.random() * 25) + 15,
+            rating: 4.2,
+          },
+          {
+            id: "3",
+            name: "Sushi Express",
+            orders: Math.floor(Math.random() * 20) + 10,
+            rating: 4.7,
+          },
+        ],
+        deliveryPartners: Math.floor(Math.random() * 20) + 25, // 25-45 partners
+        promotions: [
+          {
+            id: "1",
+            title: "Flash Sale",
+            discount: 30,
+            restaurant: "Pizza Palace",
+            expiresIn: Math.floor(Math.random() * 3600) + 1800,
+          },
+          {
+            id: "2",
+            title: "Weekend Special",
+            discount: 25,
+            restaurant: "Burger Hub",
+            expiresIn: Math.floor(Math.random() * 7200) + 3600,
+          },
+          {
+            id: "3",
+            title: "Happy Hour",
+            discount: 20,
+            restaurant: "Sushi Express",
+            expiresIn: Math.floor(Math.random() * 1800) + 900,
+          },
+        ],
+      };
+
+      setStats(mockStats);
+      setIsConnected(true);
+
+      // Simulate some notifications
+      if (Math.random() > 0.7) {
+        const messages = [
+          "🍕 Pizza Palace just started a flash sale!",
+          "🚚 5 new delivery partners came online",
+          "🎯 Order volume increased by 15% in your area",
+          "⚡ Average delivery time improved to 25 minutes",
+        ];
+        const randomMessage =
+          messages[Math.floor(Math.random() * messages.length)];
+        setNotifications((prev) => [randomMessage, ...prev.slice(0, 3)]);
+      }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
+      setIsConnected(false);
     }
   };
 

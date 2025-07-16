@@ -1,18 +1,110 @@
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { apiClient } from "../lib/api";
 import Logo from "../components/Logo";
 import PWAInstallPrompt from "../components/PWAInstallPrompt";
 import RealTimeDashboard from "../components/RealTimeDashboard";
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const { totalItems } = useCart();
   const navigate = useNavigate();
+  const [lastOrder, setLastOrder] = useState(null);
+  const [favoriteRestaurant, setFavoriteRestaurant] = useState(null);
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [liveDeals, setLiveDeals] = useState([]);
+  const [trendingRestaurants, setTrendingRestaurants] = useState([]);
+
+  useEffect(() => {
+    if (token) {
+      loadDashboardData();
+    }
+  }, [token]);
+
+  const loadDashboardData = async () => {
+    try {
+      // Load last order
+      const ordersResponse = await apiClient.getOrders(token);
+      if (ordersResponse.success && ordersResponse.data.length > 0) {
+        setLastOrder(ordersResponse.data[0]);
+      }
+
+      // Load restaurants for trending and favorites
+      const restaurantsResponse = await apiClient.getRestaurants();
+      if (restaurantsResponse.success && restaurantsResponse.data) {
+        const restaurants = restaurantsResponse.data;
+        setTrendingRestaurants(restaurants.slice(0, 3));
+
+        // Set a favorite restaurant (highest rated)
+        const favorite = restaurants.sort((a, b) => b.rating - a.rating)[0];
+        setFavoriteRestaurant(favorite);
+      }
+
+      // Mock live deals
+      setLiveDeals([
+        {
+          id: "1",
+          title: "20% off Pizza",
+          restaurant: "Pizza Palace",
+          discount: 20,
+        },
+        {
+          id: "2",
+          title: "Free delivery",
+          restaurant: "Burger Hub",
+          discount: 100,
+        },
+        {
+          id: "3",
+          title: "30% off Sushi",
+          restaurant: "Sushi Express",
+          discount: 30,
+        },
+      ]);
+
+      // Mock saved addresses
+      setSavedAddresses([
+        { id: "1", label: "Home", address: "123 Main St, City" },
+        { id: "2", label: "Work", address: "456 Office Ave, City" },
+      ]);
+    } catch (error) {
+      console.error("Error loading dashboard data:", error);
+    }
+  };
 
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const handleLastOrder = () => {
+    if (lastOrder) {
+      navigate("/orders");
+    } else {
+      navigate("/restaurants");
+    }
+  };
+
+  const handleFavoriteFood = () => {
+    if (favoriteRestaurant) {
+      navigate(`/restaurant/${favoriteRestaurant._id}`);
+    } else {
+      navigate("/restaurants");
+    }
+  };
+
+  const handleSavedAddresses = () => {
+    navigate("/profile");
+  };
+
+  const handleLiveDeals = () => {
+    navigate("/restaurants");
+  };
+
+  const handleTrendingNow = () => {
+    navigate("/restaurants");
   };
 
   const quickActions = [
@@ -165,42 +257,72 @@ export default function Dashboard() {
               📋 Recent Activity
             </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between py-2 border-b border-white/20">
-                <span className="text-white/90">Last Order</span>
+              <button
+                onClick={handleLastOrder}
+                className="w-full flex items-center justify-between py-3 px-2 border-b border-white/20 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <span className="text-white/90">
+                  Last Order{" "}
+                  {lastOrder
+                    ? `- ${lastOrder.restaurant?.name || "Order #" + lastOrder.id.slice(-6)}`
+                    : "- None yet"}
+                </span>
                 <span className="text-white font-medium">View Details →</span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b border-white/20">
-                <span className="text-white/90">Favorite Restaurant</span>
+              </button>
+              <button
+                onClick={handleFavoriteFood}
+                className="w-full flex items-center justify-between py-3 px-2 border-b border-white/20 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <span className="text-white/90">
+                  Favorite Food{" "}
+                  {favoriteRestaurant
+                    ? `- ${favoriteRestaurant.name}`
+                    : "- Discover now"}
+                </span>
                 <span className="text-white font-medium">Order Again →</span>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-white/90">Saved Addresses</span>
+              </button>
+              <button
+                onClick={handleSavedAddresses}
+                className="w-full flex items-center justify-between py-3 px-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <span className="text-white/90">
+                  Saved Addresses ({savedAddresses.length})
+                </span>
                 <span className="text-white font-medium">Manage →</span>
-              </div>
+              </button>
             </div>
           </div>
 
-          {/* Promotional Section */}
+          {/* Quick Actions Section */}
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6">
             <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              🎁 Special Offers
+              ⚡ Quick Actions
             </h3>
             <div className="space-y-3">
-              <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-3">
+              <button
+                onClick={handleLiveDeals}
+                className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-3 hover:from-yellow-500 hover:to-orange-500 transition-all"
+              >
                 <p className="text-sm font-medium text-gray-800">
-                  🌟 Get FASTIO Pass for exclusive discounts!
+                  🎉 Live Deals ({liveDeals.length} active)
                 </p>
-              </div>
-              <div className="bg-gradient-to-r from-green-400 to-blue-400 rounded-lg p-3">
+              </button>
+              <button
+                onClick={handleTrendingNow}
+                className="w-full bg-gradient-to-r from-green-400 to-blue-400 rounded-lg p-3 hover:from-green-500 hover:to-blue-500 transition-all"
+              >
                 <p className="text-sm font-medium text-gray-800">
-                  🍕 Free delivery on orders above ₹299
+                  🔥 Trending Now ({trendingRestaurants.length} restaurants)
                 </p>
-              </div>
-              <div className="bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg p-3">
+              </button>
+              <button
+                onClick={() => navigate("/fastio-pass")}
+                className="w-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg p-3 hover:from-purple-500 hover:to-pink-500 transition-all"
+              >
                 <p className="text-sm font-medium text-gray-800">
-                  ⏰ 20% off on weekend orders
+                  ⭐ Get FASTIO Pass for exclusive benefits!
                 </p>
-              </div>
+              </button>
             </div>
           </div>
         </div>

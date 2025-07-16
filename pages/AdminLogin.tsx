@@ -19,8 +19,32 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
 
+    // Retry logic for network issues
+    const attemptLogin = async (retryCount = 0): Promise<any> => {
+      try {
+        const response = await apiClient.login({ email, password });
+        return response;
+      } catch (err) {
+        console.error(`Admin login attempt ${retryCount + 1} failed:`, err);
+
+        // Retry on network errors
+        const isNetworkError =
+          err instanceof Error &&
+          (err.message.includes("Network Error") ||
+            err.message.includes("Cannot connect to server") ||
+            err.message.includes("fetch"));
+
+        if (isNetworkError && retryCount < 2) {
+          console.log(`Retrying admin login... (attempt ${retryCount + 2})`);
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second before retry
+          return attemptLogin(retryCount + 1);
+        }
+        throw err;
+      }
+    };
+
     try {
-      const response = await apiClient.login({ email, password });
+      const response = await attemptLogin();
 
       if (response.success && response.user && response.token) {
         // Check if user is admin

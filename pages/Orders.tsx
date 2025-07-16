@@ -8,7 +8,7 @@ import Logo from "../components/Logo";
 
 export default function Orders() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const { totalItems } = useCart();
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -23,9 +23,6 @@ export default function Orders() {
     try {
       setIsLoading(true);
       setError("");
-
-      // Get auth token from localStorage or user context
-      const token = localStorage.getItem("fastio_token") || user?.token;
 
       if (!token) {
         setError("Please log in to view orders");
