@@ -1550,10 +1550,12 @@ export default function Admin() {
                   </button>
                 </div>
               </div>
-              {loading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
-                  <p className="mt-2 text-gray-600">Loading payments...</p>
+              {loading || sectionLoading.payments ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading payments...
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
