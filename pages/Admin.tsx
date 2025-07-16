@@ -280,7 +280,7 @@ export default function Admin() {
         });
       }
 
-      // Set fallback data if endpoints failed
+      // Set comprehensive fallback data if endpoints failed
       if (menuItems.length === 0) {
         setMenuItems([
           {
@@ -299,6 +299,116 @@ export default function Admin() {
             category: "Burger",
             status: "available",
           },
+          {
+            id: "item_3",
+            name: "Chicken Biryani",
+            restaurant_id: "rest-3",
+            price: 399,
+            category: "Indian",
+            status: "available",
+          },
+          {
+            id: "item_4",
+            name: "Veg Momos",
+            restaurant_id: "rest-4",
+            price: 149,
+            category: "Chinese",
+            status: "available",
+          },
+          {
+            id: "item_5",
+            name: "Chocolate Cake",
+            restaurant_id: "rest-5",
+            price: 199,
+            category: "Dessert",
+            status: "unavailable",
+          },
+        ]);
+      }
+
+      if (restaurants.length === 0) {
+        setRestaurants([
+          {
+            id: "rest-1",
+            name: "Pizza Palace",
+            cuisine: "Italian",
+            rating: 4.5,
+            status: "active",
+            orders_count: 245,
+            revenue: 125000,
+          },
+          {
+            id: "rest-2",
+            name: "Burger King",
+            cuisine: "Fast Food",
+            rating: 4.2,
+            status: "active",
+            orders_count: 189,
+            revenue: 98000,
+          },
+          {
+            id: "rest-3",
+            name: "Spice Garden",
+            cuisine: "Indian",
+            rating: 4.7,
+            status: "active",
+            orders_count: 312,
+            revenue: 187000,
+          },
+          {
+            id: "rest-4",
+            name: "Dragon House",
+            cuisine: "Chinese",
+            rating: 4.3,
+            status: "inactive",
+            orders_count: 156,
+            revenue: 75000,
+          },
+        ]);
+      }
+
+      if (orders.length === 0) {
+        setOrders([
+          {
+            id: "order_1",
+            user_id: "user-123",
+            restaurant_id: "rest-1",
+            status: "delivered",
+            total_amount: 916.7,
+            created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_2",
+            user_id: "user-456",
+            restaurant_id: "rest-2",
+            status: "out_for_delivery",
+            total_amount: 412.8,
+            created_at: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_3",
+            user_id: "user-789",
+            restaurant_id: "rest-3",
+            status: "preparing",
+            total_amount: 687.5,
+            created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_4",
+            user_id: "user-321",
+            restaurant_id: "rest-1",
+            status: "confirmed",
+            total_amount: 299.0,
+            created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_5",
+            user_id: "user-654",
+            restaurant_id: "rest-4",
+            status: "pending",
+            total_amount: 149.0,
+            created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+          },
         ]);
       }
 
@@ -306,7 +416,7 @@ export default function Admin() {
         setPayments([
           {
             id: "pay_1",
-            order_id: "order-1",
+            order_id: "order_1",
             amount: 916.7,
             method: "UPI",
             status: "completed",
@@ -314,11 +424,90 @@ export default function Admin() {
           },
           {
             id: "pay_2",
-            order_id: "order-2",
+            order_id: "order_2",
             amount: 412.8,
-            method: "Card",
+            method: "Credit Card",
             status: "completed",
             created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "pay_3",
+            order_id: "order_3",
+            amount: 687.5,
+            method: "Debit Card",
+            status: "completed",
+            created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "pay_4",
+            order_id: "order_4",
+            amount: 299.0,
+            method: "UPI",
+            status: "pending",
+            created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "pay_5",
+            order_id: "order_5",
+            amount: 149.0,
+            method: "Cash on Delivery",
+            status: "pending",
+            created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+          },
+        ]);
+      }
+
+      if (users.length === 0) {
+        setUsers([
+          {
+            id: "user-123",
+            email: "john.doe@example.com",
+            username: "john_doe",
+            mobile: "9876543210",
+            is_verified: true,
+            created_at: new Date(
+              Date.now() - 30 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(
+              Date.now() - 5 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          {
+            id: "user-456",
+            email: "jane.smith@example.com",
+            username: "jane_smith",
+            mobile: "9876543211",
+            is_verified: true,
+            created_at: new Date(
+              Date.now() - 15 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(
+              Date.now() - 2 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          {
+            id: "user-789",
+            email: "bob.wilson@example.com",
+            username: "bob_wilson",
+            mobile: "9876543212",
+            is_verified: false,
+            created_at: new Date(
+              Date.now() - 7 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(
+              Date.now() - 1 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          {
+            id: "user-321",
+            email: "alice.brown@example.com",
+            username: "alice_brown",
+            mobile: "9876543213",
+            is_verified: true,
+            created_at: new Date(
+              Date.now() - 3 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
           },
         ]);
       }
