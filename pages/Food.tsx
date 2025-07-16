@@ -321,6 +321,60 @@ export default function Food() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {showMobileMenu && (
+          <div className="md:hidden bg-white/90 backdrop-blur-sm border-t border-white/20">
+            <div className="container mx-auto px-4 py-4 space-y-2">
+              <Link
+                to="/dashboard"
+                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/restaurants"
+                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Restaurants
+              </Link>
+              <Link
+                to="/food"
+                className="block py-2 text-orange-500 font-semibold"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Food
+              </Link>
+              <Link
+                to="/cart"
+                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Cart ({totalItems})
+              </Link>
+              <Link
+                to="/orders"
+                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Orders
+              </Link>
+              <div className="pt-2 border-t border-gray-200">
+                <p className="text-sm text-gray-600 mb-2">
+                  Welcome, {user?.username}!
+                </p>
+                <button
+                  onClick={handleLogout}
+                  className="text-red-600 hover:text-red-700 transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
