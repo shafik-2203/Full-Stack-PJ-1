@@ -31,6 +31,7 @@ interface FoodItem {
 
 export default function Food() {
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [allFoodItems, setAllFoodItems] = useState<FoodItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,7 +47,6 @@ export default function Food() {
   const { totalItems, addToCart, cartItems } = useCart();
   const navigate = useNavigate();
 
-  // Use ref to prevent scroll to top during search
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,115 +54,168 @@ export default function Food() {
     fetchInitialData();
   }, []);
 
-  // Debounced search with scroll position preservation
-  const debouncedSearch = useCallback((query: string, category: string) => {
+  const debouncedSearch = useCallback(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
     searchTimeoutRef.current = setTimeout(async () => {
-      // Store current scroll position
       const currentScrollY = window.scrollY;
-
-      await performSearch(query, category);
-
-      // Restore scroll position after search
+      applyFilters();
       requestAnimationFrame(() => {
         window.scrollTo(0, currentScrollY);
       });
     }, 300);
-  }, []);
+  }, [searchQuery, selectedCategory, priceFilter, dietFilter]);
 
   useEffect(() => {
-    debouncedSearch(searchQuery, selectedCategory);
+    debouncedSearch();
 
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [searchQuery, selectedCategory, debouncedSearch]);
+  }, [searchQuery, selectedCategory, priceFilter, dietFilter]);
 
   const fetchInitialData = async () => {
     try {
       setIsLoading(true);
-      const [restaurantsResponse, categoriesResponse] = await Promise.all([
-        apiClient.getRestaurants(),
-        apiClient.getCategories(),
-      ]);
 
-      if (restaurantsResponse.success) {
-        setRestaurants(restaurantsResponse.data || []);
+      // Get all restaurants first
+      const restaurantsResponse = await apiClient.getRestaurants();
+      const allFoodItems: FoodItem[] = [];
+      const categoriesSet = new Set<string>();
+
+      if (restaurantsResponse.success && restaurantsResponse.data) {
+        // Fetch menu items from each restaurant
+        for (const restaurant of restaurantsResponse.data) {
+          try {
+            const menuResponse = await apiClient.getMenuByRestaurant(
+              restaurant._id,
+            );
+            if (
+              menuResponse.success &&
+              menuResponse.data &&
+              menuResponse.data.items
+            ) {
+              const restaurantItems = menuResponse.data.items.map(
+                (item: any) => ({
+                  _id: item._id,
+                  name: item.name,
+                  description: item.description,
+                  price: item.price,
+                  category: item.category,
+                  restaurant: restaurant.name,
+                  isAvailable: item.isAvailable,
+                  image: item.image,
+                  isVeg: item.isVeg,
+                  rating: 4.0 + Math.random() * 1, // Mock rating
+                  preparationTime: 15 + Math.floor(Math.random() * 25), // Mock prep time
+                }),
+              );
+              allFoodItems.push(...restaurantItems);
+
+              // Add categories
+              restaurantItems.forEach((item: FoodItem) => {
+                categoriesSet.add(item.category);
+              });
+            }
+          } catch (error) {
+            console.warn(`Failed to fetch menu for ${restaurant.name}:`, error);
+          }
+        }
       }
 
-      if (categoriesResponse.success) {
-        setCategories(categoriesResponse.data || []);
-      }
+      setAllFoodItems(allFoodItems);
+      setFoodItems(allFoodItems);
+      setCategories(Array.from(categoriesSet));
     } catch (err) {
-      setError("Failed to load food options");
+      setError("Failed to load food items");
       console.error("Error fetching data:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const performSearch = async (query: string, category: string) => {
+  const applyFilters = () => {
     try {
       setError("");
 
-      // If no search query and no category selected, show all restaurants
-      if (!query.trim() && !category) {
-        const response = await apiClient.getRestaurants();
-        if (response.success) {
-          setRestaurants(response.data || []);
-        }
-        return;
+      let filteredItems = [...allFoodItems];
+
+      // Apply search query
+      if (searchQuery.trim()) {
+        filteredItems = filteredItems.filter(
+          (item) =>
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.description
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            item.restaurant.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.category.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
       }
 
-      // Search with filters
-      if (query.trim()) {
-        const response = await apiClient.searchRestaurants(query);
-        if (response.success) {
-          let filteredResults = response.data || [];
+      // Apply category filter
+      if (selectedCategory) {
+        filteredItems = filteredItems.filter(
+          (item) =>
+            item.category.toLowerCase() === selectedCategory.toLowerCase(),
+        );
+      }
 
-          // Further filter by category if selected
-          if (category) {
-            filteredResults = filteredResults.filter(
-              (restaurant) =>
-                restaurant.category.toLowerCase() === category.toLowerCase(),
-            );
-          }
-
-          setRestaurants(filteredResults);
-        } else {
-          setError("Failed to search food");
-          setRestaurants([]);
+      // Apply price filter
+      if (priceFilter !== "all") {
+        switch (priceFilter) {
+          case "under200":
+            filteredItems = filteredItems.filter((item) => item.price < 200);
+            break;
+          case "under500":
+            filteredItems = filteredItems.filter((item) => item.price < 500);
+            break;
+          case "above500":
+            filteredItems = filteredItems.filter((item) => item.price >= 500);
+            break;
         }
       }
-      // If only category is selected, filter by category
-      else if (category) {
-        const response = await apiClient.getRestaurants();
-        if (response.success) {
-          const filteredResults = (response.data || []).filter(
-            (restaurant) =>
-              restaurant.category.toLowerCase() === category.toLowerCase(),
-          );
-          setRestaurants(filteredResults);
+
+      // Apply diet filter
+      if (dietFilter !== "all") {
+        if (dietFilter === "veg") {
+          filteredItems = filteredItems.filter((item) => item.isVeg);
+        } else if (dietFilter === "nonveg") {
+          filteredItems = filteredItems.filter((item) => !item.isVeg);
         }
       }
+
+      setFoodItems(filteredItems);
     } catch (err) {
-      setError("Search failed");
-      console.error("Error searching:", err);
-      setRestaurants([]);
+      setError("Filter failed");
+      console.error("Error filtering:", err);
     }
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+  const handleAddToCart = (foodItem: FoodItem) => {
+    const cartItem = {
+      id: `${foodItem._id}-${Date.now()}`,
+      menuItem: {
+        id: foodItem._id,
+        name: foodItem.name,
+        description: foodItem.description,
+        price: foodItem.price,
+        image: foodItem.image,
+      },
+      quantity: 1,
+      restaurantId: foodItem._id.split("-")[0] || "unknown",
+      restaurantName: foodItem.restaurant,
+    };
+
+    addToCart(cartItem);
   };
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
+  const getCartQuantity = (foodItemId: string) => {
+    return cartItems.filter((item) => item.menuItem.id === foodItemId).length;
   };
 
   const handleLogout = () => {
@@ -173,13 +226,15 @@ export default function Food() {
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("");
-    fetchInitialData();
+    setPriceFilter("all");
+    setDietFilter("all");
+    setFoodItems(allFoodItems);
   };
 
-  if (isLoading && restaurants.length === 0) {
+  if (isLoading && foodItems.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 flex items-center justify-center">
-        <div className="text-white text-2xl">Loading food options...</div>
+        <div className="text-white text-2xl">Loading delicious food...</div>
       </div>
     );
   }
@@ -190,7 +245,7 @@ export default function Food() {
       className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600"
     >
       {/* Header */}
-      <header className="bg-white/10 backdrop-blur-sm border-b border-white/20 sticky top-0 z-10">
+      <header className="bg-white/10 backdrop-blur-sm border-b border-white/20 sticky top-0 z-20">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Logo size={60} />
@@ -248,71 +303,108 @@ export default function Food() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
-        <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 mb-8 sticky top-24 z-5">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            🔍 Search for Food & Restaurants
+        {/* Page Title */}
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Discover Delicious Food 🍽️
           </h2>
+          <p className="text-white/90 text-lg">
+            Browse individual dishes from all restaurants
+          </p>
+        </div>
 
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
+        {/* Search and Filters */}
+        <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 mb-8">
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search Bar */}
             <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search for dishes, restaurants, or cuisines..."
+                placeholder="Search for dishes, restaurants, or cuisine..."
                 value={searchQuery}
-                onChange={handleSearchChange}
-                className="w-full px-4 py-3 rounded-full border-2 border-white/30 bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200"
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 rounded-lg border-0 bg-white/90 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  ✕
-                </button>
-              )}
             </div>
 
-            <div className="relative">
-              <select
-                value={selectedCategory}
-                onChange={(e) => handleCategoryChange(e.target.value)}
-                className="px-4 py-3 rounded-full border-2 border-white/30 bg-white text-gray-800 focus:outline-none focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 shadow-lg transition-all duration-200 appearance-none cursor-pointer min-w-[150px]"
-              >
-                <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+            {/* Filter Button */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="px-6 py-3 bg-white/90 text-gray-800 rounded-lg hover:bg-white transition-colors flex items-center gap-2"
+            >
+              <Filter className="w-5 h-5" />
+              Filters
+            </button>
+
+            {/* Clear Filters */}
+            <button
+              onClick={clearFilters}
+              className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+            >
+              <X className="w-5 h-5" />
+              Clear
+            </button>
+          </div>
+
+          {/* Expanded Filters */}
+          {showFilters && (
+            <div className="mt-6 pt-6 border-t border-white/20">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Category Filter */}
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Category
+                  </label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full p-3 rounded-lg bg-white/90 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Price Filter */}
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Price Range
+                  </label>
+                  <select
+                    value={priceFilter}
+                    onChange={(e) => setPriceFilter(e.target.value as any)}
+                    className="w-full p-3 rounded-lg bg-white/90 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  >
+                    <option value="all">All Prices</option>
+                    <option value="under200">Under ₹200</option>
+                    <option value="under500">Under ₹500</option>
+                    <option value="above500">₹500 & Above</option>
+                  </select>
+                </div>
+
+                {/* Diet Filter */}
+                <div>
+                  <label className="block text-white font-medium mb-2">
+                    Diet
+                  </label>
+                  <select
+                    value={dietFilter}
+                    onChange={(e) => setDietFilter(e.target.value as any)}
+                    className="w-full p-3 rounded-lg bg-white/90 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  >
+                    <option value="all">All</option>
+                    <option value="veg">Vegetarian</option>
+                    <option value="nonveg">Non-Vegetarian</option>
+                  </select>
+                </div>
+              </div>
             </div>
-
-            {(searchQuery || selectedCategory) && (
-              <button
-                onClick={clearFilters}
-                className="px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors whitespace-nowrap"
-              >
-                Clear All
-              </button>
-            )}
-          </div>
-
-          {/* Search Stats */}
-          <div className="flex items-center justify-between text-white/80 text-sm">
-            <span>
-              {restaurants.length} food option
-              {restaurants.length !== 1 ? "s" : ""} found
-              {searchQuery && ` for "${searchQuery}"`}
-              {selectedCategory && ` in ${selectedCategory}`}
-            </span>
-            {isLoading && (
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Searching...
-              </span>
-            )}
-          </div>
+          )}
         </div>
 
         {/* Error Message */}
@@ -322,110 +414,135 @@ export default function Food() {
           </div>
         )}
 
-        {/* Categories Quick Filter */}
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Quick Categories
-          </h3>
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => handleCategoryChange("")}
-              className={`px-4 py-2 rounded-full transition-all ${
-                selectedCategory === ""
-                  ? "bg-white text-orange-500"
-                  : "bg-white/20 text-white hover:bg-white/30"
-              }`}
-            >
-              All
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryChange(category)}
-                className={`px-4 py-2 rounded-full transition-all ${
-                  selectedCategory === category
-                    ? "bg-white text-orange-500"
-                    : "bg-white/20 text-white hover:bg-white/30"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Results Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {restaurants.map((restaurant) => (
-            <Link
-              key={restaurant.id}
-              to={`/restaurants/${restaurant.id}`}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
-              <div className="h-48 bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center">
-                <div className="text-white text-6xl">🍽️</div>
-              </div>
-
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  {restaurant.name}
-                </h3>
-                <p className="text-gray-600 mb-3 line-clamp-2">
-                  {restaurant.description}
-                </p>
-
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1">
-                    <span className="text-yellow-500">⭐</span>
-                    <span className="text-gray-700 font-medium">
-                      {restaurant.rating}
-                    </span>
-                  </div>
-                  <span className="text-gray-600">
-                    {restaurant.deliveryTime}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-orange-500 font-semibold">
-                    ${restaurant.deliveryFee} delivery
-                  </span>
-                  <span className="text-gray-600 text-sm">
-                    Min: ${restaurant.minimumOrder}
-                  </span>
-                </div>
-
-                <div className="mt-3">
-                  <span className="inline-block bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm">
-                    {restaurant.category}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {restaurants.length === 0 && !isLoading && (
+        {/* Food Items Grid */}
+        {foodItems.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-white text-6xl mb-4">🍽️</div>
-            <h3 className="text-xl font-semibold text-white mb-2">
-              No food options found
-            </h3>
-            <p className="text-white/80 mb-4">
-              {searchQuery || selectedCategory
-                ? "Try adjusting your search or filters"
-                : "Loading food options..."}
-            </p>
-            {(searchQuery || selectedCategory) && (
+            <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-12 max-w-2xl mx-auto">
+              <div className="text-white text-8xl mb-6">🍽️</div>
+              <h2 className="text-3xl font-bold text-white mb-4">
+                No Food Items Found
+              </h2>
+              <p className="text-xl text-white/90 mb-8">
+                Try adjusting your search or filters to find delicious food!
+              </p>
               <button
                 onClick={clearFilters}
-                className="px-6 py-3 bg-white text-orange-500 rounded-full hover:bg-orange-100 transition-all"
+                className="px-8 py-3 bg-white text-orange-500 rounded-lg font-semibold hover:bg-orange-100 transition-all"
               >
                 Clear Filters
               </button>
-            )}
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {foodItems.map((item) => (
+              <div
+                key={item._id}
+                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              >
+                {/* Food Image */}
+                <div className="h-48 bg-gradient-to-r from-orange-200 to-orange-300 relative overflow-hidden">
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-6xl">
+                      🍽️
+                    </div>
+                  )}
+
+                  {/* Veg/Non-veg indicator */}
+                  <div className="absolute top-3 left-3">
+                    <div
+                      className={`w-5 h-5 border-2 flex items-center justify-center ${
+                        item.isVeg ? "border-green-500" : "border-red-500"
+                      }`}
+                    >
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          item.isVeg ? "bg-green-500" : "bg-red-500"
+                        }`}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Rating */}
+                  {item.rating && (
+                    <div className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-lg flex items-center gap-1 text-sm">
+                      <Star className="w-3 h-3 fill-current" />
+                      {item.rating.toFixed(1)}
+                    </div>
+                  )}
+                </div>
+
+                {/* Food Details */}
+                <div className="p-4">
+                  <div className="mb-3">
+                    <h3 className="text-lg font-bold text-gray-800 mb-1">
+                      {item.name}
+                    </h3>
+                    <p className="text-sm text-gray-600">{item.restaurant}</p>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xl font-bold text-orange-500">
+                      ₹{item.price}
+                    </span>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Clock className="w-4 h-4" />
+                      {item.preparationTime}m
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm px-2 py-1 bg-orange-100 text-orange-800 rounded-full">
+                      {item.category}
+                    </span>
+
+                    {item.isAvailable ? (
+                      <div className="flex items-center gap-2">
+                        {getCartQuantity(item._id) > 0 && (
+                          <span className="text-sm font-medium text-orange-600">
+                            {getCartQuantity(item._id)} in cart
+                          </span>
+                        )}
+                        <button
+                          onClick={() => handleAddToCart(item)}
+                          className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-red-500 font-medium">
+                        Unavailable
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
+
+        {/* Results Summary */}
+        <div className="mt-8 text-center">
+          <p className="text-white/80">
+            Showing {foodItems.length} food items
+            {(searchQuery ||
+              selectedCategory ||
+              priceFilter !== "all" ||
+              dietFilter !== "all") &&
+              ` matching your filters`}
+          </p>
+        </div>
       </main>
     </div>
   );
