@@ -1273,15 +1273,18 @@ export default function Admin() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            <button
+                              onClick={() =>
+                                updateUserStatus(user.id, user.is_verified)
+                              }
+                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full transition-colors hover:opacity-80 ${
                                 user.is_verified
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
+                                  ? "bg-green-100 text-green-800 hover:bg-green-200"
+                                  : "bg-red-100 text-red-800 hover:bg-red-200"
                               }`}
                             >
                               {user.is_verified ? "Verified" : "Unverified"}
-                            </span>
+                            </button>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {user.created_at
@@ -1290,15 +1293,22 @@ export default function Admin() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex gap-2">
-                              <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                              <button
+                                title="View Details"
+                                className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                              >
                                 <Eye className="w-4 h-4" />
                               </button>
-                              <button className="text-green-600 hover:text-green-900 transition-colors">
+                              <button
+                                title="Edit User"
+                                className="text-green-600 hover:text-green-900 transition-colors p-1"
+                              >
                                 <Edit className="w-4 h-4" />
                               </button>
                               <button
+                                title="Delete User"
                                 onClick={() => removeUser(user.id, user.email)}
-                                className="text-red-600 hover:text-red-900 transition-colors"
+                                className="text-red-600 hover:text-red-900 transition-colors p-1"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
