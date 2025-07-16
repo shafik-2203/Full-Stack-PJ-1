@@ -29,9 +29,8 @@ interface FoodItem {
   preparationTime?: number;
 }
 
-export default function Food() {
+export default function FoodItems() {
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
-  const [allFoodItems, setAllFoodItems] = useState<FoodItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,7 +41,6 @@ export default function Food() {
   >("all");
   const [dietFilter, setDietFilter] = useState<"all" | "veg" | "nonveg">("all");
   const [showFilters, setShowFilters] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const { user, logout } = useAuth();
   const { totalItems, addToCart, cartItems } = useCart();
@@ -55,29 +53,29 @@ export default function Food() {
     fetchInitialData();
   }, []);
 
-  const debouncedSearch = useCallback(() => {
+  const debouncedSearch = useCallback((query: string, category: string) => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
     searchTimeoutRef.current = setTimeout(async () => {
       const currentScrollY = window.scrollY;
-      applyFilters();
+      await performSearch(query, category);
       requestAnimationFrame(() => {
         window.scrollTo(0, currentScrollY);
       });
     }, 300);
-  }, [searchQuery, selectedCategory, priceFilter, dietFilter]);
+  }, []);
 
   useEffect(() => {
-    debouncedSearch();
+    debouncedSearch(searchQuery, selectedCategory);
 
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [searchQuery, selectedCategory, priceFilter, dietFilter]);
+  }, [searchQuery, selectedCategory, debouncedSearch]);
 
   const fetchInitialData = async () => {
     try {
@@ -128,7 +126,6 @@ export default function Food() {
         }
       }
 
-      setAllFoodItems(allFoodItems);
       setFoodItems(allFoodItems);
       setCategories(Array.from(categoriesSet));
     } catch (err) {
@@ -139,30 +136,28 @@ export default function Food() {
     }
   };
 
-  const applyFilters = () => {
+  const performSearch = async (query: string, category: string) => {
     try {
       setError("");
 
-      let filteredItems = [...allFoodItems];
+      // Start with all food items
+      let filteredItems = [...foodItems];
 
       // Apply search query
-      if (searchQuery.trim()) {
+      if (query.trim()) {
         filteredItems = filteredItems.filter(
           (item) =>
-            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.description
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            item.restaurant.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.category.toLowerCase().includes(searchQuery.toLowerCase()),
+            item.name.toLowerCase().includes(query.toLowerCase()) ||
+            item.description.toLowerCase().includes(query.toLowerCase()) ||
+            item.restaurant.toLowerCase().includes(query.toLowerCase()) ||
+            item.category.toLowerCase().includes(query.toLowerCase()),
         );
       }
 
       // Apply category filter
-      if (selectedCategory) {
+      if (category) {
         filteredItems = filteredItems.filter(
-          (item) =>
-            item.category.toLowerCase() === selectedCategory.toLowerCase(),
+          (item) => item.category.toLowerCase() === category.toLowerCase(),
         );
       }
 
@@ -192,8 +187,8 @@ export default function Food() {
 
       setFoodItems(filteredItems);
     } catch (err) {
-      setError("Filter failed");
-      console.error("Error filtering:", err);
+      setError("Search failed");
+      console.error("Error searching:", err);
     }
   };
 
@@ -229,7 +224,7 @@ export default function Food() {
     setSelectedCategory("");
     setPriceFilter("all");
     setDietFilter("all");
-    setFoodItems(allFoodItems);
+    fetchInitialData();
   };
 
   if (isLoading && foodItems.length === 0) {
@@ -292,89 +287,14 @@ export default function Food() {
             <span className="text-white hidden md:block">
               Welcome, {user?.username}!
             </span>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden text-white p-2"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-
             <button
               onClick={handleLogout}
-              className="hidden md:block px-4 py-2 rounded-full border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
+              className="px-4 py-2 rounded-full border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
             >
               Logout
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu Dropdown */}
-        {showMobileMenu && (
-          <div className="md:hidden bg-white/90 backdrop-blur-sm border-t border-white/20">
-            <div className="container mx-auto px-4 py-4 space-y-2">
-              <Link
-                to="/dashboard"
-                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/restaurants"
-                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Restaurants
-              </Link>
-              <Link
-                to="/food"
-                className="block py-2 text-orange-500 font-semibold"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Food
-              </Link>
-              <Link
-                to="/cart"
-                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Cart ({totalItems})
-              </Link>
-              <Link
-                to="/orders"
-                className="block py-2 text-gray-800 hover:text-orange-500 transition-colors"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Orders
-              </Link>
-              <div className="pt-2 border-t border-gray-200">
-                <p className="text-sm text-gray-600 mb-2">
-                  Welcome, {user?.username}!
-                </p>
-                <button
-                  onClick={handleLogout}
-                  className="text-red-600 hover:text-red-700 transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
       {/* Main Content */}
@@ -561,7 +481,7 @@ export default function Food() {
                       {item.name}
                     </h3>
                     <p className="text-sm text-gray-600">{item.restaurant}</p>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                    <p className="text-xs text-gray-500 mt-1">
                       {item.description}
                     </p>
                   </div>
@@ -607,18 +527,6 @@ export default function Food() {
             ))}
           </div>
         )}
-
-        {/* Results Summary */}
-        <div className="mt-8 text-center">
-          <p className="text-white/80">
-            Showing {foodItems.length} food items
-            {(searchQuery ||
-              selectedCategory ||
-              priceFilter !== "all" ||
-              dietFilter !== "all") &&
-              ` matching your filters`}
-          </p>
-        </div>
       </main>
     </div>
   );

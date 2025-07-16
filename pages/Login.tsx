@@ -15,6 +15,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [showTroubleshooter, setShowTroubleshooter] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -42,8 +43,15 @@ export default function Login() {
         apiClient.setToken(response.token);
         // Update auth context
         login(response.user, response.token);
-        // Navigate to dashboard
-        navigate("/dashboard");
+
+        // Show success animation
+        setShowSuccess(true);
+        setIsLoading(false);
+
+        // Navigate after animation
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
       } else {
         setError(response.message || "Login failed");
       }
@@ -328,6 +336,35 @@ export default function Login() {
             );
           }}
         />
+      )}
+
+      {/* Success Animation Overlay */}
+      {showSuccess && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-white rounded-3xl p-8 text-center max-w-sm mx-4 animate-fade-in">
+            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+              <svg
+                className="w-10 h-10 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={3}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              Welcome Back!
+            </h3>
+            <p className="text-gray-600">
+              Login successful. Redirecting to your dashboard...
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );

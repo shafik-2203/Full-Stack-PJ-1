@@ -8,7 +8,7 @@ import Logo from "../components/Logo";
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const { items, totalItems, totalAmount, clearCart } = useCart();
 
   const [selectedPayment, setSelectedPayment] = useState<string>("");
@@ -171,9 +171,10 @@ export default function Checkout() {
         })),
         deliveryAddress: deliveryAddress.trim(),
         paymentMethod: selectedPayment,
+        totalAmount: finalTotal,
       };
 
-      const response = await apiClient.createOrder(orderData);
+      const response = await apiClient.createOrder(orderData, token);
 
       if (response.success) {
         // Clear cart

@@ -48,7 +48,7 @@ const validatePhoneNumber = (phone: string): boolean => {
 };
 
 export default function Profile() {
-  const { user, updateUser } = useAuth();
+  const { user, token, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -108,11 +108,14 @@ export default function Profile() {
     }
 
     try {
-      const response = await apiClient.updateProfile({
-        username: formData.username,
-        email: formData.email,
-        mobile: formData.mobile,
-      });
+      const response = await apiClient.updateProfile(
+        {
+          username: formData.username,
+          email: formData.email,
+          mobile: formData.mobile,
+        },
+        token,
+      );
 
       if (response.success) {
         setSuccess("Profile updated successfully!");
@@ -149,10 +152,13 @@ export default function Profile() {
     }
 
     try {
-      const response = await apiClient.changePassword({
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword,
-      });
+      const response = await apiClient.changePassword(
+        {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        },
+        token,
+      );
 
       if (response.success) {
         setSuccess("Password changed successfully!");
