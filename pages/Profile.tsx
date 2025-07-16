@@ -108,11 +108,14 @@ export default function Profile() {
     }
 
     try {
-      const response = await apiClient.updateProfile({
-        username: formData.username,
-        email: formData.email,
-        mobile: formData.mobile,
-      });
+      const response = await apiClient.updateProfile(
+        {
+          username: formData.username,
+          email: formData.email,
+          mobile: formData.mobile,
+        },
+        token,
+      );
 
       if (response.success) {
         setSuccess("Profile updated successfully!");
