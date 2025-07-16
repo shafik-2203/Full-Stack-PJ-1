@@ -17,7 +17,7 @@ const mockRestaurants = [
     isActive: true,
     createdAt: new Date().toISOString(),
     image:
-      "https://cdn.builder.io/api/v1/image/assets%2F69e1dc5b93ab43cba14d05111886d225%2F989055e351d14c33a3ce3f33f8d29cbc?format=webp&width=800",
+      "https://cdn.builder.io/api/v1/image/assets%2F8311f205e0ef4e7cbb4f9e1a72b66a5a%2Fc892f18a2e1545539acfdcbaf3386a87?format=webp&width=800",
   },
   {
     _id: "mock2",
