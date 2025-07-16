@@ -1479,15 +1479,44 @@ export default function Admin() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <button className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex-1">
-                          <Edit className="w-3 h-3" />
-                          Edit
+                        <button
+                          onClick={() =>
+                            updateRestaurantStatus(
+                              restaurant.id,
+                              restaurant.status,
+                            )
+                          }
+                          className={`flex items-center gap-1 px-3 py-2 text-white text-sm rounded transition-colors flex-1 ${
+                            restaurant.status === "active"
+                              ? "bg-red-600 hover:bg-red-700"
+                              : "bg-green-600 hover:bg-green-700"
+                          }`}
+                        >
+                          {restaurant.status === "active" ? (
+                            <>
+                              <XSquare className="w-3 h-3" />
+                              Deactivate
+                            </>
+                          ) : (
+                            <>
+                              <CheckSquare className="w-3 h-3" />
+                              Activate
+                            </>
+                          )}
                         </button>
-                        <button className="flex items-center gap-1 px-3 py-2 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors flex-1">
+                        <button
+                          title="View Details"
+                          className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                        >
                           <Eye className="w-3 h-3" />
-                          View
                         </button>
-                        <button className="flex items-center gap-1 px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
+                        <button
+                          title="Delete Restaurant"
+                          onClick={() =>
+                            deleteRestaurant(restaurant.id, restaurant.name)
+                          }
+                          className="flex items-center gap-1 px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                        >
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
