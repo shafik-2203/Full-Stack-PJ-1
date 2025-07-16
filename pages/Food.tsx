@@ -30,14 +30,20 @@ interface FoodItem {
 }
 
 export default function Food() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [priceFilter, setPriceFilter] = useState<
+    "all" | "under200" | "under500" | "above500"
+  >("all");
+  const [dietFilter, setDietFilter] = useState<"all" | "veg" | "nonveg">("all");
+  const [showFilters, setShowFilters] = useState(false);
+
   const { user, logout } = useAuth();
-  const { totalItems } = useCart();
+  const { totalItems, addToCart, cartItems } = useCart();
   const navigate = useNavigate();
 
   // Use ref to prevent scroll to top during search
