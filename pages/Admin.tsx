@@ -118,6 +118,13 @@ export default function Admin() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sectionLoading, setSectionLoading] = useState({
+    users: false,
+    restaurants: false,
+    orders: false,
+    payments: false,
+    food: false,
+  });
   const [error, setError] = useState("");
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -1284,7 +1291,7 @@ export default function Admin() {
                             #{payment.order_id.slice(-6)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                            ���{payment.amount}
+                            ₹{payment.amount}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {payment.method}
