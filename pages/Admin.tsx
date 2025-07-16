@@ -909,10 +909,13 @@ export default function Admin() {
                     Add User
                   </button>
                   <button
-                    onClick={fetchUserData}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    onClick={() => refreshSection("users")}
+                    disabled={sectionLoading.users}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.users ? "animate-spin" : ""}`}
+                    />
                     Refresh
                   </button>
                 </div>
@@ -1078,10 +1081,13 @@ export default function Admin() {
                     Add Restaurant
                   </button>
                   <button
-                    onClick={fetchUserData}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    onClick={() => refreshSection("restaurants")}
+                    disabled={sectionLoading.restaurants}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.restaurants ? "animate-spin" : ""}`}
+                    />
                     Refresh
                   </button>
                 </div>
@@ -1255,10 +1261,13 @@ export default function Admin() {
                     <option value="cancelled">Cancelled</option>
                   </select>
                   <button
-                    onClick={fetchUserData}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    onClick={() => refreshSection("orders")}
+                    disabled={sectionLoading.orders}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.orders ? "animate-spin" : ""}`}
+                    />
                     Refresh
                   </button>
                 </div>
