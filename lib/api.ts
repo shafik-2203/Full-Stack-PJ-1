@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
 
 // Mock fallback data for when backend is empty
 const mockRestaurants = [
@@ -810,6 +810,22 @@ export const apiClient = {
       if (error.response?.data) {
         throw new Error(
           error.response.data.message || "Failed to change password",
+        );
+      }
+      throw new Error("Network error occurred");
+    }
+  },
+
+  createOrder: async (data: any, token?: string) => {
+    try {
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await api.post("/api/orders", data, { headers });
+      return res.data;
+    } catch (error) {
+      console.error("🔴 Create order error:", error);
+      if (error.response?.data) {
+        throw new Error(
+          error.response.data.message || "Failed to create order",
         );
       }
       throw new Error("Network error occurred");
