@@ -3,8 +3,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { apiClient } from "../lib/api";
-import { Restaurant } from "@shared/api";
 import Logo from "../components/Logo";
+import {
+  Plus,
+  Minus,
+  Star,
+  Clock,
+  Truck,
+  Search,
+  Filter,
+  X,
+} from "lucide-react";
+
+interface FoodItem {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  restaurant: string;
+  isAvailable: boolean;
+  image?: string;
+  isVeg?: boolean;
+  rating?: number;
+  preparationTime?: number;
+}
 
 export default function Food() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
