@@ -48,7 +48,7 @@ const validatePhoneNumber = (phone: string): boolean => {
 };
 
 export default function Profile() {
-  const { user, updateUser } = useAuth();
+  const { user, token, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
