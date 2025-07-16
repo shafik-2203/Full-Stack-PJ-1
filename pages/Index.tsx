@@ -5,14 +5,27 @@ import Logo from "../components/Logo";
 export default function Index() {
   const [animationStage, setAnimationStage] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const [particles, setParticles] = useState<
+    Array<{ id: number; x: number; y: number; delay: number }>
+  >([]);
 
   useEffect(() => {
-    // Animation sequence timing
+    // Generate particles with random positions
+    const newParticles = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 3,
+    }));
+    setParticles(newParticles);
+
+    // New animation sequence with different timings
     const timeouts = [
-      setTimeout(() => setAnimationStage(1), 500), // Logo scale-in
-      setTimeout(() => setAnimationStage(2), 1200), // Brand name reveal
-      setTimeout(() => setAnimationStage(3), 2000), // Tagline and elements
-      setTimeout(() => setShowContent(true), 2500), // Show all content
+      setTimeout(() => setAnimationStage(1), 300), // Initial fade in
+      setTimeout(() => setAnimationStage(2), 800), // Logo entrance
+      setTimeout(() => setAnimationStage(3), 1400), // Text reveal
+      setTimeout(() => setAnimationStage(4), 2200), // Navigation
+      setTimeout(() => setShowContent(true), 2800), // Final content
     ];
 
     return () => timeouts.forEach(clearTimeout);
@@ -20,60 +33,81 @@ export default function Index() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Background with Gradient Shifts */}
-      <div
-        className={`absolute inset-0 transition-all duration-2000 ${
-          animationStage >= 1
-            ? "bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600"
-            : "bg-gradient-to-br from-orange-800 via-orange-700 to-orange-900"
-        }`}
-      >
-        {/* Floating Particles */}
-        {animationStage >= 1 && (
+      {/* Dynamic Animated Background */}
+      <div className="absolute inset-0">
+        {/* Main gradient background */}
+        <div
+          className={`absolute inset-0 transition-all duration-3000 ease-out ${
+            animationStage >= 1
+              ? "bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 opacity-100"
+              : "bg-gradient-to-br from-black via-gray-900 to-black opacity-80"
+          }`}
+        />
+
+        {/* Animated overlay patterns */}
+        <div
+          className={`absolute inset-0 transition-all duration-2000 ${
+            animationStage >= 2 ? "opacity-30" : "opacity-0"
+          }`}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent" />
+        </div>
+
+        {/* Floating geometric shapes */}
+        {animationStage >= 2 && (
           <div className="absolute inset-0">
-            {[...Array(12)].map((_, i) => (
+            {particles.map((particle) => (
               <div
-                key={i}
-                className={`absolute w-2 h-2 bg-white/20 rounded-full animate-bounce`}
+                key={particle.id}
+                className="absolute animate-float"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${3 + Math.random() * 2}s`,
+                  left: `${particle.x}%`,
+                  top: `${particle.y}%`,
+                  animationDelay: `${particle.delay}s`,
+                  animationDuration: `${4 + Math.random() * 2}s`,
                 }}
-              />
+              >
+                <div className="w-3 h-3 bg-white/20 rounded-full blur-sm" />
+              </div>
             ))}
           </div>
         )}
 
-        {/* Radial Glow Effect */}
+        {/* Radial gradient overlay */}
         <div
-          className={`absolute inset-0 bg-gradient-radial from-white/10 to-transparent transition-opacity duration-1500 ${
-            animationStage >= 2 ? "opacity-30" : "opacity-0"
+          className={`absolute inset-0 transition-opacity duration-2000 ${
+            animationStage >= 3 ? "opacity-20" : "opacity-0"
           }`}
+          style={{
+            background:
+              "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%)",
+          }}
         />
       </div>
 
       {/* Spectacular Logo Animation */}
       <div
-        className={`absolute top-2 left-2 sm:top-4 sm:left-5 z-10 transition-all duration-1000 ${
-          animationStage >= 1
+        className={`absolute top-2 left-2 sm:top-4 sm:left-5 z-10 transition-all duration-1500 ease-out ${
+          animationStage >= 2
             ? "transform translate-x-0 translate-y-0 scale-100 rotate-0 opacity-100"
-            : "transform -translate-x-20 -translate-y-10 scale-150 rotate-180 opacity-0"
+            : "transform -translate-x-32 -translate-y-20 scale-75 rotate-45 opacity-0"
         }`}
       >
-        <div className={`${animationStage >= 1 ? "animate-pulse" : ""}`}>
+        <div
+          className={`transition-all duration-1000 ${animationStage >= 2 ? "animate-glow" : ""}`}
+        >
           <Logo size={80} className="sm:hidden drop-shadow-2xl" />
           <Logo size={130} className="hidden sm:block drop-shadow-2xl" />
         </div>
       </div>
 
-      {/* Header Navigation with Slide-in Animation */}
+      {/* Header Navigation with Wave Animation */}
       <header
-        className={`absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 z-10 max-w-xs sm:max-w-none transition-all duration-1200 ${
-          showContent
-            ? "transform translate-x-0 opacity-100"
-            : "transform translate-x-20 opacity-0"
+        className={`absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 z-10 max-w-xs sm:max-w-none transition-all duration-1500 ${
+          animationStage >= 4
+            ? "transform translate-x-0 translate-y-0 opacity-100"
+            : "transform translate-x-full -translate-y-8 opacity-0"
         }`}
       >
         {/* Premium Admin Button */}
@@ -81,18 +115,11 @@ export default function Index() {
           to="/admin-portal"
           className="group relative flex items-center justify-center w-16 h-8 px-1 py-1 sm:w-24 sm:h-10 sm:px-2 sm:py-1 md:w-32 md:h-12 md:px-4 md:py-2 rounded-full bg-gradient-to-r from-slate-900 via-gray-900 to-slate-900 border border-gray-700 shadow-2xl text-white font-semibold text-xs sm:text-sm md:text-base transition-all hover:scale-105 hover:shadow-slate-900/50 hover:border-gray-600 overflow-hidden"
         >
-          {/* Subtle shine effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-
-          {/* Premium glow effect */}
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gray-700/20 via-gray-600/30 to-gray-700/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-          {/* Content */}
           <div className="relative flex items-center">
             <span className="text-gray-100 font-bold tracking-wide">Admin</span>
           </div>
-
-          {/* Premium indicator */}
           <div className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full"></div>
         </Link>
 
@@ -110,307 +137,185 @@ export default function Index() {
         </Link>
       </header>
 
-      {/* Main Content with Spectacular Animations */}
+      {/* Main Content with Morphing Animations */}
       <div className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 sm:pt-0">
-        {/* Hero Content */}
         <div className="flex flex-col items-center gap-3 sm:gap-5 max-w-xs sm:max-w-md md:max-w-lg text-center">
-          {/* Brand Name with Letter-by-Letter Animation */}
+          {/* Brand Name with Typewriter Effect */}
           <div
-            className={`relative transition-all duration-1500 ${
-              animationStage >= 2
-                ? "transform translate-y-0 opacity-100"
-                : "transform translate-y-20 opacity-0"
+            className={`relative transition-all duration-2000 ease-out ${
+              animationStage >= 3
+                ? "transform translate-y-0 scale-100 opacity-100"
+                : "transform translate-y-32 scale-75 opacity-0"
             }`}
           >
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide">
-              {"FASTIO".split("").map((letter, index) => (
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide relative">
+              <span className="relative inline-block">
+                {"FASTIO".split("").map((letter, index) => (
+                  <span
+                    key={index}
+                    className={`inline-block transition-all duration-700 ${
+                      animationStage >= 3
+                        ? "transform translate-y-0 rotate-0 opacity-100"
+                        : "transform translate-y-12 rotate-12 opacity-0"
+                    }`}
+                    style={{
+                      transitionDelay: `${animationStage >= 3 ? index * 150 : 0}ms`,
+                      textShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    {letter}
+                  </span>
+                ))}
+                {/* Animated cursor */}
                 <span
-                  key={index}
-                  className={`inline-block transition-all duration-500 ${
-                    animationStage >= 2
-                      ? "transform translate-y-0 opacity-100"
-                      : "transform translate-y-10 opacity-0"
+                  className={`inline-block w-1 bg-black transition-opacity duration-500 ${
+                    animationStage >= 3 ? "animate-blink" : "opacity-0"
                   }`}
-                  style={{
-                    transitionDelay: `${animationStage >= 2 ? index * 100 : 0}ms`,
-                    textShadow: "0 0 20px rgba(0,0,0,0.3)",
-                  }}
-                >
-                  {letter}
-                </span>
-              ))}
+                  style={{ height: "0.8em", marginLeft: "0.1em" }}
+                />
+              </span>
             </h1>
 
-            {/* Glowing Underline Effect */}
+            {/* Dynamic underline */}
             <div
-              className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ${
-                animationStage >= 2
-                  ? "w-full h-1 bg-gradient-to-r from-transparent via-black to-transparent opacity-60"
-                  : "w-0 h-1 bg-black opacity-0"
+              className={`absolute -bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-1500 ${
+                animationStage >= 3
+                  ? "w-full h-2 bg-gradient-to-r from-orange-400 via-black to-orange-400 opacity-60 scale-x-100"
+                  : "w-0 h-2 bg-black opacity-0 scale-x-0"
               }`}
+              style={{ borderRadius: "2px" }}
             />
           </div>
 
-          {/* Animated Divider Line */}
+          {/* Elegant Divider */}
           <div
-            className={`transition-all duration-1000 ${
-              animationStage >= 2
-                ? "w-32 sm:w-64 md:w-88 h-px bg-black transform scale-x-100 opacity-100"
+            className={`transition-all duration-1500 ${
+              animationStage >= 3
+                ? "w-32 sm:w-64 md:w-88 h-px bg-gradient-to-r from-transparent via-black to-transparent transform scale-x-100 opacity-100"
                 : "w-0 h-px bg-black transform scale-x-0 opacity-0"
             }`}
+            style={{ transitionDelay: "600ms" }}
           />
 
-          {/* Tagline with Fade-up Animation */}
-          <p
-            className={`text-lg sm:text-xl md:text-2xl font-medium text-black transition-all duration-1000 ${
-              animationStage >= 3
-                ? "transform translate-y-0 opacity-100"
-                : "transform translate-y-10 opacity-0"
-            }`}
-            style={{
-              textShadow: "0 2px 10px rgba(0,0,0,0.2)",
-              transitionDelay: "300ms",
-            }}
-          >
-            Fast Moves, Fresh Choices.
-          </p>
+          {/* Taglines with Cascade Effect */}
+          <div className="space-y-2">
+            <p
+              className={`text-lg sm:text-xl md:text-2xl font-medium text-black transition-all duration-1200 ${
+                animationStage >= 3
+                  ? "transform translate-y-0 opacity-100"
+                  : "transform translate-y-8 opacity-0"
+              }`}
+              style={{
+                textShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                transitionDelay: "900ms",
+              }}
+            >
+              Fast Moves, Fresh Choices.
+            </p>
 
-          {/* Additional tagline with Bounce Effect */}
-          <p
-            className={`text-sm sm:text-base md:text-lg text-black/80 transition-all duration-1000 ${
-              animationStage >= 3
-                ? "transform translate-y-0 opacity-100 animate-bounce"
-                : "transform translate-y-10 opacity-0"
-            }`}
-            style={{
-              transitionDelay: "600ms",
-              animationIterationCount: "3",
-            }}
-          >
-            🚀 Experience lightning-fast food delivery
-          </p>
+            <p
+              className={`text-sm sm:text-base md:text-lg text-black/80 transition-all duration-1200 ${
+                animationStage >= 3
+                  ? "transform translate-y-0 opacity-100"
+                  : "transform translate-y-8 opacity-0"
+              }`}
+              style={{
+                transitionDelay: "1200ms",
+              }}
+            >
+              <span className="inline-block animate-bounce-slow">🚀</span>{" "}
+              Experience lightning-fast food delivery
+            </p>
+          </div>
         </div>
 
-        {/* App Download Buttons with Staggered Animation */}
+        {/* App Download Buttons with Improved Design */}
         <div
-          className={`flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20 transition-all duration-1200 ${
+          className={`flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20 transition-all duration-1500 ${
             showContent
               ? "transform translate-y-0 opacity-100"
-              : "transform translate-y-20 opacity-0"
+              : "transform translate-y-16 opacity-0"
           }`}
         >
+          {/* App Store Button */}
           <a
             href="https://apps.apple.com/app/zomato-food-delivery-dining/id434613896"
             target="_blank"
             rel="noopener noreferrer"
-            className={`block transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+            className={`block transition-all duration-700 hover:scale-110 hover:shadow-2xl group ${
               showContent
-                ? "transform translate-x-0 opacity-100"
-                : "transform -translate-x-10 opacity-0"
+                ? "transform translate-x-0 rotate-0 opacity-100"
+                : "transform -translate-x-20 rotate-12 opacity-0"
             }`}
-            style={{ transitionDelay: "800ms" }}
+            style={{ transitionDelay: "1000ms" }}
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/c341f6a999ef369acd139927b58eea53c555c282?width=400"
               alt="Download on App Store"
-              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110 drop-shadow-lg"
+              className="h-12 sm:h-14 w-auto flex-shrink-0 filter group-hover:brightness-110 drop-shadow-xl rounded-lg"
             />
           </a>
 
+          {/* Google Play Button - Custom Design */}
           <a
             href="https://play.google.com/store/apps/details?id=com.application.zomato"
             target="_blank"
             rel="noopener noreferrer"
-            className={`block transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+            className={`block transition-all duration-700 hover:scale-110 hover:shadow-2xl group ${
               showContent
-                ? "transform translate-x-0 opacity-100"
-                : "transform translate-x-10 opacity-0"
+                ? "transform translate-x-0 rotate-0 opacity-100"
+                : "transform translate-x-20 rotate-12 opacity-0"
             }`}
-            style={{ transitionDelay: "1000ms" }}
+            style={{ transitionDelay: "1200ms" }}
           >
-            <svg
-              viewBox="0 0 200 60"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110 drop-shadow-lg"
-            >
-              <path
-                d="M192.593 60H7.40741C3.33519 60 0 56.6231 0 52.5V7.5C0 3.37687 3.33519 0 7.40741 0H192.593C196.665 0 200 3.37687 200 7.5V52.5C200 56.6231 196.665 60 192.593 60Z"
-                fill="black"
-              />
-              <path
-                d="M192.593 1.20187C196.022 1.20187 198.813 4.0275 198.813 7.5V52.5C198.813 55.9725 196.022 58.7981 192.593 58.7981H7.40741C3.97778 58.7981 1.18704 55.9725 1.18704 52.5V7.5C1.18704 4.0275 3.97778 1.20187 7.40741 1.20187H192.593ZM192.593 0H7.40741C3.33519 0 0 3.37687 0 7.5V52.5C0 56.6231 3.33519 60 7.40741 60H192.593C196.665 60 200 56.6231 200 52.5V7.5C200 3.37687 196.665 0 192.593 0Z"
-                fill="#A6A6A6"
-              />
-              <path
-                d="M15.4593 11.3082C15.0241 11.7694 14.7722 12.4875 14.7722 13.4175V46.59C14.7722 47.52 15.0241 48.2382 15.4593 48.6994L15.5667 48.8007L33.9259 30.2194V29.7807L15.5667 11.1994L15.4593 11.3082Z"
-                fill="url(#paint0_linear_google)"
-              />
-              <path
-                d="M40.0389 36.4163L33.9259 30.2194V29.7806L40.0463 23.5838L40.1833 23.6644L47.4315 27.84C49.5 29.025 49.5 30.975 47.4315 32.1675L40.1833 36.3356L40.0389 36.4163Z"
-                fill="url(#paint1_linear_google)"
-              />
-              <path
-                d="M40.1833 36.3356L33.9259 30L15.4593 48.6994C16.1463 49.4306 17.2667 49.5188 18.5407 48.7875L40.1833 36.3356Z"
-                fill="url(#paint2_linear_google)"
-              />
-              <path
-                d="M40.1833 23.6644L18.5407 11.2125C17.2667 10.4888 16.1463 10.5769 15.4593 11.3081L33.9259 30L40.1833 23.6644Z"
-                fill="url(#paint3_linear_google)"
-              />
-              <path
-                d="M70.2481 15.3656C70.2481 16.6181 69.8778 17.6212 69.1481 18.3694C68.3092 19.2562 67.2166 19.7025 65.8778 19.7025C64.5981 19.7025 63.5055 19.2487 62.6092 18.3544C61.7111 17.4469 61.2629 16.3331 61.2629 15C61.2629 13.6669 61.7111 12.5531 62.6092 11.6531C63.5055 10.7512 64.5981 10.2975 65.8778 10.2975C66.5148 10.2975 67.1222 10.4306 67.7018 10.6781C68.2796 10.9275 68.75 11.265 69.0907 11.6812L68.3166 12.4725C67.7222 11.7619 66.9129 11.4112 65.8778 11.4112C64.9444 11.4112 64.1352 11.7412 63.4481 12.4069C62.7685 13.0744 62.4278 13.9387 62.4278 15C62.4278 16.0612 62.7685 16.9331 63.4481 17.6006C64.1352 18.2587 64.9444 18.5962 65.8778 18.5962C66.8685 18.5962 67.7018 18.2587 68.3592 17.5931C68.7926 17.1525 69.0389 16.545 69.1037 15.7687H65.8778V14.685H70.1815C70.2333 14.9194 70.2481 15.1462 70.2481 15.3656Z"
-                fill="white"
-                stroke="white"
-                strokeWidth="0.16"
-                strokeMiterlimit="10"
-              />
-              <path
-                d="M77.0759 11.6081H73.0333V14.4581H76.6777V15.5418H73.0333V18.3918H77.0759V19.4962H71.8889V10.5037H77.0759V11.6081Z"
-                fill="white"
-                stroke="white"
-                strokeWidth="0.16"
-                strokeMiterlimit="10"
-              />
-              <path
-                d="M81.8944 19.4962H80.75V11.6081H78.2703V10.5037H84.3759V11.6081H81.8944V19.4962Z"
-                fill="white"
-                stroke="white"
-                strokeWidth="0.16"
-                strokeMiterlimit="10"
-              />
-              <path
-                d="M88.7944 19.4962V10.5037H89.937V19.4962H88.7944Z"
-                fill="white"
-                stroke="white"
-                strokeWidth="0.16"
-                strokeMiterlimit="10"
-              />
-              <path
-                d="M95.0018 19.4962H93.8666V11.6081H91.3777V10.5037H97.4907V11.6081H95.0018V19.4962Z"
-                fill="white"
-                stroke="white"
-                strokeWidth="0.16"
-                strokeMiterlimit="10"
-              />
-              <path
-                d="M109.05 18.3394C108.174 19.2487 107.089 19.7025 105.794 19.7025C104.493 19.7025 103.407 19.2487 102.531 18.3394C101.657 17.4319 101.222 16.3181 101.222 15C101.222 13.6819 101.657 12.5681 102.531 11.6606C103.407 10.7512 104.493 10.2975 105.794 10.2975C107.081 10.2975 108.167 10.7512 109.043 11.6681C109.924 12.5831 110.359 13.6894 110.359 15C110.359 16.3181 109.924 17.4319 109.05 18.3394ZM103.378 17.5856C104.037 18.2587 104.839 18.5962 105.794 18.5962C106.743 18.5962 107.552 18.2587 108.204 17.5856C108.861 16.9125 109.194 16.0481 109.194 15C109.194 13.9519 108.861 13.0875 108.204 12.4144C107.552 11.7412 106.743 11.4037 105.794 11.4037C104.839 11.4037 104.037 11.7412 103.378 12.4144C102.72 13.0875 102.387 13.9519 102.387 15C102.387 16.0481 102.72 16.9125 103.378 17.5856Z"
-                fill="white"
-                stroke="white"
-                strokeWidth="0.16"
-                strokeMiterlimit="10"
-              />
-              <path
-                d="M111.965 19.4962V10.5037H113.354L117.672 17.4975H117.722L117.672 15.7687V10.5037H118.815V19.4962H117.622L113.1 12.1575H113.05L113.1 13.8937V19.4962H111.965Z"
-                fill="white"
-                stroke="white"
-                strokeWidth="0.16"
-                strokeMiterlimit="10"
-              />
-              <path
-                d="M100.941 32.6288C97.4611 32.6288 94.6185 35.31 94.6185 39.0094C94.6185 42.6788 97.4611 45.3881 100.941 45.3881C104.428 45.3881 107.27 42.6788 107.27 39.0094C107.27 35.31 104.428 32.6288 100.941 32.6288ZM100.941 42.8756C99.0315 42.8756 97.3889 41.28 97.3889 39.0094C97.3889 36.7088 99.0315 35.1413 100.941 35.1413C102.85 35.1413 104.5 36.7088 104.5 39.0094C104.5 41.28 102.85 42.8756 100.941 42.8756Z"
-                fill="white"
-              />
-              <path
-                d="M87.1463 32.6288C83.6592 32.6288 80.8241 35.31 80.8241 39.0094C80.8241 42.6788 83.6592 45.3881 87.1463 45.3881C90.6315 45.3881 93.4685 42.6788 93.4685 39.0094C93.4685 35.31 90.6315 32.6288 87.1463 32.6288ZM87.1463 42.8756C85.2352 42.8756 83.587 41.28 83.587 39.0094C83.587 36.7088 85.2352 35.1413 87.1463 35.1413C89.0555 35.1413 90.6981 36.7088 90.6981 39.0094C90.6981 41.28 89.0555 42.8756 87.1463 42.8756Z"
-                fill="white"
-              />
-              <path
-                d="M70.7315 34.5844V37.2957H77.1259C76.9389 38.8107 76.4389 39.9244 75.6722 40.7007C74.7389 41.6382 73.2852 42.6788 70.7315 42.6788C66.7963 42.6788 63.7148 39.4632 63.7148 35.4788C63.7148 31.4944 66.7963 28.2788 70.7315 28.2788C72.8592 28.2788 74.4074 29.1207 75.55 30.2119L77.437 28.3013C75.8389 26.7563 73.7129 25.5694 70.7315 25.5694C65.3352 25.5694 60.8 30.015 60.8 35.4788C60.8 40.9425 65.3352 45.3881 70.7315 45.3881C73.6481 45.3881 75.8389 44.4206 77.5611 42.6056C79.3259 40.8188 79.8759 38.3063 79.8759 36.2775C79.8759 35.6475 79.8241 35.0682 79.7315 34.5844H70.7315Z"
-                fill="white"
-              />
-              <path
-                d="M137.854 36.6863C137.333 35.2594 135.728 32.6288 132.457 32.6288C129.217 32.6288 126.518 35.2144 126.518 39.0094C126.518 42.5831 129.189 45.3881 132.768 45.3881C135.663 45.3881 137.333 43.6013 138.02 42.5606L135.872 41.1113C135.156 42.1725 134.18 42.8756 132.768 42.8756C131.367 42.8756 130.361 42.225 129.717 40.9425L138.144 37.4119L137.854 36.6863ZM129.261 38.8106C129.189 36.3506 131.148 35.0907 132.552 35.0907C133.652 35.0907 134.585 35.6475 134.896 36.4444L129.261 38.8106Z"
-                fill="white"
-              />
-              <path d="M122.411 45H125.181V26.25H122.411V45Z" fill="white" />
-              <path
-                d="M117.874 34.05H117.781C117.159 33.3038 115.972 32.6288 114.468 32.6288C111.313 32.6288 108.463 35.3325 108.463 39.0319C108.463 42.7013 111.313 45.3881 114.468 45.3881C115.972 45.3881 117.159 44.7131 117.781 44.0219H117.874V44.8706C117.874 47.3456 116.637 48.5831 114.514 48.5831C112.822 48.5831 111.865 47.4631 111.507 46.5225L109.057 47.5688C109.774 49.3538 111.8 51.0956 114.514 51.0956C117.411 51.0956 119.85 49.4738 119.85 44.5275V33.0075H117.874V34.05ZM114.7 42.8756C112.791 42.8756 111.233 41.2575 111.233 39.0319C111.233 36.7763 112.791 35.1413 114.7 35.1413C116.587 35.1413 117.996 36.7988 117.996 39.0319C117.996 41.2425 116.587 42.8756 114.7 42.8756Z"
-                fill="white"
-              />
-              <path
-                d="M175.185 26.25H169.444V45H172.214V37.8225H175.185C177.996 37.8225 180.759 35.7188 180.759 32.0363C180.759 28.3538 177.996 26.25 175.185 26.25ZM175.259 35.31H172.214V28.7625H175.259C177.037 28.7625 177.989 30.3075 177.989 32.0363C177.989 33.735 177.037 35.31 175.259 35.31Z"
-                fill="white"
-              />
-              <path
-                d="M186.611 42.9206C184.907 42.9206 183.722 41.6831 183.722 39.9319C183.722 38.1356 184.907 36.9431 186.611 36.9431C188.289 36.9431 189.326 38.1356 189.326 39.9319C189.326 41.6831 188.289 42.9206 186.611 42.9206ZM186.537 32.6288C183.796 32.6288 181.537 34.6875 181.537 39.0094C181.537 43.2413 183.796 45.3881 186.537 45.3881C189.278 45.3881 191.537 43.2413 191.537 39.0094C191.537 34.6875 189.278 32.6288 186.537 32.6288Z"
-                fill="white"
-              />
-              <path
-                d="M153.889 33.0075V35.5875H159.37C159.15 37.2956 158.556 38.5556 157.648 39.4631C156.5 40.6106 154.796 41.8631 151.852 41.8631C147.315 41.8631 143.815 38.2256 143.815 33.6881C143.815 29.1506 147.315 25.5131 151.852 25.5131C154.315 25.5131 156.074 26.4656 157.389 27.7031L159.259 25.8331C157.463 24.1031 155.093 22.9331 151.852 22.9331C146.074 22.9331 141.185 27.6656 141.185 33.6881C141.185 39.7106 146.074 44.4431 151.852 44.4431C155.037 44.4431 157.463 43.3181 159.278 41.4481C161.148 39.6181 161.741 37.0381 161.741 34.9331C161.741 34.2806 161.685 33.6731 161.574 33.0075H153.889Z"
-                fill="white"
-              />
-              <defs>
-                <linearGradient
-                  id="paint0_linear_google"
-                  x1="32.2959"
-                  y1="46.9355"
-                  x2="7.12421"
-                  y2="22.0746"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor="#00A0FF" />
-                  <stop offset="0.0066" stopColor="#00A1FF" />
-                  <stop offset="0.2601" stopColor="#00BEFF" />
-                  <stop offset="0.5122" stopColor="#00D2FF" />
-                  <stop offset="0.7604" stopColor="#00DFFF" />
-                  <stop offset="1" stopColor="#00E3FF" />
-                </linearGradient>
-                <linearGradient
-                  id="paint1_linear_google"
-                  x1="50.125"
-                  y1="29.9979"
-                  x2="14.2778"
-                  y2="29.9979"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor="#FFE000" />
-                  <stop offset="0.4087" stopColor="#FFBD00" />
-                  <stop offset="0.7754" stopColor="#FFA500" />
-                  <stop offset="1" stopColor="#FF9C00" />
-                </linearGradient>
-                <linearGradient
-                  id="paint2_linear_google"
-                  x1="36.7807"
-                  y1="26.5559"
-                  x2="2.64592"
-                  y2="-7.15752"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor="#FF3A44" />
-                  <stop offset="1" stopColor="#C31162" />
-                </linearGradient>
-                <linearGradient
-                  id="paint3_linear_google"
-                  x1="10.8108"
-                  y1="59.7357"
-                  x2="26.0535"
-                  y2="44.6813"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor="#32A071" />
-                  <stop offset="0.0685" stopColor="#2DA771" />
-                  <stop offset="0.4762" stopColor="#15CF74" />
-                  <stop offset="0.8009" stopColor="#06E775" />
-                  <stop offset="1" stopColor="#00F076" />
-                </linearGradient>
-              </defs>
-            </svg>
+            <div className="flex items-center bg-black rounded-lg p-3 h-12 sm:h-14 min-w-[140px] sm:min-w-[160px] group-hover:bg-gray-800 transition-colors shadow-xl">
+              {/* Google Play Icon */}
+              <div className="flex-shrink-0 mr-3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M3 20.5v-17c0-.35.15-.65.39-.84L12 12l-8.61 9.34c-.24-.19-.39-.49-.39-.84z"
+                    fill="#EA4335"
+                  />
+                  <path
+                    d="M9.83 12L3.39 3.66c.2-.15.45-.24.72-.24.15 0 .3.03.44.09L20 9.5l-5.5 2.5-4.67-4.67z"
+                    fill="#FBBC04"
+                  />
+                  <path
+                    d="M20 9.5c.55 0 1 .45 1 1s-.45 1-1 1l-5.5 2.5L9.83 12 14.5 7.33 20 9.5z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M14.5 16.67L9.83 12l4.67-4.67L20 14.5c-.55 0-1 .45-1 1s.45 1 1 1l-5.5 2.17z"
+                    fill="#34A853"
+                  />
+                </svg>
+              </div>
+
+              {/* Text Content */}
+              <div className="text-white text-left">
+                <div className="text-xs font-normal leading-none">
+                  GET IT ON
+                </div>
+                <div className="text-lg font-semibold leading-tight -mt-0.5">
+                  Google Play
+                </div>
+              </div>
+            </div>
           </a>
         </div>
       </div>
 
-      {/* Professional Credits Section with Fade-in */}
+      {/* Enhanced Footer */}
       <footer
-        className={`absolute bottom-4 left-0 right-0 flex justify-center transition-all duration-1500 ${
+        className={`absolute bottom-4 left-0 right-0 flex justify-center transition-all duration-2000 ${
           showContent
             ? "transform translate-y-0 opacity-100"
-            : "transform translate-y-10 opacity-0"
+            : "transform translate-y-8 opacity-0"
         }`}
-        style={{ transitionDelay: "1200ms" }}
+        style={{ transitionDelay: "1500ms" }}
       >
         <div className="text-center px-4">
-          <div className="bg-black/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-black/20 shadow-lg">
+          <div className="bg-black/10 backdrop-blur-lg rounded-2xl px-6 py-3 border border-black/20 shadow-2xl">
             <p className="text-xs sm:text-sm text-black/70 font-medium mb-1">
               © 2024 FASTIO. All rights reserved.
             </p>
@@ -425,19 +330,60 @@ export default function Index() {
         </div>
       </footer>
 
-      {/* Custom Styles for Animation */}
+      {/* Enhanced Custom Styles */}
       <style>{`
         .bg-gradient-radial {
           background: radial-gradient(circle at center, var(--tw-gradient-stops));
         }
         
-        @keyframes bounce-gentle {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
+        @keyframes float {
+          0%, 100% { 
+            transform: translateY(0px) translateX(0px) rotate(0deg);
+          }
+          25% { 
+            transform: translateY(-10px) translateX(5px) rotate(90deg);
+          }
+          50% { 
+            transform: translateY(-20px) translateX(-5px) rotate(180deg);
+          }
+          75% { 
+            transform: translateY(-10px) translateX(5px) rotate(270deg);
+          }
         }
         
-        .animate-bounce-gentle {
-          animation: bounce-gentle 2s infinite;
+        @keyframes glow {
+          0%, 100% { 
+            filter: drop-shadow(0 0 10px rgba(255,165,0,0.3));
+          }
+          50% { 
+            filter: drop-shadow(0 0 20px rgba(255,165,0,0.6));
+          }
+        }
+        
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+        
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-5px); }
+        }
+        
+        .animate-float {
+          animation: float 6s infinite linear;
+        }
+        
+        .animate-glow {
+          animation: glow 3s infinite;
+        }
+        
+        .animate-blink {
+          animation: blink 1s infinite;
+        }
+        
+        .animate-bounce-slow {
+          animation: bounce-slow 2s infinite;
         }
         
         .md\\:w-88 {
