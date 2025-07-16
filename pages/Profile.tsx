@@ -152,10 +152,13 @@ export default function Profile() {
     }
 
     try {
-      const response = await apiClient.changePassword({
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword,
-      });
+      const response = await apiClient.changePassword(
+        {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        },
+        token,
+      );
 
       if (response.success) {
         setSuccess("Password changed successfully!");
