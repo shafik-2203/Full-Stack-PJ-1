@@ -212,6 +212,44 @@ export default function Admin() {
           }
         }
 
+        // Fetch food items
+        const foodResponse = await fetch("/api/admin/food-items", { headers });
+        if (foodResponse.ok) {
+          const foodData = await foodResponse.json();
+          if (foodData.success && foodData.data) {
+            setMenuItems(
+              foodData.data.map((item: any) => ({
+                id: item._id,
+                name: item.name,
+                restaurant_id: item.restaurant?._id || "unknown",
+                price: item.price,
+                category: item.category,
+                status: item.isAvailable ? "available" : "unavailable",
+              })),
+            );
+          }
+        }
+
+        // Fetch payments
+        const paymentsResponse = await fetch("/api/admin/payments", {
+          headers,
+        });
+        if (paymentsResponse.ok) {
+          const paymentsData = await paymentsResponse.json();
+          if (paymentsData.success && paymentsData.data) {
+            setPayments(
+              paymentsData.data.map((payment: any) => ({
+                id: payment._id,
+                order_id: payment.order?._id || "unknown",
+                amount: payment.amount,
+                method: payment.method,
+                status: payment.status,
+                created_at: payment.createdAt,
+              })),
+            );
+          }
+        }
+
         // Fetch signup requests
         const signupResponse = await fetch("/api/admin/signup-requests", {
           headers,
