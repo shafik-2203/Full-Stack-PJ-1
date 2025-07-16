@@ -3,84 +3,15 @@ import Logo from "../components/Logo";
 
 export default function Index() {
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Dynamic Animated Background */}
-      <div className="absolute inset-0">
-        {/* Main gradient background */}
-        <div
-          className={`absolute inset-0 transition-all duration-3000 ease-out ${
-            animationStage >= 1
-              ? "bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 opacity-100"
-              : "bg-gradient-to-br from-black via-gray-900 to-black opacity-80"
-          }`}
-        />
-
-        {/* Animated overlay patterns */}
-        <div
-          className={`absolute inset-0 transition-all duration-2000 ${
-            animationStage >= 2 ? "opacity-30" : "opacity-0"
-          }`}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent" />
-        </div>
-
-        {/* Floating geometric shapes */}
-        {animationStage >= 2 && (
-          <div className="absolute inset-0">
-            {particles.map((particle) => (
-              <div
-                key={particle.id}
-                className="absolute animate-float"
-                style={{
-                  left: `${particle.x}%`,
-                  top: `${particle.y}%`,
-                  animationDelay: `${particle.delay}s`,
-                  animationDuration: `${4 + Math.random() * 2}s`,
-                }}
-              >
-                <div className="w-3 h-3 bg-white/20 rounded-full blur-sm" />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Radial gradient overlay */}
-        <div
-          className={`absolute inset-0 transition-opacity duration-2000 ${
-            animationStage >= 3 ? "opacity-20" : "opacity-0"
-          }`}
-          style={{
-            background:
-              "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%)",
-          }}
-        />
+    <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 relative overflow-x-hidden">
+      {/* Logo */}
+      <div className="absolute top-2 left-2 sm:top-4 sm:left-5 z-10">
+        <Logo size={80} className="sm:hidden" />
+        <Logo size={130} className="hidden sm:block" />
       </div>
 
-      {/* Spectacular Logo Animation */}
-      <div
-        className={`absolute top-2 left-2 sm:top-4 sm:left-5 z-10 transition-all duration-1500 ease-out ${
-          animationStage >= 2
-            ? "transform translate-x-0 translate-y-0 scale-100 rotate-0 opacity-100"
-            : "transform -translate-x-32 -translate-y-20 scale-75 rotate-45 opacity-0"
-        }`}
-      >
-        <div
-          className={`transition-all duration-1000 ${animationStage >= 2 ? "animate-glow" : ""}`}
-        >
-          <Logo size={80} className="sm:hidden drop-shadow-2xl" />
-          <Logo size={130} className="hidden sm:block drop-shadow-2xl" />
-        </div>
-      </div>
-
-      {/* Header Navigation with Wave Animation */}
-      <header
-        className={`absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 z-10 max-w-xs sm:max-w-none transition-all duration-1500 ${
-          animationStage >= 4
-            ? "transform translate-x-0 translate-y-0 opacity-100"
-            : "transform translate-x-full -translate-y-8 opacity-0"
-        }`}
-      >
+      {/* Header Navigation */}
+      <header className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 z-10 max-w-xs sm:max-w-none">
         {/* Premium Admin Button */}
         <Link
           to="/admin-portal"
