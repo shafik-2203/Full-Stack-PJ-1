@@ -173,7 +173,7 @@ export default function Checkout() {
         paymentMethod: selectedPayment,
       };
 
-      const response = await apiClient.createOrder(orderData);
+      const response = await apiClient.createOrder(orderData, token);
 
       if (response.success) {
         // Clear cart
