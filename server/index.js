@@ -583,7 +583,8 @@ const mockRestaurants = [
     deliveryTime: "25-35 min",
     deliveryFee: 40,
     minimumOrder: 200,
-    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2F8311f205e0ef4e7cbb4f9e1a72b66a5a%2Fc892f18a2e1545539acfdcbaf3386a87?format=webp&width=800",
     location: {
       address: "123 Food Street, Bandra West",
       city: "Mumbai",
@@ -615,7 +616,8 @@ const mockRestaurants = [
     deliveryTime: "20-30 min",
     deliveryFee: 30,
     minimumOrder: 150,
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+    image:
+      "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop",
     location: {
       address: "456 Fast Lane, Andheri East",
       city: "Mumbai",
@@ -648,7 +650,8 @@ const mockRestaurants = [
     deliveryTime: "30-40 min",
     deliveryFee: 50,
     minimumOrder: 300,
-    image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400",
+    image:
+      "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=300&fit=crop",
     location: {
       address: "789 Sushi Street, Lower Parel",
       city: "Mumbai",
@@ -681,7 +684,8 @@ const mockRestaurants = [
     deliveryTime: "35-45 min",
     deliveryFee: 35,
     minimumOrder: 180,
-    image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+    image:
+      "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop",
     location: {
       address: "321 Curry Lane, Powai",
       city: "Mumbai",
