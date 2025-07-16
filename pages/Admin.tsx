@@ -1538,8 +1538,14 @@ export default function Admin() {
                     <Download className="w-4 h-4" />
                     Export
                   </button>
-                  <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
-                    <RefreshCw className="w-4 h-4" />
+                  <button
+                    onClick={() => refreshSection("payments")}
+                    disabled={sectionLoading.payments}
+                    className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.payments ? "animate-spin" : ""}`}
+                    />
                     Refresh
                   </button>
                 </div>
