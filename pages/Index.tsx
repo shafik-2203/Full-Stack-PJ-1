@@ -1,7 +1,23 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Logo from "../components/Logo";
 
 export default function Index() {
+  const [animationStage, setAnimationStage] = useState(0);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    // Animation sequence timing
+    const timeouts = [
+      setTimeout(() => setAnimationStage(1), 500), // Logo scale-in
+      setTimeout(() => setAnimationStage(2), 1200), // Brand name reveal
+      setTimeout(() => setAnimationStage(3), 2000), // Tagline and elements
+      setTimeout(() => setShowContent(true), 2500), // Show all content
+    ];
+
+    return () => timeouts.forEach(clearTimeout);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 relative overflow-x-hidden">
       {/* Logo */}
