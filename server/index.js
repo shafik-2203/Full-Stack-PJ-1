@@ -8,7 +8,7 @@ import connectDB from "./config/db.js";
 // Import routes
 import authRoutes from "./routes/auth.js";
 import adminRoutes from "./routes/admin.js";
-import orderRoutes from "./routes/orderRoutes.js";
+import orderRoutes from "./routes/orderRoutes.ts";
 
 // Load environment variables
 dotenv.config();
