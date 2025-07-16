@@ -948,68 +948,206 @@ export default function Admin() {
         {activeTab === "orders" && (
           <div className="space-y-6 animate-fade-in">
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Order Management
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Customer
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {orders.map((order) => (
-                      <tr key={order.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          #{order.id.slice(-6)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          User {order.user_id.slice(-4)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₹{order.total_amount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              order.status === "delivered"
-                                ? "bg-green-100 text-green-800"
-                                : order.status === "cancelled"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {order.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <button className="text-blue-600 hover:text-blue-900 mr-3">
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button className="text-green-600 hover:text-green-900">
-                            <Truck className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Order Management
+                </h2>
+                <div className="flex gap-2">
+                  <select className="px-4 py-2 border rounded-lg bg-white text-sm">
+                    <option value="">All Orders</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="out_for_delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  <button
+                    onClick={fetchUserData}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Refresh
+                  </button>
+                </div>
               </div>
+
+              {/* Order Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+                {[
+                  {
+                    status: "pending",
+                    label: "Pending",
+                    color: "yellow",
+                    icon: Calendar,
+                  },
+                  {
+                    status: "confirmed",
+                    label: "Confirmed",
+                    color: "blue",
+                    icon: CheckSquare,
+                  },
+                  {
+                    status: "preparing",
+                    label: "Preparing",
+                    color: "orange",
+                    icon: UtensilsCrossed,
+                  },
+                  {
+                    status: "out_for_delivery",
+                    label: "Delivering",
+                    color: "purple",
+                    icon: Truck,
+                  },
+                  {
+                    status: "delivered",
+                    label: "Delivered",
+                    color: "green",
+                    icon: Package,
+                  },
+                  {
+                    status: "cancelled",
+                    label: "Cancelled",
+                    color: "red",
+                    icon: XSquare,
+                  },
+                ].map(({ status, label, color, icon: Icon }) => {
+                  const count = orders.filter(
+                    (o) => o.status === status,
+                  ).length;
+                  return (
+                    <div
+                      key={status}
+                      className={`bg-${color}-50 rounded-lg p-3 border border-${color}-200`}
+                    >
+                      <div className="flex items-center">
+                        <Icon className={`w-5 h-5 text-${color}-600`} />
+                        <div className="ml-2">
+                          <p
+                            className={`text-xs font-medium text-${color}-600`}
+                          >
+                            {label}
+                          </p>
+                          <p className={`text-lg font-bold text-${color}-900`}>
+                            {count}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading orders...
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Order ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Customer
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Restaurant
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Amount
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Date
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {orders.map((order) => (
+                        <tr
+                          key={order.id}
+                          className="hover:bg-gray-50 transition-colors"
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            #{order.id.slice(-6)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            User {order.user_id.slice(-4)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            Rest {order.restaurant_id.slice(-4)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                            ₹{order.total_amount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <select
+                              value={order.status}
+                              className={`text-xs font-semibold rounded-full px-3 py-1 border-0 ${
+                                order.status === "delivered"
+                                  ? "bg-green-100 text-green-800"
+                                  : order.status === "cancelled"
+                                    ? "bg-red-100 text-red-800"
+                                    : order.status === "out_for_delivery"
+                                      ? "bg-purple-100 text-purple-800"
+                                      : order.status === "preparing"
+                                        ? "bg-orange-100 text-orange-800"
+                                        : order.status === "confirmed"
+                                          ? "bg-blue-100 text-blue-800"
+                                          : "bg-yellow-100 text-yellow-800"
+                              }`}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="confirmed">Confirmed</option>
+                              <option value="preparing">Preparing</option>
+                              <option value="out_for_delivery">
+                                Out for Delivery
+                              </option>
+                              <option value="delivered">Delivered</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {order.created_at
+                              ? formatDate(order.created_at)
+                              : "N/A"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div className="flex gap-2">
+                              <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button className="text-green-600 hover:text-green-900 transition-colors">
+                                <Truck className="w-4 h-4" />
+                              </button>
+                              <button className="text-orange-600 hover:text-orange-900 transition-colors">
+                                <Edit className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {orders.length === 0 && (
+                    <div className="text-center py-12">
+                      <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">No orders found</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1146,7 +1284,7 @@ export default function Admin() {
                             #{payment.order_id.slice(-6)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                            ₹{payment.amount}
+                            ���{payment.amount}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {payment.method}
