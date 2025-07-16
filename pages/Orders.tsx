@@ -24,9 +24,6 @@ export default function Orders() {
       setIsLoading(true);
       setError("");
 
-      // Get auth token from localStorage or user context
-      const token = localStorage.getItem("fastio_token") || user?.token;
-
       if (!token) {
         setError("Please log in to view orders");
         setIsLoading(false);
