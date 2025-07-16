@@ -118,6 +118,13 @@ export default function Admin() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sectionLoading, setSectionLoading] = useState({
+    users: false,
+    restaurants: false,
+    orders: false,
+    payments: false,
+    food: false,
+  });
   const [error, setError] = useState("");
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -273,7 +280,7 @@ export default function Admin() {
         });
       }
 
-      // Set fallback data if endpoints failed
+      // Set comprehensive fallback data if endpoints failed
       if (menuItems.length === 0) {
         setMenuItems([
           {
@@ -292,6 +299,116 @@ export default function Admin() {
             category: "Burger",
             status: "available",
           },
+          {
+            id: "item_3",
+            name: "Chicken Biryani",
+            restaurant_id: "rest-3",
+            price: 399,
+            category: "Indian",
+            status: "available",
+          },
+          {
+            id: "item_4",
+            name: "Veg Momos",
+            restaurant_id: "rest-4",
+            price: 149,
+            category: "Chinese",
+            status: "available",
+          },
+          {
+            id: "item_5",
+            name: "Chocolate Cake",
+            restaurant_id: "rest-5",
+            price: 199,
+            category: "Dessert",
+            status: "unavailable",
+          },
+        ]);
+      }
+
+      if (restaurants.length === 0) {
+        setRestaurants([
+          {
+            id: "rest-1",
+            name: "Pizza Palace",
+            cuisine: "Italian",
+            rating: 4.5,
+            status: "active",
+            orders_count: 245,
+            revenue: 125000,
+          },
+          {
+            id: "rest-2",
+            name: "Burger King",
+            cuisine: "Fast Food",
+            rating: 4.2,
+            status: "active",
+            orders_count: 189,
+            revenue: 98000,
+          },
+          {
+            id: "rest-3",
+            name: "Spice Garden",
+            cuisine: "Indian",
+            rating: 4.7,
+            status: "active",
+            orders_count: 312,
+            revenue: 187000,
+          },
+          {
+            id: "rest-4",
+            name: "Dragon House",
+            cuisine: "Chinese",
+            rating: 4.3,
+            status: "inactive",
+            orders_count: 156,
+            revenue: 75000,
+          },
+        ]);
+      }
+
+      if (orders.length === 0) {
+        setOrders([
+          {
+            id: "order_1",
+            user_id: "user-123",
+            restaurant_id: "rest-1",
+            status: "delivered",
+            total_amount: 916.7,
+            created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_2",
+            user_id: "user-456",
+            restaurant_id: "rest-2",
+            status: "out_for_delivery",
+            total_amount: 412.8,
+            created_at: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_3",
+            user_id: "user-789",
+            restaurant_id: "rest-3",
+            status: "preparing",
+            total_amount: 687.5,
+            created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_4",
+            user_id: "user-321",
+            restaurant_id: "rest-1",
+            status: "confirmed",
+            total_amount: 299.0,
+            created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "order_5",
+            user_id: "user-654",
+            restaurant_id: "rest-4",
+            status: "pending",
+            total_amount: 149.0,
+            created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+          },
         ]);
       }
 
@@ -299,7 +416,7 @@ export default function Admin() {
         setPayments([
           {
             id: "pay_1",
-            order_id: "order-1",
+            order_id: "order_1",
             amount: 916.7,
             method: "UPI",
             status: "completed",
@@ -307,11 +424,90 @@ export default function Admin() {
           },
           {
             id: "pay_2",
-            order_id: "order-2",
+            order_id: "order_2",
             amount: 412.8,
-            method: "Card",
+            method: "Credit Card",
             status: "completed",
             created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "pay_3",
+            order_id: "order_3",
+            amount: 687.5,
+            method: "Debit Card",
+            status: "completed",
+            created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "pay_4",
+            order_id: "order_4",
+            amount: 299.0,
+            method: "UPI",
+            status: "pending",
+            created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "pay_5",
+            order_id: "order_5",
+            amount: 149.0,
+            method: "Cash on Delivery",
+            status: "pending",
+            created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+          },
+        ]);
+      }
+
+      if (users.length === 0) {
+        setUsers([
+          {
+            id: "user-123",
+            email: "john.doe@example.com",
+            username: "john_doe",
+            mobile: "9876543210",
+            is_verified: true,
+            created_at: new Date(
+              Date.now() - 30 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(
+              Date.now() - 5 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          {
+            id: "user-456",
+            email: "jane.smith@example.com",
+            username: "jane_smith",
+            mobile: "9876543211",
+            is_verified: true,
+            created_at: new Date(
+              Date.now() - 15 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(
+              Date.now() - 2 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          {
+            id: "user-789",
+            email: "bob.wilson@example.com",
+            username: "bob_wilson",
+            mobile: "9876543212",
+            is_verified: false,
+            created_at: new Date(
+              Date.now() - 7 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(
+              Date.now() - 1 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          {
+            id: "user-321",
+            email: "alice.brown@example.com",
+            username: "alice_brown",
+            mobile: "9876543213",
+            is_verified: true,
+            created_at: new Date(
+              Date.now() - 3 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
           },
         ]);
       }
@@ -345,6 +541,103 @@ export default function Admin() {
     setNewAdminEmail("");
   };
 
+  const refreshSection = async (section: string) => {
+    setSectionLoading((prev) => ({ ...prev, [section]: true }));
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      switch (section) {
+        case "users":
+          const usersResponse = await fetch("/api/admin/users", { headers });
+          if (usersResponse.ok) {
+            const usersData = await usersResponse.json();
+            if (usersData.success && usersData.data) {
+              setUsers(usersData.data);
+            }
+          }
+          break;
+        case "restaurants":
+          const restaurantsResponse = await fetch("/api/admin/restaurants", {
+            headers,
+          });
+          if (restaurantsResponse.ok) {
+            const restaurantsData = await restaurantsResponse.json();
+            if (restaurantsData.success && restaurantsData.data) {
+              setRestaurants(restaurantsData.data);
+            }
+          }
+          break;
+        case "orders":
+          const ordersResponse = await fetch("/api/admin/orders", { headers });
+          if (ordersResponse.ok) {
+            const ordersData = await ordersResponse.json();
+            if (ordersData.success && ordersData.data) {
+              setOrders(ordersData.data);
+            }
+          }
+          break;
+        case "payments":
+          const paymentsResponse = await fetch("/api/admin/payments", {
+            headers,
+          });
+          if (paymentsResponse.ok) {
+            const paymentsData = await paymentsResponse.json();
+            if (paymentsData.success && paymentsData.data) {
+              setPayments(
+                paymentsData.data.map((payment: any) => ({
+                  id: payment._id,
+                  order_id: payment.order?._id || "unknown",
+                  amount: payment.amount,
+                  method: payment.method,
+                  status: payment.status,
+                  created_at: payment.createdAt,
+                })),
+              );
+            }
+          }
+          break;
+        case "food":
+          const foodResponse = await fetch("/api/admin/food-items", {
+            headers,
+          });
+          if (foodResponse.ok) {
+            const foodData = await foodResponse.json();
+            if (foodData.success && foodData.data) {
+              setMenuItems(
+                foodData.data.map((item: any) => ({
+                  id: item._id,
+                  name: item.name,
+                  restaurant_id: item.restaurant?._id || "unknown",
+                  price: item.price,
+                  category: item.category,
+                  status: item.isAvailable ? "available" : "unavailable",
+                })),
+              );
+            }
+          }
+          break;
+      }
+    } catch (err) {
+      console.error(`Error refreshing ${section}:`, err);
+    } finally {
+      setSectionLoading((prev) => ({ ...prev, [section]: false }));
+    }
+  };
+
+  // Auto-refresh data every 30 seconds for live updates
+  useEffect(() => {
+    if (activeTab !== "dashboard") return;
+
+    const interval = setInterval(() => {
+      fetchUserData();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [activeTab]);
+
+  // User CRUD Operations
   const removeUser = async (userId: string, userEmail: string) => {
     if (!confirm(`Are you sure you want to remove user ${userEmail}?`)) {
       return;
@@ -365,12 +658,264 @@ export default function Admin() {
 
       if (data.success) {
         alert(`User ${userEmail} removed successfully`);
-        fetchUserData();
+        refreshSection("users");
       } else {
         alert("Failed to remove user: " + data.message);
       }
     } catch (err) {
       alert("Error removing user");
+      console.error("Error:", err);
+    }
+  };
+
+  const updateUserStatus = async (userId: string, isVerified: boolean) => {
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ is_verified: !isVerified }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`User verification status updated`);
+        refreshSection("users");
+      } else {
+        alert("Failed to update user: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating user");
+      console.error("Error:", err);
+    }
+  };
+
+  // Restaurant CRUD Operations
+  const updateRestaurantStatus = async (
+    restaurantId: string,
+    currentStatus: string,
+  ) => {
+    const newStatus = currentStatus === "active" ? "inactive" : "active";
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Restaurant status updated to ${newStatus}`);
+        refreshSection("restaurants");
+      } else {
+        alert("Failed to update restaurant: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating restaurant");
+      console.error("Error:", err);
+    }
+  };
+
+  const deleteRestaurant = async (
+    restaurantId: string,
+    restaurantName: string,
+  ) => {
+    if (
+      !confirm(
+        `Are you sure you want to delete restaurant "${restaurantName}"? This action cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
+        method: "DELETE",
+        headers,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Restaurant "${restaurantName}" deleted successfully`);
+        refreshSection("restaurants");
+      } else {
+        alert("Failed to delete restaurant: " + data.message);
+      }
+    } catch (err) {
+      alert("Error deleting restaurant");
+      console.error("Error:", err);
+    }
+  };
+
+  // Food Item CRUD Operations
+  const updateFoodItemStatus = async (
+    itemId: string,
+    currentStatus: string,
+  ) => {
+    const newStatus =
+      currentStatus === "available" ? "unavailable" : "available";
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/food-items/${itemId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ isAvailable: newStatus === "available" }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Food item status updated to ${newStatus}`);
+        refreshSection("food");
+      } else {
+        alert("Failed to update food item: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating food item");
+      console.error("Error:", err);
+    }
+  };
+
+  const deleteFoodItem = async (itemId: string, itemName: string) => {
+    if (!confirm(`Are you sure you want to delete "${itemName}"?`)) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/food-items/${itemId}`, {
+        method: "DELETE",
+        headers,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Food item "${itemName}" deleted successfully`);
+        refreshSection("food");
+      } else {
+        alert("Failed to delete food item: " + data.message);
+      }
+    } catch (err) {
+      alert("Error deleting food item");
+      console.error("Error:", err);
+    }
+  };
+
+  // Order CRUD Operations
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Order status updated to ${newStatus}`);
+        refreshSection("orders");
+      } else {
+        alert("Failed to update order: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating order");
+      console.error("Error:", err);
+    }
+  };
+
+  const cancelOrder = async (orderId: string) => {
+    if (
+      !confirm(`Are you sure you want to cancel order #${orderId.slice(-6)}?`)
+    ) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: "cancelled" }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Order cancelled successfully`);
+        refreshSection("orders");
+      } else {
+        alert("Failed to cancel order: " + data.message);
+      }
+    } catch (err) {
+      alert("Error cancelling order");
+      console.error("Error:", err);
+    }
+  };
+
+  // Payment CRUD Operations
+  const updatePaymentStatus = async (paymentId: string, newStatus: string) => {
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/payments/${paymentId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Payment status updated to ${newStatus}`);
+        refreshSection("payments");
+      } else {
+        alert("Failed to update payment: " + data.message);
+      }
+    } catch (err) {
+      alert("Error updating payment");
+      console.error("Error:", err);
+    }
+  };
+
+  const processRefund = async (paymentId: string, amount: number) => {
+    if (!confirm(`Are you sure you want to process refund of ₹${amount}?`)) {
+      return;
+    }
+
+    try {
+      const headers = getAuthHeaders();
+      if (!headers.Authorization) return;
+
+      const response = await fetch(`/api/admin/payments/${paymentId}/refund`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ refund_amount: amount }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Refund of ₹${amount} processed successfully`);
+        refreshSection("payments");
+      } else {
+        alert("Failed to process refund: " + data.message);
+      }
+    } catch (err) {
+      alert("Error processing refund");
       console.error("Error:", err);
     }
   };
@@ -607,13 +1152,77 @@ export default function Admin() {
         {activeTab === "users" && (
           <div className="space-y-6 animate-fade-in">
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                User Management
-              </h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  User Management
+                </h2>
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    Add User
+                  </button>
+                  <button
+                    onClick={() => refreshSection("users")}
+                    disabled={sectionLoading.users}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.users ? "animate-spin" : ""}`}
+                    />
+                    Refresh
+                  </button>
+                </div>
+              </div>
+
+              {/* User Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <div className="flex items-center">
+                    <Users className="w-8 h-8 text-blue-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-blue-600">
+                        Total Users
+                      </p>
+                      <p className="text-2xl font-bold text-blue-900">
+                        {stats?.total || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <div className="flex items-center">
+                    <UserCheck className="w-8 h-8 text-green-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-green-600">
+                        Verified
+                      </p>
+                      <p className="text-2xl font-bold text-green-900">
+                        {stats?.verified || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <div className="flex items-center">
+                    <UserX className="w-8 h-8 text-red-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-red-600">
+                        Unverified
+                      </p>
+                      <p className="text-2xl font-bold text-red-900">
+                        {stats?.unverified || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {loading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
-                  <p className="mt-2 text-gray-600">Loading users...</p>
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading users...
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -630,20 +1239,26 @@ export default function Admin() {
                           Status
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Joined
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {users.map((user) => (
-                        <tr key={user.id}>
+                        <tr
+                          key={user.id}
+                          className="hover:bg-gray-50 transition-colors"
+                        >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
                                 {user.username}
                               </div>
                               <div className="text-sm text-gray-500">
-                                ID: {user.id}
+                                ID: {user.id.slice(-8)}
                               </div>
                             </div>
                           </td>
@@ -653,33 +1268,62 @@ export default function Admin() {
                                 {user.email}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {user.mobile}
+                                {user.mobile || "N/A"}
                               </div>
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            <button
+                              onClick={() =>
+                                updateUserStatus(user.id, user.is_verified)
+                              }
+                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full transition-colors hover:opacity-80 ${
                                 user.is_verified
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
+                                  ? "bg-green-100 text-green-800 hover:bg-green-200"
+                                  : "bg-red-100 text-red-800 hover:bg-red-200"
                               }`}
                             >
                               {user.is_verified ? "Verified" : "Unverified"}
-                            </span>
+                            </button>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user.created_at
+                              ? formatDate(user.created_at)
+                              : "N/A"}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <button
-                              onClick={() => removeUser(user.id, user.email)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                title="View Details"
+                                className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                title="Edit User"
+                                className="text-green-600 hover:text-green-900 transition-colors p-1"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button
+                                title="Delete User"
+                                onClick={() => removeUser(user.id, user.email)}
+                                className="text-red-600 hover:text-red-900 transition-colors p-1"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                  {users.length === 0 && (
+                    <div className="text-center py-8">
+                      <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">No users found</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -694,55 +1338,198 @@ export default function Admin() {
                 <h2 className="text-xl font-semibold text-gray-900">
                   Restaurant Management
                 </h2>
-                <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
-                  <Plus className="w-4 h-4" />
-                  Add Restaurant
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {restaurants.map((restaurant) => (
-                  <div
-                    key={restaurant.id}
-                    className="border rounded-lg p-4 hover:shadow-lg transition-shadow"
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    Add Restaurant
+                  </button>
+                  <button
+                    onClick={() => refreshSection("restaurants")}
+                    disabled={sectionLoading.restaurants}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-gray-900">
-                        {restaurant.name}
-                      </h3>
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                          restaurant.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {restaurant.status}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {restaurant.cuisine}
-                    </p>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Star className="w-4 h-4 text-yellow-400" />
-                      <span className="text-sm">{restaurant.rating}</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <p>Orders: {restaurant.orders_count}</p>
-                      <p>Revenue: ₹{restaurant.revenue.toLocaleString()}</p>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      <button className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-                        <Edit className="w-3 h-3" />
-                        Edit
-                      </button>
-                      <button className="flex items-center gap-1 px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700">
-                        <Eye className="w-3 h-3" />
-                        View
-                      </button>
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.restaurants ? "animate-spin" : ""}`}
+                    />
+                    Refresh
+                  </button>
+                </div>
+              </div>
+
+              {/* Restaurant Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                  <div className="flex items-center">
+                    <Store className="w-6 h-6 text-orange-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-orange-600">
+                        Total
+                      </p>
+                      <p className="text-xl font-bold text-orange-900">
+                        {restaurants.length}
+                      </p>
                     </div>
                   </div>
-                ))}
+                </div>
+                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <div className="flex items-center">
+                    <CheckSquare className="w-6 h-6 text-green-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-green-600">
+                        Active
+                      </p>
+                      <p className="text-xl font-bold text-green-900">
+                        {
+                          restaurants.filter((r) => r.status === "active")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <div className="flex items-center">
+                    <XSquare className="w-6 h-6 text-red-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-red-600">
+                        Inactive
+                      </p>
+                      <p className="text-xl font-bold text-red-900">
+                        {
+                          restaurants.filter((r) => r.status === "inactive")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <div className="flex items-center">
+                    <DollarSign className="w-6 h-6 text-blue-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-blue-600">
+                        Avg Revenue
+                      </p>
+                      <p className="text-xl font-bold text-blue-900">
+                        ₹
+                        {restaurants.length > 0
+                          ? Math.round(
+                              restaurants.reduce(
+                                (sum, r) => sum + r.revenue,
+                                0,
+                              ) / restaurants.length,
+                            ).toLocaleString()
+                          : 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading restaurants...
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {restaurants.map((restaurant) => (
+                    <div
+                      key={restaurant.id}
+                      className="border rounded-lg p-6 hover:shadow-lg transition-all duration-300 bg-white"
+                    >
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="font-semibold text-gray-900 text-lg">
+                          {restaurant.name}
+                        </h3>
+                        <span
+                          className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                            restaurant.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {restaurant.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3 bg-gray-50 px-2 py-1 rounded">
+                        {restaurant.cuisine}
+                      </p>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm font-medium">
+                          {restaurant.rating}
+                        </span>
+                        <span className="text-xs text-gray-500">rating</span>
+                      </div>
+                      <div className="text-sm text-gray-600 space-y-1 mb-4">
+                        <div className="flex justify-between">
+                          <span>Orders:</span>
+                          <span className="font-medium">
+                            {restaurant.orders_count}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Revenue:</span>
+                          <span className="font-medium text-green-600">
+                            ₹{restaurant.revenue.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() =>
+                            updateRestaurantStatus(
+                              restaurant.id,
+                              restaurant.status,
+                            )
+                          }
+                          className={`flex items-center gap-1 px-3 py-2 text-white text-sm rounded transition-colors flex-1 ${
+                            restaurant.status === "active"
+                              ? "bg-red-600 hover:bg-red-700"
+                              : "bg-green-600 hover:bg-green-700"
+                          }`}
+                        >
+                          {restaurant.status === "active" ? (
+                            <>
+                              <XSquare className="w-3 h-3" />
+                              Deactivate
+                            </>
+                          ) : (
+                            <>
+                              <CheckSquare className="w-3 h-3" />
+                              Activate
+                            </>
+                          )}
+                        </button>
+                        <button
+                          title="View Details"
+                          className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                        >
+                          <Eye className="w-3 h-3" />
+                        </button>
+                        <button
+                          title="Delete Restaurant"
+                          onClick={() =>
+                            deleteRestaurant(restaurant.id, restaurant.name)
+                          }
+                          className="flex items-center gap-1 px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {restaurants.length === 0 && (
+                    <div className="col-span-full text-center py-12">
+                      <Store className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">No restaurants found</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -751,68 +1538,337 @@ export default function Admin() {
         {activeTab === "orders" && (
           <div className="space-y-6 animate-fade-in">
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Order Management
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Customer
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {orders.map((order) => (
-                      <tr key={order.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          #{order.id.slice(-6)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          User {order.user_id.slice(-4)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₹{order.total_amount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              order.status === "delivered"
-                                ? "bg-green-100 text-green-800"
-                                : order.status === "cancelled"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {order.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <button className="text-blue-600 hover:text-blue-900 mr-3">
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button className="text-green-600 hover:text-green-900">
-                            <Truck className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Order Management
+                </h2>
+                <div className="flex gap-2">
+                  <select className="px-4 py-2 border rounded-lg bg-white text-sm">
+                    <option value="">All Orders</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="out_for_delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  <button
+                    onClick={() => refreshSection("orders")}
+                    disabled={sectionLoading.orders}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.orders ? "animate-spin" : ""}`}
+                    />
+                    Refresh
+                  </button>
+                </div>
               </div>
+
+              {/* Order Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+                {[
+                  {
+                    status: "pending",
+                    label: "Pending",
+                    color: "yellow",
+                    icon: Calendar,
+                  },
+                  {
+                    status: "confirmed",
+                    label: "Confirmed",
+                    color: "blue",
+                    icon: CheckSquare,
+                  },
+                  {
+                    status: "preparing",
+                    label: "Preparing",
+                    color: "orange",
+                    icon: UtensilsCrossed,
+                  },
+                  {
+                    status: "out_for_delivery",
+                    label: "Delivering",
+                    color: "purple",
+                    icon: Truck,
+                  },
+                  {
+                    status: "delivered",
+                    label: "Delivered",
+                    color: "green",
+                    icon: Package,
+                  },
+                  {
+                    status: "cancelled",
+                    label: "Cancelled",
+                    color: "red",
+                    icon: XSquare,
+                  },
+                ].map(({ status, label, color, icon: Icon }) => {
+                  const count = orders.filter(
+                    (o) => o.status === status,
+                  ).length;
+                  return (
+                    <div
+                      key={status}
+                      className={`bg-${color}-50 rounded-lg p-3 border border-${color}-200`}
+                    >
+                      <div className="flex items-center">
+                        <Icon className={`w-5 h-5 text-${color}-600`} />
+                        <div className="ml-2">
+                          <p
+                            className={`text-xs font-medium text-${color}-600`}
+                          >
+                            {label}
+                          </p>
+                          <p className={`text-lg font-bold text-${color}-900`}>
+                            {count}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading orders...
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Order ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Customer
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Restaurant
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Amount
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Date
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {orders.map((order) => (
+                        <tr
+                          key={order.id}
+                          className="hover:bg-gray-50 transition-colors"
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            #{order.id.slice(-6)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            User {order.user_id.slice(-4)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            Rest {order.restaurant_id.slice(-4)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                            ₹{order.total_amount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <select
+                              value={order.status}
+                              onChange={(e) =>
+                                updateOrderStatus(order.id, e.target.value)
+                              }
+                              className={`text-xs font-semibold rounded-full px-3 py-1 border-0 cursor-pointer transition-colors ${
+                                order.status === "delivered"
+                                  ? "bg-green-100 text-green-800 hover:bg-green-200"
+                                  : order.status === "cancelled"
+                                    ? "bg-red-100 text-red-800 hover:bg-red-200"
+                                    : order.status === "out_for_delivery"
+                                      ? "bg-purple-100 text-purple-800 hover:bg-purple-200"
+                                      : order.status === "preparing"
+                                        ? "bg-orange-100 text-orange-800 hover:bg-orange-200"
+                                        : order.status === "confirmed"
+                                          ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                                          : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                              }`}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="confirmed">Confirmed</option>
+                              <option value="preparing">Preparing</option>
+                              <option value="out_for_delivery">
+                                Out for Delivery
+                              </option>
+                              <option value="delivered">Delivered</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {order.created_at
+                              ? formatDate(order.created_at)
+                              : "N/A"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div className="flex gap-2">
+                              <button
+                                title="View Order Details"
+                                className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                title="Track Delivery"
+                                className="text-green-600 hover:text-green-900 transition-colors p-1"
+                              >
+                                <Truck className="w-4 h-4" />
+                              </button>
+                              {order.status !== "cancelled" &&
+                                order.status !== "delivered" && (
+                                  <button
+                                    title="Cancel Order"
+                                    onClick={() => cancelOrder(order.id)}
+                                    className="text-red-600 hover:text-red-900 transition-colors p-1"
+                                  >
+                                    <XSquare className="w-4 h-4" />
+                                  </button>
+                                )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {orders.length === 0 && (
+                    <div className="text-center py-12">
+                      <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">No orders found</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Food Items Tab */}
+        {activeTab === "food" && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Food Items Management
+                </h2>
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    Add Food Item
+                  </button>
+                  <button
+                    onClick={() => refreshSection("food")}
+                    disabled={sectionLoading.food}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.food ? "animate-spin" : ""}`}
+                    />
+                    Refresh
+                  </button>
+                </div>
+              </div>
+              {loading || sectionLoading.food ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading food items...
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {menuItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border rounded-lg p-4 hover:shadow-lg transition-all duration-300 bg-white"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-semibold text-gray-900 text-sm">
+                          {item.name}
+                        </h3>
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            item.status === "available"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        Category: {item.category}
+                      </p>
+                      <p className="text-lg font-bold text-orange-600 mb-2">
+                        ₹{item.price}
+                      </p>
+                      <p className="text-xs text-gray-500 mb-3">
+                        Restaurant ID: {item.restaurant_id.slice(-6)}
+                      </p>
+                      <div className="flex gap-1 flex-wrap">
+                        <button
+                          onClick={() =>
+                            updateFoodItemStatus(item.id, item.status)
+                          }
+                          className={`flex items-center gap-1 px-2 py-1 text-white text-xs rounded transition-colors ${
+                            item.status === "available"
+                              ? "bg-orange-600 hover:bg-orange-700"
+                              : "bg-green-600 hover:bg-green-700"
+                          }`}
+                          title={
+                            item.status === "available"
+                              ? "Mark Unavailable"
+                              : "Mark Available"
+                          }
+                        >
+                          {item.status === "available" ? (
+                            <XSquare className="w-3 h-3" />
+                          ) : (
+                            <CheckSquare className="w-3 h-3" />
+                          )}
+                        </button>
+                        <button
+                          title="Edit Item"
+                          className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                        >
+                          <Edit className="w-3 h-3" />
+                        </button>
+                        <button
+                          title="Delete Item"
+                          onClick={() => deleteFoodItem(item.id, item.name)}
+                          className="flex items-center gap-1 px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                        <button
+                          title="View Details"
+                          className="flex items-center gap-1 px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                        >
+                          <Eye className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -821,63 +1877,145 @@ export default function Admin() {
         {activeTab === "payments" && (
           <div className="space-y-6 animate-fade-in">
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Payment Management
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Payment ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Method
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {payments.map((payment) => (
-                      <tr key={payment.id}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {payment.id.slice(-6)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          #{payment.order_id.slice(-6)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₹{payment.amount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {payment.method}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              payment.status === "completed"
-                                ? "bg-green-100 text-green-800"
-                                : payment.status === "failed"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {payment.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Payment Management
+                </h2>
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <Download className="w-4 h-4" />
+                    Export
+                  </button>
+                  <button
+                    onClick={() => refreshSection("payments")}
+                    disabled={sectionLoading.payments}
+                    className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw
+                      className={`w-4 h-4 ${sectionLoading.payments ? "animate-spin" : ""}`}
+                    />
+                    Refresh
+                  </button>
+                </div>
               </div>
+              {loading || sectionLoading.payments ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading payments...
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Payment ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Order ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Amount
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Method
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {payments.map((payment) => (
+                        <tr
+                          key={payment.id}
+                          className="hover:bg-gray-50 transition-colors"
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {payment.id.slice(-6)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            #{payment.order_id.slice(-6)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                            ₹{payment.amount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {payment.method}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                payment.status === "completed"
+                                  ? "bg-green-100 text-green-800"
+                                  : payment.status === "failed"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                              }`}
+                            >
+                              {payment.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div className="flex gap-2">
+                              <button
+                                title="View Payment Details"
+                                className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                title="Download Receipt"
+                                className="text-green-600 hover:text-green-900 transition-colors p-1"
+                              >
+                                <Download className="w-4 h-4" />
+                              </button>
+                              {payment.status === "pending" && (
+                                <button
+                                  title="Mark as Completed"
+                                  onClick={() =>
+                                    updatePaymentStatus(payment.id, "completed")
+                                  }
+                                  className="text-orange-600 hover:text-orange-900 transition-colors p-1"
+                                >
+                                  <CheckSquare className="w-4 h-4" />
+                                </button>
+                              )}
+                              {payment.status === "completed" && (
+                                <button
+                                  title="Process Refund"
+                                  onClick={() =>
+                                    processRefund(payment.id, payment.amount)
+                                  }
+                                  className="text-red-600 hover:text-red-900 transition-colors p-1"
+                                >
+                                  <RefreshCw className="w-4 h-4" />
+                                </button>
+                              )}
+                              {payment.status === "failed" && (
+                                <button
+                                  title="Retry Payment"
+                                  onClick={() =>
+                                    updatePaymentStatus(payment.id, "pending")
+                                  }
+                                  className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+                                >
+                                  <RefreshCw className="w-4 h-4" />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         )}
