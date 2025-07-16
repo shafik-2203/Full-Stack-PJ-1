@@ -19,15 +19,63 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 relative overflow-x-hidden">
-      {/* Logo */}
-      <div className="absolute top-2 left-2 sm:top-4 sm:left-5 z-10">
-        <Logo size={80} className="sm:hidden" />
-        <Logo size={130} className="hidden sm:block" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background with Gradient Shifts */}
+      <div
+        className={`absolute inset-0 transition-all duration-2000 ${
+          animationStage >= 1
+            ? "bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600"
+            : "bg-gradient-to-br from-orange-800 via-orange-700 to-orange-900"
+        }`}
+      >
+        {/* Floating Particles */}
+        {animationStage >= 1 && (
+          <div className="absolute inset-0">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className={`absolute w-2 h-2 bg-white/20 rounded-full animate-bounce`}
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${3 + Math.random() * 2}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Radial Glow Effect */}
+        <div
+          className={`absolute inset-0 bg-gradient-radial from-white/10 to-transparent transition-opacity duration-1500 ${
+            animationStage >= 2 ? "opacity-30" : "opacity-0"
+          }`}
+        />
       </div>
 
-      {/* Header Navigation */}
-      <header className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 z-10 max-w-xs sm:max-w-none">
+      {/* Spectacular Logo Animation */}
+      <div
+        className={`absolute top-2 left-2 sm:top-4 sm:left-5 z-10 transition-all duration-1000 ${
+          animationStage >= 1
+            ? "transform translate-x-0 translate-y-0 scale-100 rotate-0 opacity-100"
+            : "transform -translate-x-20 -translate-y-10 scale-150 rotate-180 opacity-0"
+        }`}
+      >
+        <div className={`${animationStage >= 1 ? "animate-pulse" : ""}`}>
+          <Logo size={80} className="sm:hidden drop-shadow-2xl" />
+          <Logo size={130} className="hidden sm:block drop-shadow-2xl" />
+        </div>
+      </div>
+
+      {/* Header Navigation with Slide-in Animation */}
+      <header
+        className={`absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 z-10 max-w-xs sm:max-w-none transition-all duration-1200 ${
+          showContent
+            ? "transform translate-x-0 opacity-100"
+            : "transform translate-x-20 opacity-0"
+        }`}
+      >
         {/* Premium Admin Button */}
         <Link
           to="/admin-portal"
@@ -62,41 +110,110 @@ export default function Index() {
         </Link>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content with Spectacular Animations */}
       <div className="flex flex-col items-center justify-center min-h-screen px-4 pt-16 sm:pt-0">
         {/* Hero Content */}
         <div className="flex flex-col items-center gap-3 sm:gap-5 max-w-xs sm:max-w-md md:max-w-lg text-center">
-          {/* Brand Name */}
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide">
-            FASTIO
-          </h1>
+          {/* Brand Name with Letter-by-Letter Animation */}
+          <div
+            className={`relative transition-all duration-1500 ${
+              animationStage >= 2
+                ? "transform translate-y-0 opacity-100"
+                : "transform translate-y-20 opacity-0"
+            }`}
+          >
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal text-black font-sans tracking-wide">
+              {"FASTIO".split("").map((letter, index) => (
+                <span
+                  key={index}
+                  className={`inline-block transition-all duration-500 ${
+                    animationStage >= 2
+                      ? "transform translate-y-0 opacity-100"
+                      : "transform translate-y-10 opacity-0"
+                  }`}
+                  style={{
+                    transitionDelay: `${animationStage >= 2 ? index * 100 : 0}ms`,
+                    textShadow: "0 0 20px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </h1>
 
-          {/* Divider Line */}
-          <div className="w-32 sm:w-64 md:w-88 h-px bg-black"></div>
+            {/* Glowing Underline Effect */}
+            <div
+              className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ${
+                animationStage >= 2
+                  ? "w-full h-1 bg-gradient-to-r from-transparent via-black to-transparent opacity-60"
+                  : "w-0 h-1 bg-black opacity-0"
+              }`}
+            />
+          </div>
 
-          {/* Tagline */}
-          <p className="text-lg sm:text-xl md:text-2xl font-medium text-black">
+          {/* Animated Divider Line */}
+          <div
+            className={`transition-all duration-1000 ${
+              animationStage >= 2
+                ? "w-32 sm:w-64 md:w-88 h-px bg-black transform scale-x-100 opacity-100"
+                : "w-0 h-px bg-black transform scale-x-0 opacity-0"
+            }`}
+          />
+
+          {/* Tagline with Fade-up Animation */}
+          <p
+            className={`text-lg sm:text-xl md:text-2xl font-medium text-black transition-all duration-1000 ${
+              animationStage >= 3
+                ? "transform translate-y-0 opacity-100"
+                : "transform translate-y-10 opacity-0"
+            }`}
+            style={{
+              textShadow: "0 2px 10px rgba(0,0,0,0.2)",
+              transitionDelay: "300ms",
+            }}
+          >
             Fast Moves, Fresh Choices.
           </p>
 
-          {/* Additional tagline */}
-          <p className="text-sm sm:text-base md:text-lg text-black/80">
+          {/* Additional tagline with Bounce Effect */}
+          <p
+            className={`text-sm sm:text-base md:text-lg text-black/80 transition-all duration-1000 ${
+              animationStage >= 3
+                ? "transform translate-y-0 opacity-100 animate-bounce"
+                : "transform translate-y-10 opacity-0"
+            }`}
+            style={{
+              transitionDelay: "600ms",
+              animationIterationCount: "3",
+            }}
+          >
             🚀 Experience lightning-fast food delivery
           </p>
         </div>
 
-        {/* App Download Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20">
+        {/* App Download Buttons with Staggered Animation */}
+        <div
+          className={`flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-7 mt-10 sm:mt-20 transition-all duration-1200 ${
+            showContent
+              ? "transform translate-y-0 opacity-100"
+              : "transform translate-y-20 opacity-0"
+          }`}
+        >
           <a
             href="https://apps.apple.com/app/zomato-food-delivery-dining/id434613896"
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl"
+            className={`block transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+              showContent
+                ? "transform translate-x-0 opacity-100"
+                : "transform -translate-x-10 opacity-0"
+            }`}
+            style={{ transitionDelay: "800ms" }}
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/c341f6a999ef369acd139927b58eea53c555c282?width=400"
               alt="Download on App Store"
-              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110"
+              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110 drop-shadow-lg"
             />
           </a>
 
@@ -104,13 +221,18 @@ export default function Index() {
             href="https://play.google.com/store/apps/details?id=com.application.zomato"
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition-all duration-300 hover:scale-110 hover:shadow-xl"
+            className={`block transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+              showContent
+                ? "transform translate-x-0 opacity-100"
+                : "transform translate-x-10 opacity-0"
+            }`}
+            style={{ transitionDelay: "1000ms" }}
           >
             <svg
               viewBox="0 0 200 60"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110"
+              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110 drop-shadow-lg"
             >
               <path
                 d="M192.593 60H7.40741C3.33519 60 0 56.6231 0 52.5V7.5C0 3.37687 3.33519 0 7.40741 0H192.593C196.665 0 200 3.37687 200 7.5V52.5C200 56.6231 196.665 60 192.593 60Z"
@@ -185,10 +307,6 @@ export default function Index() {
                 strokeWidth="0.16"
                 strokeMiterlimit="10"
               />
-              <path
-                d="M100.941 32.6288C97.4611 32.6288 94.6185 35.31 94.6185 39.0094C94.6185 42.6788 97.4611 45.3881 100.941 45.3881C104.428 45.3881 107.27 42.6788 107.27 39.0094C107.27 35.31 104.428 32.6288 100.941 32.6288ZM100.941 42.8756C99.0315 42.8756 97.3889 41.28 97.3889 39.0094C97.3889 36.7088 99.0315 35.1413 100.941 35.1413C102.85 35.1413 104.5 36.7088 104.5 39.0094C104.5 41.28 102.85 42.8756 100.941 42.8756ZM87.1463 32.6288C83.6592 32.6288 80.8241 35.31 80.8241 39.0094C80.8241 42.6788 83.6592 45.3881 87.1463 45.3881C90.6315 45.3881 93.4685 42.6788 93.4685 39.0094C93.4685 35.31 90.6315 32.6288 87.1463 32.6288ZM87.1463 42.8756C85.2352 42.8756 83.587 41.28 83.587 39.0094C83.587 36.7088 85.2352 35.1413 87.1463 35.1413C89.0555 35.1413 90.6981 36.7088 90.6981 39.0094C90.6981 41.28 89.0555 42.8756 87.1463 42.8756ZM70.7315 34.5844V37.2957H77.1259C76.9389 38.8107 76.4389 39.9244 75.6722 40.7007C74.7389 41.6382 73.2852 42.6788 70.7315 42.6788C66.7963 42.6788 63.7148 39.4632 63.7148 35.4788C63.7148 31.4944 66.7963 28.2788 70.7315 28.2788C72.8592 28.2788 74.4074 29.1207 75.55 30.2119L77.437 28.3013C75.8389 26.7563 73.7129 25.5694 70.7315 25.5694C65.3352 25.5694 60.8 30.015 60.8 35.4788C60.8 40.9425 65.3352 45.3881 70.7315 45.3881C73.6481 45.3881 75.8389 44.4206 77.5611 42.6056C79.3259 40.8188 79.8759 38.3063 79.8759 36.2775C79.8759 35.6475 79.8241 35.0682 79.7315 34.5844H70.7315ZM137.854 36.6863C137.333 35.2594 135.728 32.6288 132.457 32.6288C129.217 32.6288 126.518 35.2144 126.518 39.0094C126.518 42.5831 129.189 45.3881 132.768 45.3881C135.663 45.3881 137.333 43.6013 138.02 42.5606L135.872 41.1113C135.156 42.1725 134.18 42.8756 132.768 42.8756C131.367 42.8756 130.361 42.225 129.717 40.9425L138.144 37.4119L137.854 36.6863ZM129.261 38.8106C129.189 36.3506 131.148 35.0907 132.552 35.0907C133.652 35.0907 134.585 35.6475 134.896 36.4444L129.261 38.8106ZM122.411 45H125.181V26.25H122.411V45ZM117.874 34.05H117.781C117.159 33.3038 115.972 32.6288 114.468 32.6288C111.313 32.6288 108.428 35.4338 108.428 39.03C108.428 42.6056 111.313 45.3881 114.468 45.3881C115.972 45.3881 117.159 44.7075 117.781 43.9388H117.874V44.8538C117.874 47.2931 116.587 48.6038 114.511 48.6038C112.818 48.6038 111.768 47.3663 111.335 46.3256L108.926 47.3438C109.62 49.035 111.459 51.1163 114.511 51.1163C117.759 51.1163 120.5 49.1813 120.5 44.4731V33.0169H117.874V34.05ZM114.706 42.8756C112.796 42.8756 111.198 41.2575 111.198 39.03C111.198 36.7819 112.796 35.1413 114.706 35.1413C116.587 35.1413 118.07 36.7819 118.07 39.03C118.07 41.2575 116.587 42.8756 114.706 42.8756ZM150.824 26.25H144.198V45H146.961V37.8957H150.824C153.893 37.8957 156.902 35.6475 156.902 32.0719C156.902 28.4982 153.885 26.25 150.824 26.25ZM150.896 35.2875H146.961V28.8582H150.896C152.959 28.8582 154.137 30.5925 154.137 32.0719C154.137 33.5232 152.959 35.2875 150.896 35.2875ZM167.976 32.5931C165.98 32.5931 163.904 33.4857 163.05 35.4638L165.502 36.5044C166.03 35.4638 167 35.1263 168.026 35.1263C169.459 35.1263 170.913 35.9982 170.935 37.5375V37.7344C170.435 37.4419 169.365 37.0088 168.048 37.0088C165.407 37.0088 162.717 38.4807 162.717 41.2275C162.717 43.74 164.88 45.3581 167.311 45.3581C169.17 45.3581 170.196 44.5088 170.841 43.5206H170.935V44.97H173.604V37.7775C173.604 34.4532 171.152 32.5931 167.976 32.5931ZM167.643 42.8682C166.739 42.8682 165.48 42.4144 165.48 41.28C165.48 39.8288 167.05 39.2719 168.409 39.2719C169.626 39.2719 170.196 39.5438 170.935 39.9019C170.718 41.6381 169.243 42.8682 167.643 42.8682ZM183.326 33.0038L180.15 41.1319H180.056L176.772 33.0038H173.793L178.726 44.3625L175.911 50.6831H178.798L186.4 33.0038H183.326ZM158.42 45H161.191V26.25H158.42V45Z"
-                fill="white"
-              />
               <defs>
                 <linearGradient
                   id="paint0_linear_google"
@@ -249,10 +367,17 @@ export default function Index() {
         </div>
       </div>
 
-      {/* Professional Credits Section */}
-      <footer className="absolute bottom-4 left-0 right-0 flex justify-center">
+      {/* Professional Credits Section with Fade-in */}
+      <footer
+        className={`absolute bottom-4 left-0 right-0 flex justify-center transition-all duration-1500 ${
+          showContent
+            ? "transform translate-y-0 opacity-100"
+            : "transform translate-y-10 opacity-0"
+        }`}
+        style={{ transitionDelay: "1200ms" }}
+      >
         <div className="text-center px-4">
-          <div className="bg-black/5 backdrop-blur-sm rounded-xl px-4 py-2 border border-black/10">
+          <div className="bg-black/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-black/20 shadow-lg">
             <p className="text-xs sm:text-sm text-black/70 font-medium mb-1">
               © 2024 FASTIO. All rights reserved.
             </p>
@@ -266,6 +391,26 @@ export default function Index() {
           </div>
         </div>
       </footer>
+
+      {/* Custom Styles for Animation */}
+      <style>{`
+        .bg-gradient-radial {
+          background: radial-gradient(circle at center, var(--tw-gradient-stops));
+        }
+        
+        @keyframes bounce-gentle {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        .animate-bounce-gentle {
+          animation: bounce-gentle 2s infinite;
+        }
+        
+        .md\\:w-88 {
+          width: 22rem;
+        }
+      `}</style>
     </div>
   );
 }
