@@ -264,6 +264,15 @@ export default function Admin() {
         console.warn("Some admin endpoints failed:", fetchError);
       }
 
+      // Calculate stats from fetched data if dashboard endpoint didn't work
+      if (!stats && users.length > 0) {
+        setStats({
+          total: users.length,
+          verified: users.filter((u) => u.is_verified).length,
+          unverified: users.filter((u) => !u.is_verified).length,
+        });
+      }
+
       // Set fallback data if endpoints failed
       if (menuItems.length === 0) {
         setMenuItems([
