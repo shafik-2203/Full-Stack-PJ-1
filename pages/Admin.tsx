@@ -607,13 +607,74 @@ export default function Admin() {
         {activeTab === "users" && (
           <div className="space-y-6 animate-fade-in">
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                User Management
-              </h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  User Management
+                </h2>
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    Add User
+                  </button>
+                  <button
+                    onClick={fetchUserData}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Refresh
+                  </button>
+                </div>
+              </div>
+
+              {/* User Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <div className="flex items-center">
+                    <Users className="w-8 h-8 text-blue-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-blue-600">
+                        Total Users
+                      </p>
+                      <p className="text-2xl font-bold text-blue-900">
+                        {stats?.total || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <div className="flex items-center">
+                    <UserCheck className="w-8 h-8 text-green-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-green-600">
+                        Verified
+                      </p>
+                      <p className="text-2xl font-bold text-green-900">
+                        {stats?.verified || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <div className="flex items-center">
+                    <UserX className="w-8 h-8 text-red-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-red-600">
+                        Unverified
+                      </p>
+                      <p className="text-2xl font-bold text-red-900">
+                        {stats?.unverified || 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {loading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
-                  <p className="mt-2 text-gray-600">Loading users...</p>
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading users...
+                  </p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -630,20 +691,26 @@ export default function Admin() {
                           Status
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Joined
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {users.map((user) => (
-                        <tr key={user.id}>
+                        <tr
+                          key={user.id}
+                          className="hover:bg-gray-50 transition-colors"
+                        >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
                                 {user.username}
                               </div>
                               <div className="text-sm text-gray-500">
-                                ID: {user.id}
+                                ID: {user.id.slice(-8)}
                               </div>
                             </div>
                           </td>
@@ -653,7 +720,7 @@ export default function Admin() {
                                 {user.email}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {user.mobile}
+                                {user.mobile || "N/A"}
                               </div>
                             </div>
                           </td>
@@ -668,18 +735,37 @@ export default function Admin() {
                               {user.is_verified ? "Verified" : "Unverified"}
                             </span>
                           </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user.created_at
+                              ? formatDate(user.created_at)
+                              : "N/A"}
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <button
-                              onClick={() => removeUser(user.id, user.email)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            <div className="flex gap-2">
+                              <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button className="text-green-600 hover:text-green-900 transition-colors">
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => removeUser(user.id, user.email)}
+                                className="text-red-600 hover:text-red-900 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                  {users.length === 0 && (
+                    <div className="text-center py-8">
+                      <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">No users found</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
