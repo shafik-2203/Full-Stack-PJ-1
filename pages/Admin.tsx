@@ -780,55 +780,166 @@ export default function Admin() {
                 <h2 className="text-xl font-semibold text-gray-900">
                   Restaurant Management
                 </h2>
-                <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
-                  <Plus className="w-4 h-4" />
-                  Add Restaurant
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {restaurants.map((restaurant) => (
-                  <div
-                    key={restaurant.id}
-                    className="border rounded-lg p-4 hover:shadow-lg transition-shadow"
+                <div className="flex gap-2">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    Add Restaurant
+                  </button>
+                  <button
+                    onClick={fetchUserData}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-gray-900">
-                        {restaurant.name}
-                      </h3>
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                          restaurant.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {restaurant.status}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {restaurant.cuisine}
-                    </p>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Star className="w-4 h-4 text-yellow-400" />
-                      <span className="text-sm">{restaurant.rating}</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <p>Orders: {restaurant.orders_count}</p>
-                      <p>Revenue: ₹{restaurant.revenue.toLocaleString()}</p>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      <button className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-                        <Edit className="w-3 h-3" />
-                        Edit
-                      </button>
-                      <button className="flex items-center gap-1 px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700">
-                        <Eye className="w-3 h-3" />
-                        View
-                      </button>
+                    <RefreshCw className="w-4 h-4" />
+                    Refresh
+                  </button>
+                </div>
+              </div>
+
+              {/* Restaurant Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                  <div className="flex items-center">
+                    <Store className="w-6 h-6 text-orange-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-orange-600">
+                        Total
+                      </p>
+                      <p className="text-xl font-bold text-orange-900">
+                        {restaurants.length}
+                      </p>
                     </div>
                   </div>
-                ))}
+                </div>
+                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                  <div className="flex items-center">
+                    <CheckSquare className="w-6 h-6 text-green-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-green-600">
+                        Active
+                      </p>
+                      <p className="text-xl font-bold text-green-900">
+                        {
+                          restaurants.filter((r) => r.status === "active")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-red-50 rounded-lg p-4 border border-red-200">
+                  <div className="flex items-center">
+                    <XSquare className="w-6 h-6 text-red-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-red-600">
+                        Inactive
+                      </p>
+                      <p className="text-xl font-bold text-red-900">
+                        {
+                          restaurants.filter((r) => r.status === "inactive")
+                            .length
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <div className="flex items-center">
+                    <DollarSign className="w-6 h-6 text-blue-600" />
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-blue-600">
+                        Avg Revenue
+                      </p>
+                      <p className="text-xl font-bold text-blue-900">
+                        ₹
+                        {restaurants.length > 0
+                          ? Math.round(
+                              restaurants.reduce(
+                                (sum, r) => sum + r.revenue,
+                                0,
+                              ) / restaurants.length,
+                            ).toLocaleString()
+                          : 0}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600 animate-pulse">
+                    Loading restaurants...
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {restaurants.map((restaurant) => (
+                    <div
+                      key={restaurant.id}
+                      className="border rounded-lg p-6 hover:shadow-lg transition-all duration-300 bg-white"
+                    >
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="font-semibold text-gray-900 text-lg">
+                          {restaurant.name}
+                        </h3>
+                        <span
+                          className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                            restaurant.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {restaurant.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3 bg-gray-50 px-2 py-1 rounded">
+                        {restaurant.cuisine}
+                      </p>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm font-medium">
+                          {restaurant.rating}
+                        </span>
+                        <span className="text-xs text-gray-500">rating</span>
+                      </div>
+                      <div className="text-sm text-gray-600 space-y-1 mb-4">
+                        <div className="flex justify-between">
+                          <span>Orders:</span>
+                          <span className="font-medium">
+                            {restaurant.orders_count}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Revenue:</span>
+                          <span className="font-medium text-green-600">
+                            ₹{restaurant.revenue.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex-1">
+                          <Edit className="w-3 h-3" />
+                          Edit
+                        </button>
+                        <button className="flex items-center gap-1 px-3 py-2 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors flex-1">
+                          <Eye className="w-3 h-3" />
+                          View
+                        </button>
+                        <button className="flex items-center gap-1 px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {restaurants.length === 0 && (
+                    <div className="col-span-full text-center py-12">
+                      <Store className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">No restaurants found</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
