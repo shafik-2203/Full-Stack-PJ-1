@@ -93,7 +93,7 @@ export default function Index() {
             <img
               src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
               alt="Get it on Google Play"
-              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110"
+              className="h-10 sm:h-12 w-full object-contain filter hover:brightness-110"
             />
           </a>
         </div>
