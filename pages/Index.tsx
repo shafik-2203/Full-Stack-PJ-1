@@ -170,17 +170,17 @@ export default function Index() {
                 strokeMiterlimit="10"
               />
 
-              {/* Clear Google Play Text */}
+              {/* Google Play Text - App Store Style */}
               <text
                 x="100"
                 y="35"
                 fill="white"
-                fontSize="10"
+                fontSize="9"
                 fontFamily="Arial, sans-serif"
                 textAnchor="middle"
-                fontWeight="300"
+                fontWeight="400"
               >
-                GET IT ON
+                get it on
               </text>
               <text
                 x="100"
