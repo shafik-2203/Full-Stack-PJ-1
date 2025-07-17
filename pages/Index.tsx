@@ -90,37 +90,11 @@ export default function Index() {
             rel="noopener noreferrer"
             className="block transition-all duration-300 hover:scale-110 hover:shadow-xl"
           >
-            <div className="flex items-center bg-black rounded-lg px-4 py-3 h-10 sm:h-12 min-w-[160px] sm:min-w-[180px] hover:bg-gray-800 transition-colors shadow-lg">
-              {/* Google Play Icon */}
-              <div className="flex-shrink-0 mr-3">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M3 20.5v-17c0-.35.15-.65.39-.84L12 12l-8.61 9.34c-.24-.19-.39-.49-.39-.84z"
-                    fill="#EA4335"
-                  />
-                  <path
-                    d="M9.83 12L3.39 3.66c.2-.15.45-.24.72-.24.15 0 .3.03.44.09L20 9.5l-5.5 2.5-4.67-4.67z"
-                    fill="#FBBC04"
-                  />
-                  <path
-                    d="M20 9.5c.55 0 1 .45 1 1s-.45 1-1 1l-5.5 2.5L9.83 12 14.5 7.33 20 9.5z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M14.5 16.67L9.83 12l4.67-4.67L20 14.5c-.55 0-1 .45-1 1s.45 1 1 1l-5.5 2.17z"
-                    fill="#34A853"
-                  />
-                </svg>
-              </div>
-
-              {/* Text Content */}
-              <div className="text-white text-left leading-tight">
-                <div className="text-xs font-normal opacity-90">Get it on</div>
-                <div className="text-sm sm:text-base font-semibold -mt-0.5">
-                  Google Play
-                </div>
-              </div>
-            </div>
+            <img
+              src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+              alt="Get it on Google Play"
+              className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110"
+            />
           </a>
         </div>
       </div>
