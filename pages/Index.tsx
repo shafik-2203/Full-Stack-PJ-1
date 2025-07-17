@@ -171,10 +171,10 @@ export default function Index() {
 
               {/* Google Play Text - App Store Style */}
               <text
-                x="100"
-                y="35"
+                x="130"
+                y="25"
                 fill="white"
-                fontSize="9"
+                fontSize="8"
                 fontFamily="Arial, sans-serif"
                 textAnchor="middle"
                 fontWeight="400"
@@ -182,10 +182,10 @@ export default function Index() {
                 get it on
               </text>
               <text
-                x="100"
-                y="48"
+                x="130"
+                y="42"
                 fill="white"
-                fontSize="16"
+                fontSize="14"
                 fontFamily="Arial, sans-serif"
                 textAnchor="middle"
                 fontWeight="600"
