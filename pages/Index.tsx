@@ -169,6 +169,30 @@ export default function Index() {
                 strokeWidth="0.16"
                 strokeMiterlimit="10"
               />
+
+              {/* Clear Google Play Text */}
+              <text
+                x="100"
+                y="35"
+                fill="white"
+                fontSize="10"
+                fontFamily="Arial, sans-serif"
+                textAnchor="middle"
+                fontWeight="300"
+              >
+                GET IT ON
+              </text>
+              <text
+                x="100"
+                y="48"
+                fill="white"
+                fontSize="16"
+                fontFamily="Arial, sans-serif"
+                textAnchor="middle"
+                fontWeight="600"
+              >
+                Google Play
+              </text>
               <defs>
                 <linearGradient
                   id="paint0_linear_google"
