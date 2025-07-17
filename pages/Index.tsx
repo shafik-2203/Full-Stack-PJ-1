@@ -92,7 +92,6 @@ export default function Index() {
           >
             <svg
               viewBox="0 0 200 60"
-              fill="none"
               xmlns="http://www.w3.org/2000/svg"
               className="h-10 sm:h-12 w-auto flex-shrink-0 filter hover:brightness-110"
             >
