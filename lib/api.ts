@@ -1,7 +1,33 @@
 import axios from "axios";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5001";
+const API_BASE_URL = (() => {
+  // If explicitly set in environment, use that
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  // Auto-detect based on current location
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+
+    // If running on fly.dev or other deployment
+    if (
+      hostname.includes("fly.dev") ||
+      hostname.includes("netlify.app") ||
+      hostname.includes("vercel.app")
+    ) {
+      return "https://fullstack-pj1-bd.onrender.com";
+    }
+
+    // If running locally
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return "http://localhost:5001";
+    }
+  }
+
+  // Default fallback
+  return "http://localhost:5001";
+})();
 
 // Mock fallback data for when backend is empty
 const mockRestaurants = [
