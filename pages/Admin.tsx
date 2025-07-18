@@ -658,7 +658,7 @@ export default function Admin() {
 
         // Fetch food items
         try {
-          const foodData = await makeAdminApiCall("/api/admin/food-items");
+          const foodData = await getAdminData("/api/admin/food-items");
           if (foodData.success && foodData.data) {
             setMenuItems(
               foodData.data.map((item: any) => ({
