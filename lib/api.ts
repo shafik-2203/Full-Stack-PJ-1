@@ -416,6 +416,60 @@ const mockMenuItems = {
 
 const mockCategories = ["Italian", "American", "Japanese", "Indian"];
 
+// Mock authentication function for when remote server is unavailable
+const mockAuthentication = (email: string, password: string) => {
+  console.log("🎭 Using mock authentication for deployed environment");
+
+  // Check against known credentials
+  const validCredentials = [
+    {
+      email: "fastio121299@gmail.com",
+      password: "fastio1212",
+      isAdmin: true,
+      name: "FastIO Admin",
+    },
+    {
+      email: "mohamedshafik2526@gmail.com",
+      password: "Shafik1212@",
+      isAdmin: false,
+      name: "Mohamed Shafik",
+    },
+  ];
+
+  const user = validCredentials.find(
+    (cred) =>
+      cred.email.toLowerCase() === email.toLowerCase() &&
+      cred.password === password,
+  );
+
+  if (!user) {
+    throw new Error("Invalid email or password");
+  }
+
+  // Generate a mock token
+  const mockToken = btoa(
+    JSON.stringify({ email: user.email, timestamp: Date.now() }),
+  );
+
+  return {
+    success: true,
+    message: "Login successful (mock mode)",
+    user: {
+      id: user.email === "fastio121299@gmail.com" ? "admin-1" : "user-1",
+      email: user.email,
+      username: user.email.split("@")[0],
+      name: user.name,
+      mobile: "+91-9876543210",
+      phone: "+91-9876543210",
+      isAdmin: user.isAdmin,
+      isVerified: true,
+      role: user.isAdmin ? "admin" : "user",
+      createdAt: new Date().toISOString(),
+    },
+    token: mockToken,
+  };
+};
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
