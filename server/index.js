@@ -8,7 +8,7 @@ import connectDB from "./config/db.js";
 // Import routes
 import authRoutes from "./routes/auth.js";
 import adminRoutes from "./routes/admin.js";
-import orderRoutes from "./routes/orderRoutes.ts";
+// import orderRoutes from "./routes/orderRoutes.js"; // TypeScript file, not compatible
 
 // Load environment variables
 dotenv.config();
@@ -102,7 +102,7 @@ const mockUsers = new Map([
 // Database routes (will be used when database is connected)
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/orders", orderRoutes);
+// app.use("/api/orders", orderRoutes); // Using mock orders endpoint instead
 
 // Mock auth routes (fallback)
 app.post("/api/auth/login", (req, res) => {

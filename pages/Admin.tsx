@@ -169,12 +169,17 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      // Use existing admin endpoints that we know work
+      // Use local server endpoints with correct base URL
+      const API_BASE_URL = "http://localhost:5001"; // Use local server for admin operations
+
       try {
         // Fetch dashboard stats
-        const dashboardResponse = await fetch("/api/admin/dashboard", {
-          headers,
-        });
+        const dashboardResponse = await fetch(
+          `${API_BASE_URL}/api/admin/dashboard`,
+          {
+            headers,
+          },
+        );
         if (dashboardResponse.ok) {
           const dashboardData = await dashboardResponse.json();
           console.log("Dashboard data:", dashboardData);
@@ -191,36 +196,75 @@ export default function Admin() {
         }
 
         // Fetch users
-        const usersResponse = await fetch("/api/admin/users", { headers });
+        const usersResponse = await fetch(`${API_BASE_URL}/api/admin/users`, {
+          headers,
+        });
         if (usersResponse.ok) {
           const usersData = await usersResponse.json();
           if (usersData.success && usersData.data) {
-            setUsers(usersData.data);
+            setUsers(
+              usersData.data.map((user: any) => ({
+                id: user._id,
+                email: user.email,
+                username: user.username,
+                mobile: user.mobile || user.phone,
+                is_verified: user.isVerified,
+                created_at: user.createdAt,
+                updated_at: user.updatedAt,
+              })),
+            );
           }
         }
 
         // Fetch restaurants
-        const restaurantsResponse = await fetch("/api/admin/restaurants", {
-          headers,
-        });
+        const restaurantsResponse = await fetch(
+          `${API_BASE_URL}/api/admin/restaurants`,
+          {
+            headers,
+          },
+        );
         if (restaurantsResponse.ok) {
           const restaurantsData = await restaurantsResponse.json();
           if (restaurantsData.success && restaurantsData.data) {
-            setRestaurants(restaurantsData.data);
+            setRestaurants(
+              restaurantsData.data.map((restaurant: any) => ({
+                id: restaurant._id,
+                name: restaurant.name,
+                cuisine: restaurant.category,
+                rating: restaurant.rating,
+                status: restaurant.isActive ? "active" : "inactive",
+                orders_count: 0, // Will be calculated separately
+                revenue: 0, // Will be calculated separately
+              })),
+            );
           }
         }
 
         // Fetch orders
-        const ordersResponse = await fetch("/api/admin/orders", { headers });
+        const ordersResponse = await fetch(`${API_BASE_URL}/api/admin/orders`, {
+          headers,
+        });
         if (ordersResponse.ok) {
           const ordersData = await ordersResponse.json();
           if (ordersData.success && ordersData.data) {
-            setOrders(ordersData.data);
+            setOrders(
+              ordersData.data.map((order: any) => ({
+                id: order._id,
+                user_id: order.userId,
+                restaurant_id: order.restaurantId,
+                status: order.status,
+                total_amount: order.totalAmount,
+                created_at: order.createdAt,
+              })),
+            );
           }
         }
 
         // Fetch food items
-        const foodResponse = await fetch("/api/admin/food-items", { headers });
+        const foodResponse = await fetch(
+          `${API_BASE_URL}/api/admin/food-items`,
+          { headers },
+        );
         if (foodResponse.ok) {
           const foodData = await foodResponse.json();
           if (foodData.success && foodData.data) {
@@ -228,7 +272,7 @@ export default function Admin() {
               foodData.data.map((item: any) => ({
                 id: item._id,
                 name: item.name,
-                restaurant_id: item.restaurant?._id || "unknown",
+                restaurant_id: item.restaurant?._id || item.restaurantId,
                 price: item.price,
                 category: item.category,
                 status: item.isAvailable ? "available" : "unavailable",
@@ -238,16 +282,19 @@ export default function Admin() {
         }
 
         // Fetch payments
-        const paymentsResponse = await fetch("/api/admin/payments", {
-          headers,
-        });
+        const paymentsResponse = await fetch(
+          `${API_BASE_URL}/api/admin/payments`,
+          {
+            headers,
+          },
+        );
         if (paymentsResponse.ok) {
           const paymentsData = await paymentsResponse.json();
           if (paymentsData.success && paymentsData.data) {
             setPayments(
               paymentsData.data.map((payment: any) => ({
                 id: payment._id,
-                order_id: payment.order?._id || "unknown",
+                order_id: payment.order?._id || payment.orderId,
                 amount: payment.amount,
                 method: payment.method,
                 status: payment.status,
@@ -258,9 +305,12 @@ export default function Admin() {
         }
 
         // Fetch signup requests
-        const signupResponse = await fetch("/api/admin/signup-requests", {
-          headers,
-        });
+        const signupResponse = await fetch(
+          `${API_BASE_URL}/api/admin/signup-requests`,
+          {
+            headers,
+          },
+        );
         if (signupResponse.ok) {
           const signupData = await signupResponse.json();
           if (signupData.success && signupData.data) {
@@ -548,47 +598,89 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
+      const API_BASE_URL = "http://localhost:5001";
+
       switch (section) {
         case "users":
-          const usersResponse = await fetch("/api/admin/users", { headers });
+          const usersResponse = await fetch(`${API_BASE_URL}/api/admin/users`, {
+            headers,
+          });
           if (usersResponse.ok) {
             const usersData = await usersResponse.json();
             if (usersData.success && usersData.data) {
-              setUsers(usersData.data);
+              setUsers(
+                usersData.data.map((user: any) => ({
+                  id: user._id,
+                  email: user.email,
+                  username: user.username,
+                  mobile: user.mobile || user.phone,
+                  is_verified: user.isVerified,
+                  created_at: user.createdAt,
+                  updated_at: user.updatedAt,
+                })),
+              );
             }
           }
           break;
         case "restaurants":
-          const restaurantsResponse = await fetch("/api/admin/restaurants", {
-            headers,
-          });
+          const restaurantsResponse = await fetch(
+            `${API_BASE_URL}/api/admin/restaurants`,
+            {
+              headers,
+            },
+          );
           if (restaurantsResponse.ok) {
             const restaurantsData = await restaurantsResponse.json();
             if (restaurantsData.success && restaurantsData.data) {
-              setRestaurants(restaurantsData.data);
+              setRestaurants(
+                restaurantsData.data.map((restaurant: any) => ({
+                  id: restaurant._id,
+                  name: restaurant.name,
+                  cuisine: restaurant.category,
+                  rating: restaurant.rating,
+                  status: restaurant.isActive ? "active" : "inactive",
+                  orders_count: 0,
+                  revenue: 0,
+                })),
+              );
             }
           }
           break;
         case "orders":
-          const ordersResponse = await fetch("/api/admin/orders", { headers });
+          const ordersResponse = await fetch(
+            `${API_BASE_URL}/api/admin/orders`,
+            { headers },
+          );
           if (ordersResponse.ok) {
             const ordersData = await ordersResponse.json();
             if (ordersData.success && ordersData.data) {
-              setOrders(ordersData.data);
+              setOrders(
+                ordersData.data.map((order: any) => ({
+                  id: order._id,
+                  user_id: order.userId,
+                  restaurant_id: order.restaurantId,
+                  status: order.status,
+                  total_amount: order.totalAmount,
+                  created_at: order.createdAt,
+                })),
+              );
             }
           }
           break;
         case "payments":
-          const paymentsResponse = await fetch("/api/admin/payments", {
-            headers,
-          });
+          const paymentsResponse = await fetch(
+            `${API_BASE_URL}/api/admin/payments`,
+            {
+              headers,
+            },
+          );
           if (paymentsResponse.ok) {
             const paymentsData = await paymentsResponse.json();
             if (paymentsData.success && paymentsData.data) {
               setPayments(
                 paymentsData.data.map((payment: any) => ({
                   id: payment._id,
-                  order_id: payment.order?._id || "unknown",
+                  order_id: payment.order?._id || payment.orderId,
                   amount: payment.amount,
                   method: payment.method,
                   status: payment.status,
@@ -599,9 +691,12 @@ export default function Admin() {
           }
           break;
         case "food":
-          const foodResponse = await fetch("/api/admin/food-items", {
-            headers,
-          });
+          const foodResponse = await fetch(
+            `${API_BASE_URL}/api/admin/food-items`,
+            {
+              headers,
+            },
+          );
           if (foodResponse.ok) {
             const foodData = await foodResponse.json();
             if (foodData.success && foodData.data) {
@@ -609,7 +704,7 @@ export default function Admin() {
                 foodData.data.map((item: any) => ({
                   id: item._id,
                   name: item.name,
-                  restaurant_id: item.restaurant?._id || "unknown",
+                  restaurant_id: item.restaurant?._id || item.restaurantId,
                   price: item.price,
                   category: item.category,
                   status: item.isAvailable ? "available" : "unavailable",
@@ -648,7 +743,7 @@ export default function Admin() {
       if (!headers.Authorization) return;
 
       const response = await fetch(
-        `/api/admin/users/${encodeURIComponent(userId)}`,
+        `http://localhost:5001/api/admin/users/${encodeURIComponent(userId)}`,
         {
           method: "DELETE",
           headers,
@@ -673,11 +768,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/users/${userId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ is_verified: !isVerified }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/users/${userId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ isVerified: !isVerified }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -702,11 +800,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ status: newStatus }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/restaurants/${restaurantId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ isActive: newStatus === "active" }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -737,10 +838,13 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
-        method: "DELETE",
-        headers,
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/restaurants/${restaurantId}`,
+        {
+          method: "DELETE",
+          headers,
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -766,11 +870,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/food-items/${itemId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ isAvailable: newStatus === "available" }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/food-items/${itemId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ isAvailable: newStatus === "available" }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -794,10 +901,13 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/food-items/${itemId}`, {
-        method: "DELETE",
-        headers,
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/food-items/${itemId}`,
+        {
+          method: "DELETE",
+          headers,
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -818,11 +928,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/orders/${orderId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ status: newStatus }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/orders/${orderId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ status: newStatus }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {

@@ -16,8 +16,13 @@ export default function Orders() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!user || !token) {
+      setError("Please log in to view orders");
+      setIsLoading(false);
+      return;
+    }
     fetchOrders();
-  }, []);
+  }, [user, token]);
 
   const fetchOrders = async () => {
     try {
@@ -25,7 +30,7 @@ export default function Orders() {
       setError("");
 
       if (!token) {
-        setError("Please log in to view orders");
+        setError("Authentication required");
         setIsLoading(false);
         return;
       }
@@ -35,13 +40,13 @@ export default function Orders() {
       if (response.success) {
         setOrders(response.data || []);
       } else {
-        setError(response.message || "No orders found");
-        setOrders([]); // Set empty orders instead of keeping loading state
+        setError(response.message || "Failed to load orders");
+        setOrders([]);
       }
     } catch (err) {
       console.error("Error fetching orders:", err);
       setError("Unable to load orders at the moment");
-      setOrders([]); // Set empty orders for graceful handling
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }
@@ -123,13 +128,24 @@ export default function Orders() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <span className="text-white">Welcome, {user?.username}!</span>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
-            >
-              Logout
-            </button>
+            {user ? (
+              <>
+                <span className="text-white">Welcome, {user?.username}!</span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-lg border border-white text-white hover:bg-white hover:text-orange-500 transition-all"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -142,100 +158,137 @@ export default function Orders() {
             <p className="text-white/80 text-lg">Track your food orders</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
-              {error}
-            </div>
-          )}
-
-          {/* Orders List */}
-          {orders.length === 0 ? (
+          {/* Authentication Error */}
+          {error && error.includes("log in") ? (
             <div className="text-center py-12">
               <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-12 max-w-2xl mx-auto">
-                <div className="text-white text-8xl mb-6">📦</div>
+                <div className="text-white text-8xl mb-6">🔒</div>
                 <h2 className="text-3xl font-bold text-white mb-4">
-                  No Orders Yet
+                  Please Log In
                 </h2>
                 <p className="text-xl text-white/90 mb-8">
-                  You haven't placed any orders. Discover delicious food from
-                  our restaurants!
+                  You need to be logged in to view your orders.
                 </p>
                 <button
-                  onClick={() => navigate("/dashboard")}
-                  className="px-8 py-3 bg-white text-orange-500 rounded-lg font-semibold hover:bg-orange-100 transition-all"
+                  onClick={() => navigate("/login")}
+                  className="px-8 py-3 bg-white text-orange-500 rounded-lg font-semibold hover:bg-orange-100 transition-all mr-4"
                 >
-                  Browse Restaurants
+                  Log In
+                </button>
+                <button
+                  onClick={() => navigate("/")}
+                  className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-orange-500 transition-all"
+                >
+                  Go Home
                 </button>
               </div>
             </div>
-          ) : (
-            <div className="space-y-6">
-              {orders.map((order) => (
-                <div
-                  key={order.id}
-                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
-                >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-800 mb-1">
-                        Order #{order.id.slice(-8)}
-                      </h3>
-                      <p className="text-gray-600">
-                        From {order.restaurant?.name || "Restaurant"}
-                      </p>
-                    </div>
-                    <div className="mt-2 md:mt-0">
-                      <span
-                        className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
-                          order.status,
-                        )}`}
-                      >
-                        {formatStatus(order.status)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <p className="text-gray-600">Order Date</p>
-                      <p className="font-semibold">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600">Total Amount</p>
-                      <p className="font-semibold text-orange-500 text-lg">
-                        ${order.totalAmount.toFixed(2)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600">Payment</p>
-                      <p className="font-semibold capitalize">
-                        {order.paymentMethod.replace(/_/g, " ")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="border-t pt-4">
-                    <p className="text-gray-600 mb-2">Delivery Address</p>
-                    <p className="text-gray-800">{order.deliveryAddress}</p>
-                  </div>
-
-                  {order.estimatedDeliveryTime && (
-                    <div className="mt-4 p-4 bg-orange-50 rounded-lg">
-                      <p className="text-orange-700">
-                        <span className="font-semibold">
-                          Estimated Delivery:
-                        </span>{" "}
-                        {new Date(order.estimatedDeliveryTime).toLocaleString()}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))}
+          ) : error ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+              {error}
+              <button
+                onClick={fetchOrders}
+                className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Retry
+              </button>
             </div>
-          )}
+          ) : null}
+
+          {/* Orders List - Only show if user is authenticated and no authentication error */}
+          {!error ||
+          (!error.includes("log in") && !error.includes("Authentication")) ? (
+            <>
+              {orders.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-12 max-w-2xl mx-auto">
+                    <div className="text-white text-8xl mb-6">📦</div>
+                    <h2 className="text-3xl font-bold text-white mb-4">
+                      No Orders Yet
+                    </h2>
+                    <p className="text-xl text-white/90 mb-8">
+                      You haven't placed any orders. Discover delicious food
+                      from our restaurants!
+                    </p>
+                    <button
+                      onClick={() => navigate("/dashboard")}
+                      className="px-8 py-3 bg-white text-orange-500 rounded-lg font-semibold hover:bg-orange-100 transition-all"
+                    >
+                      Browse Restaurants
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {orders.map((order) => (
+                    <div
+                      key={order.id}
+                      className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-800 mb-1">
+                            Order #{order.id.slice(-8)}
+                          </h3>
+                          <p className="text-gray-600">
+                            From {order.restaurant?.name || "Restaurant"}
+                          </p>
+                        </div>
+                        <div className="mt-2 md:mt-0">
+                          <span
+                            className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
+                              order.status,
+                            )}`}
+                          >
+                            {formatStatus(order.status)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <p className="text-gray-600">Order Date</p>
+                          <p className="font-semibold">
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600">Total Amount</p>
+                          <p className="font-semibold text-orange-500 text-lg">
+                            ${order.totalAmount.toFixed(2)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600">Payment</p>
+                          <p className="font-semibold capitalize">
+                            {order.paymentMethod.replace(/_/g, " ")}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="border-t pt-4">
+                        <p className="text-gray-600 mb-2">Delivery Address</p>
+                        <p className="text-gray-800">{order.deliveryAddress}</p>
+                      </div>
+
+                      {order.estimatedDeliveryTime && (
+                        <div className="mt-4 p-4 bg-orange-50 rounded-lg">
+                          <p className="text-orange-700">
+                            <span className="font-semibold">
+                              Estimated Delivery:
+                            </span>{" "}
+                            {new Date(
+                              order.estimatedDeliveryTime,
+                            ).toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : null}
         </div>
       </main>
     </div>
