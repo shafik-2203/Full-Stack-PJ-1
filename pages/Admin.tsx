@@ -639,7 +639,7 @@ export default function Admin() {
 
         // Fetch orders
         try {
-          const ordersData = await makeAdminApiCall("/api/admin/orders");
+          const ordersData = await getAdminData("/api/admin/orders");
           if (ordersData.success && ordersData.data) {
             setOrders(
               ordersData.data.map((order: any) => ({
