@@ -838,10 +838,13 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
-        method: "DELETE",
-        headers,
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/restaurants/${restaurantId}`,
+        {
+          method: "DELETE",
+          headers,
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
