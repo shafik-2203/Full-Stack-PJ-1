@@ -164,7 +164,7 @@ export default function Checkout() {
       const orderData = {
         restaurantId: items[0]?.restaurantId,
         items: items.map((item) => ({
-          menuItemId: item.menuItem.id,
+          menuItemId: (item.menuItem as any)._id || item.menuItem.id,
           quantity: item.quantity,
           price: item.menuItem.price,
           name: item.menuItem.name,
