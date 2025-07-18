@@ -928,11 +928,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/orders/${orderId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ status: newStatus }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/orders/${orderId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ status: newStatus }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
