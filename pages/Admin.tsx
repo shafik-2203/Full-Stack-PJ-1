@@ -768,11 +768,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/users/${userId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ is_verified: !isVerified }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/users/${userId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ isVerified: !isVerified }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
