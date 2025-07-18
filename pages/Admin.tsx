@@ -215,7 +215,146 @@ export default function Admin() {
         (error.message.includes("Failed to fetch") ||
           error.message.includes("Network Error"))
       ) {
-        console.log("🎭 Admin API call failed, using mock response");
+        console.log(
+          "🎭 Admin API call failed, using mock response for:",
+          endpoint,
+        );
+
+        // Return appropriate mock data based on endpoint
+        if (endpoint.includes("/api/admin/users")) {
+          return {
+            success: true,
+            data: [
+              {
+                _id: "user_1",
+                email: "fastio121299@gmail.com",
+                username: "fastio_admin",
+                mobile: "+91-9876543210",
+                isVerified: true,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+              {
+                _id: "user_2",
+                email: "mohamedshafik2526@gmail.com",
+                username: "mohamed_shafik",
+                mobile: "+91-9876543211",
+                isVerified: true,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+            ],
+          };
+        }
+
+        if (endpoint.includes("/api/admin/dashboard")) {
+          return {
+            success: true,
+            data: {
+              totalUsers: 2,
+              totalRestaurants: 4,
+              totalOrders: 10,
+              totalRevenue: 5000,
+              pendingSignups: 0,
+              activeRestaurants: 4,
+            },
+          };
+        }
+
+        if (endpoint.includes("/api/admin/restaurants")) {
+          return {
+            success: true,
+            data: [
+              {
+                _id: "rest_1",
+                name: "Pizza Palace",
+                category: "Italian",
+                rating: 4.5,
+                isActive: true,
+              },
+              {
+                _id: "rest_2",
+                name: "Burger Hub",
+                category: "Fast Food",
+                rating: 4.2,
+                isActive: true,
+              },
+            ],
+          };
+        }
+
+        if (endpoint.includes("/api/admin/orders")) {
+          return {
+            success: true,
+            data: [
+              {
+                _id: "order_1",
+                userId: "user_1",
+                restaurantId: "rest_1",
+                status: "delivered",
+                totalAmount: 299,
+                createdAt: new Date().toISOString(),
+              },
+              {
+                _id: "order_2",
+                userId: "user_2",
+                restaurantId: "rest_2",
+                status: "preparing",
+                totalAmount: 249,
+                createdAt: new Date().toISOString(),
+              },
+            ],
+          };
+        }
+
+        if (endpoint.includes("/api/admin/food-items")) {
+          return {
+            success: true,
+            data: [
+              {
+                _id: "food_1",
+                name: "Margherita Pizza",
+                restaurantId: "rest_1",
+                price: 299,
+                category: "Pizza",
+                isAvailable: true,
+              },
+              {
+                _id: "food_2",
+                name: "Chicken Burger",
+                restaurantId: "rest_2",
+                price: 249,
+                category: "Burger",
+                isAvailable: true,
+              },
+            ],
+          };
+        }
+
+        if (endpoint.includes("/api/admin/payments")) {
+          return {
+            success: true,
+            data: [
+              {
+                _id: "payment_1",
+                orderId: "order_1",
+                amount: 299,
+                method: "credit_card",
+                status: "completed",
+                createdAt: new Date().toISOString(),
+              },
+            ],
+          };
+        }
+
+        if (endpoint.includes("/api/admin/signup-requests")) {
+          return {
+            success: true,
+            data: [],
+          };
+        }
+
+        // Default mock response for other endpoints
         return { success: true, message: "Operation completed (demo mode)" };
       }
 
