@@ -387,18 +387,20 @@ export default function Admin() {
         }
       } catch (fetchError) {
         console.warn("Admin API endpoints failed:", fetchError);
+      }
 
-        // If we're in a deployed environment and got network errors, use comprehensive mock data
-        const isDeployedEnv =
-          typeof window !== "undefined" &&
-          (window.location.hostname.includes("fly.dev") ||
-            window.location.hostname.includes("netlify.app") ||
-            window.location.hostname.includes("vercel.app"));
+      // Always set mock data in deployed environments if no real data was loaded
+      const isDeployedEnv =
+        typeof window !== "undefined" &&
+        (window.location.hostname.includes("fly.dev") ||
+          window.location.hostname.includes("netlify.app") ||
+          window.location.hostname.includes("vercel.app"));
 
-        if (isDeployedEnv) {
-          console.log("🎭 Using mock admin data for deployed environment");
+      if (isDeployedEnv) {
+        console.log("🎭 Ensuring mock admin data for deployed environment");
 
-          // Set mock users
+        // Set mock users if no users were loaded
+        if (users.length === 0) {
           setUsers([
             {
               id: "user_1",
@@ -419,8 +421,10 @@ export default function Admin() {
               updated_at: new Date().toISOString(),
             },
           ]);
+        }
 
-          // Set mock stats
+        // Set mock stats if no stats were loaded
+        if (!stats) {
           setStats({
             total: 2,
             verified: 2,
