@@ -555,8 +555,14 @@ export const apiClient = {
       return res.data;
     } catch (error) {
       console.error("🔴 Login error:", error);
+      console.error("🔴 Error code:", error.code);
+      console.error("🔴 Error message:", error.message);
       console.error("🔴 Login error response:", error.response?.data);
       console.error("🔴 Login error status:", error.response?.status);
+      console.log(
+        "🌐 Current hostname:",
+        typeof window !== "undefined" ? window.location.hostname : "server",
+      );
 
       if (error.response?.status === 404) {
         throw new Error(
