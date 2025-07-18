@@ -574,22 +574,37 @@ export const apiClient = {
         throw new Error(error.response.data.message || "Login failed");
       }
 
-      if (
+      // Check for any type of network error
+      const isNetworkError =
         error.code === "ECONNREFUSED" ||
         error.code === "ERR_NETWORK" ||
-        error.message.includes("Network Error")
-      ) {
-        // If we're in a deployed environment and the remote server is down, use mock auth
-        if (
+        error.message.includes("Network Error") ||
+        error.message.includes("Failed to fetch") ||
+        !error.response; // No response usually means network issue
+
+      console.log("🔍 Is network error?", isNetworkError);
+
+      if (isNetworkError) {
+        const isDeployedEnv =
           typeof window !== "undefined" &&
           (window.location.hostname.includes("fly.dev") ||
             window.location.hostname.includes("netlify.app") ||
-            window.location.hostname.includes("vercel.app"))
-        ) {
-          console.log(
-            "🎭 Remote server unavailable, using mock authentication...",
-          );
-          return mockAuthentication(data.email, data.password);
+            window.location.hostname.includes("vercel.app"));
+
+        console.log("🏢 Is deployed environment?", isDeployedEnv);
+
+        if (isDeployedEnv) {
+          console.log("🎭 Triggering mock authentication...");
+          console.log("📧 Email:", data.email);
+
+          try {
+            const mockResult = mockAuthentication(data.email, data.password);
+            console.log("✅ Mock authentication successful:", mockResult);
+            return mockResult;
+          } catch (mockError) {
+            console.error("🔴 Mock authentication failed:", mockError);
+            throw mockError;
+          }
         }
 
         throw new Error(
