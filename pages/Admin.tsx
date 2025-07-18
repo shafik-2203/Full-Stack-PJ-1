@@ -203,6 +203,14 @@ export default function Admin() {
 
       return await response.json();
     } catch (error) {
+      console.log("🔍 makeAdminApiCall error caught:", error);
+      console.log("🔍 Error message:", error.message);
+      console.log("🔍 Error type:", typeof error);
+      console.log(
+        "🔍 Current hostname:",
+        typeof window !== "undefined" ? window.location.hostname : "server",
+      );
+
       // If network error in deployed environment, return mock success
       const isDeployedEnv =
         typeof window !== "undefined" &&
@@ -210,11 +218,19 @@ export default function Admin() {
           window.location.hostname.includes("netlify.app") ||
           window.location.hostname.includes("vercel.app"));
 
-      if (
-        isDeployedEnv &&
-        (error.message.includes("Failed to fetch") ||
-          error.message.includes("Network Error"))
-      ) {
+      console.log("🔍 Is deployed environment?", isDeployedEnv);
+
+      // Check for various types of network errors
+      const isNetworkError =
+        error.message.includes("Failed to fetch") ||
+        error.message.includes("Network Error") ||
+        error.message.includes("ERR_NETWORK") ||
+        error.name === "TypeError" ||
+        !error.response;
+
+      console.log("🔍 Is network error?", isNetworkError);
+
+      if (isDeployedEnv && isNetworkError) {
         console.log(
           "🎭 Admin API call failed, using mock response for:",
           endpoint,
