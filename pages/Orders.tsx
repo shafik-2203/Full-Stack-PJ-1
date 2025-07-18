@@ -16,8 +16,13 @@ export default function Orders() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!user || !token) {
+      setError("Please log in to view orders");
+      setIsLoading(false);
+      return;
+    }
     fetchOrders();
-  }, []);
+  }, [user, token]);
 
   const fetchOrders = async () => {
     try {
@@ -25,7 +30,7 @@ export default function Orders() {
       setError("");
 
       if (!token) {
-        setError("Please log in to view orders");
+        setError("Authentication required");
         setIsLoading(false);
         return;
       }
@@ -35,13 +40,13 @@ export default function Orders() {
       if (response.success) {
         setOrders(response.data || []);
       } else {
-        setError(response.message || "No orders found");
-        setOrders([]); // Set empty orders instead of keeping loading state
+        setError(response.message || "Failed to load orders");
+        setOrders([]);
       }
     } catch (err) {
       console.error("Error fetching orders:", err);
       setError("Unable to load orders at the moment");
-      setOrders([]); // Set empty orders for graceful handling
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }
