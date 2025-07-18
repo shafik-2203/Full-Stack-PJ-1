@@ -743,7 +743,7 @@ export default function Admin() {
       if (!headers.Authorization) return;
 
       const response = await fetch(
-        `/api/admin/users/${encodeURIComponent(userId)}`,
+        `http://localhost:5001/api/admin/users/${encodeURIComponent(userId)}`,
         {
           method: "DELETE",
           headers,
