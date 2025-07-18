@@ -1088,14 +1088,8 @@ export default function Admin() {
           }
           break;
         case "payments":
-          const paymentsResponse = await fetch(
-            `${API_BASE_URL}/api/admin/payments`,
-            {
-              headers,
-            },
-          );
-          if (paymentsResponse.ok) {
-            const paymentsData = await paymentsResponse.json();
+          try {
+            const paymentsData = await getAdminData("/api/admin/payments");
             if (paymentsData.success && paymentsData.data) {
               setPayments(
                 paymentsData.data.map((payment: any) => ({
@@ -1108,6 +1102,8 @@ export default function Admin() {
                 })),
               );
             }
+          } catch (error) {
+            console.log("Payments refresh failed, keeping existing data");
           }
           break;
         case "food":
@@ -1591,7 +1587,7 @@ export default function Admin() {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Revenue</p>
                     <p className="text-2xl font-bold text-gray-900">
-                      ��
+                      ₹
                       {payments
                         .reduce((sum, p) => sum + p.amount, 0)
                         .toLocaleString()}
