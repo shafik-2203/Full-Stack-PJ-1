@@ -429,6 +429,8 @@ const api = axios.create({
 console.log("🔧 API Configuration:", {
   baseURL: API_BASE_URL,
   environment: import.meta.env.MODE,
+  hostname: typeof window !== "undefined" ? window.location.hostname : "server",
+  userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "server",
 });
 
 // Request interceptor for debugging
