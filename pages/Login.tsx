@@ -315,6 +315,40 @@ export default function Login() {
                   </Link>
                 </p>
               </div>
+
+              {/* Mock Mode Indicator */}
+              {typeof window !== "undefined" &&
+                (window.location.hostname.includes("fly.dev") ||
+                  window.location.hostname.includes("netlify.app") ||
+                  window.location.hostname.includes("vercel.app")) && (
+                  <div className="bg-amber-500/10 border border-amber-400/20 rounded-2xl p-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <svg
+                          className="h-5 w-5 text-amber-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-amber-300 text-sm font-medium">
+                          Demo Mode Active
+                        </p>
+                        <p className="text-amber-400/70 text-xs">
+                          Running in demo mode with mock authentication
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
             </form>
           </div>
         </div>
