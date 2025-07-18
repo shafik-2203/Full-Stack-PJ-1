@@ -870,11 +870,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/food-items/${itemId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ isAvailable: newStatus === "available" }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/food-items/${itemId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ isAvailable: newStatus === "available" }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
