@@ -581,7 +581,7 @@ export default function Admin() {
       try {
         // Fetch dashboard stats
         try {
-          const dashboardData = await makeAdminApiCall("/api/admin/dashboard");
+          const dashboardData = await getAdminData("/api/admin/dashboard");
           console.log("Dashboard data:", dashboardData);
           if (dashboardData.success && dashboardData.data) {
             // Set dashboard stats
@@ -599,7 +599,7 @@ export default function Admin() {
 
         // Fetch users
         try {
-          const usersData = await makeAdminApiCall("/api/admin/users");
+          const usersData = await getAdminData("/api/admin/users");
           if (usersData.success && usersData.data) {
             setUsers(
               usersData.data.map((user: any) => ({
@@ -2354,7 +2354,7 @@ export default function Admin() {
                         Category: {item.category}
                       </p>
                       <p className="text-lg font-bold text-orange-600 mb-2">
-                        ₹{item.price}
+                        ���{item.price}
                       </p>
                       <p className="text-xs text-gray-500 mb-3">
                         Restaurant ID: {item.restaurant_id.slice(-6)}
