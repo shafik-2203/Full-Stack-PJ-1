@@ -258,14 +258,8 @@ export default function Admin() {
 
       try {
         // Fetch dashboard stats
-        const dashboardResponse = await fetch(
-          `${API_BASE_URL}/api/admin/dashboard`,
-          {
-            headers,
-          },
-        );
-        if (dashboardResponse.ok) {
-          const dashboardData = await dashboardResponse.json();
+        try {
+          const dashboardData = await makeAdminApiCall("/api/admin/dashboard");
           console.log("Dashboard data:", dashboardData);
           if (dashboardData.success && dashboardData.data) {
             // Set dashboard stats
@@ -277,14 +271,13 @@ export default function Admin() {
               ),
             });
           }
+        } catch (dashError) {
+          console.log("Dashboard API failed, will use fallback data");
         }
 
         // Fetch users
-        const usersResponse = await fetch(`${API_BASE_URL}/api/admin/users`, {
-          headers,
-        });
-        if (usersResponse.ok) {
-          const usersData = await usersResponse.json();
+        try {
+          const usersData = await makeAdminApiCall("/api/admin/users");
           if (usersData.success && usersData.data) {
             setUsers(
               usersData.data.map((user: any) => ({
@@ -298,6 +291,8 @@ export default function Admin() {
               })),
             );
           }
+        } catch (usersError) {
+          console.log("Users API failed, will use fallback data");
         }
 
         // Fetch restaurants
