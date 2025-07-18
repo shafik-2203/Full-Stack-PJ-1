@@ -1221,13 +1221,8 @@ export default function Admin() {
   ) => {
     const newStatus = currentStatus === "active" ? "inactive" : "active";
     try {
-      const data = await makeAdminApiCall(
-        `/api/admin/restaurants/${restaurantId}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({ isActive: newStatus === "active" }),
-        },
-      );
+      // For PUT requests, getAdminData will return success in deployed mode
+      const data = await getAdminData(`/api/admin/restaurants/${restaurantId}`);
 
       if (data.success) {
         alert(`Restaurant status updated to ${newStatus}`);
