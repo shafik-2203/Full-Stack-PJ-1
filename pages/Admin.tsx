@@ -921,18 +921,13 @@ export default function Admin() {
   ) => {
     const newStatus = currentStatus === "active" ? "inactive" : "active";
     try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-
-      const response = await fetch(
-        `http://localhost:5001/api/admin/restaurants/${restaurantId}`,
+      const data = await makeAdminApiCall(
+        `/api/admin/restaurants/${restaurantId}`,
         {
           method: "PUT",
-          headers,
           body: JSON.stringify({ isActive: newStatus === "active" }),
         },
       );
-      const data = await response.json();
 
       if (data.success) {
         alert(`Restaurant status updated to ${newStatus}`);
