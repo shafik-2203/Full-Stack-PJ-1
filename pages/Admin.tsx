@@ -1107,14 +1107,8 @@ export default function Admin() {
           }
           break;
         case "food":
-          const foodResponse = await fetch(
-            `${API_BASE_URL}/api/admin/food-items`,
-            {
-              headers,
-            },
-          );
-          if (foodResponse.ok) {
-            const foodData = await foodResponse.json();
+          try {
+            const foodData = await getAdminData("/api/admin/food-items");
             if (foodData.success && foodData.data) {
               setMenuItems(
                 foodData.data.map((item: any) => ({
@@ -1127,6 +1121,8 @@ export default function Admin() {
                 })),
               );
             }
+          } catch (error) {
+            console.log("Food items refresh failed, keeping existing data");
           }
           break;
       }
