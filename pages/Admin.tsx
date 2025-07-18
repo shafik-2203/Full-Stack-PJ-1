@@ -169,8 +169,30 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      // Use local server endpoints with correct base URL
-      const API_BASE_URL = "http://localhost:5001"; // Use local server for admin operations
+      // Detect environment and set appropriate API URL
+      const API_BASE_URL = (() => {
+        if (typeof window !== "undefined") {
+          const hostname = window.location.hostname;
+
+          // If running on deployed environment, try remote server first
+          if (
+            hostname.includes("fly.dev") ||
+            hostname.includes("netlify.app") ||
+            hostname.includes("vercel.app")
+          ) {
+            return "https://fullstack-pj1-bd.onrender.com";
+          }
+
+          // If running locally, use local server
+          if (hostname === "localhost" || hostname === "127.0.0.1") {
+            return "http://localhost:5001";
+          }
+        }
+
+        return "http://localhost:5001"; // Default fallback
+      })();
+
+      console.log("🔗 Admin API Base URL:", API_BASE_URL);
 
       try {
         // Fetch dashboard stats
