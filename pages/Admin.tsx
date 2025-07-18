@@ -296,14 +296,10 @@ export default function Admin() {
         }
 
         // Fetch restaurants
-        const restaurantsResponse = await fetch(
-          `${API_BASE_URL}/api/admin/restaurants`,
-          {
-            headers,
-          },
-        );
-        if (restaurantsResponse.ok) {
-          const restaurantsData = await restaurantsResponse.json();
+        try {
+          const restaurantsData = await makeAdminApiCall(
+            "/api/admin/restaurants",
+          );
           if (restaurantsData.success && restaurantsData.data) {
             setRestaurants(
               restaurantsData.data.map((restaurant: any) => ({
@@ -317,14 +313,13 @@ export default function Admin() {
               })),
             );
           }
+        } catch (restError) {
+          console.log("Restaurants API failed, will use fallback data");
         }
 
         // Fetch orders
-        const ordersResponse = await fetch(`${API_BASE_URL}/api/admin/orders`, {
-          headers,
-        });
-        if (ordersResponse.ok) {
-          const ordersData = await ordersResponse.json();
+        try {
+          const ordersData = await makeAdminApiCall("/api/admin/orders");
           if (ordersData.success && ordersData.data) {
             setOrders(
               ordersData.data.map((order: any) => ({
@@ -337,15 +332,13 @@ export default function Admin() {
               })),
             );
           }
+        } catch (ordersError) {
+          console.log("Orders API failed, will use fallback data");
         }
 
         // Fetch food items
-        const foodResponse = await fetch(
-          `${API_BASE_URL}/api/admin/food-items`,
-          { headers },
-        );
-        if (foodResponse.ok) {
-          const foodData = await foodResponse.json();
+        try {
+          const foodData = await makeAdminApiCall("/api/admin/food-items");
           if (foodData.success && foodData.data) {
             setMenuItems(
               foodData.data.map((item: any) => ({
@@ -358,6 +351,8 @@ export default function Admin() {
               })),
             );
           }
+        } catch (foodError) {
+          console.log("Food items API failed, will use fallback data");
         }
 
         // Fetch payments
