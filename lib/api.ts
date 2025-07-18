@@ -573,6 +573,19 @@ export const apiClient = {
         error.code === "ERR_NETWORK" ||
         error.message.includes("Network Error")
       ) {
+        // If we're in a deployed environment and the remote server is down, use mock auth
+        if (
+          typeof window !== "undefined" &&
+          (window.location.hostname.includes("fly.dev") ||
+            window.location.hostname.includes("netlify.app") ||
+            window.location.hostname.includes("vercel.app"))
+        ) {
+          console.log(
+            "🎭 Remote server unavailable, using mock authentication...",
+          );
+          return mockAuthentication(data.email, data.password);
+        }
+
         throw new Error(
           "Cannot connect to server. Please check your internet connection.",
         );
