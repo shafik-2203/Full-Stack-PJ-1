@@ -356,14 +356,8 @@ export default function Admin() {
         }
 
         // Fetch payments
-        const paymentsResponse = await fetch(
-          `${API_BASE_URL}/api/admin/payments`,
-          {
-            headers,
-          },
-        );
-        if (paymentsResponse.ok) {
-          const paymentsData = await paymentsResponse.json();
+        try {
+          const paymentsData = await makeAdminApiCall("/api/admin/payments");
           if (paymentsData.success && paymentsData.data) {
             setPayments(
               paymentsData.data.map((payment: any) => ({
@@ -376,20 +370,20 @@ export default function Admin() {
               })),
             );
           }
+        } catch (paymentsError) {
+          console.log("Payments API failed, will use fallback data");
         }
 
         // Fetch signup requests
-        const signupResponse = await fetch(
-          `${API_BASE_URL}/api/admin/signup-requests`,
-          {
-            headers,
-          },
-        );
-        if (signupResponse.ok) {
-          const signupData = await signupResponse.json();
+        try {
+          const signupData = await makeAdminApiCall(
+            "/api/admin/signup-requests",
+          );
           if (signupData.success && signupData.data) {
             setSignupRequests(signupData.data);
           }
+        } catch (signupError) {
+          console.log("Signup requests API failed, will use fallback data");
         }
       } catch (fetchError) {
         console.warn("Admin API endpoints failed:", fetchError);
