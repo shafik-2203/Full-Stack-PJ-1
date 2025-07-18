@@ -516,6 +516,7 @@ export const apiClient = {
 
       if (
         error.code === "ECONNREFUSED" ||
+        error.code === "ERR_NETWORK" ||
         error.message.includes("Network Error")
       ) {
         throw new Error(
