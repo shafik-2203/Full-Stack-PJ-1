@@ -677,7 +677,7 @@ export default function Admin() {
 
         // Fetch payments
         try {
-          const paymentsData = await makeAdminApiCall("/api/admin/payments");
+          const paymentsData = await getAdminData("/api/admin/payments");
           if (paymentsData.success && paymentsData.data) {
             setPayments(
               paymentsData.data.map((payment: any) => ({
