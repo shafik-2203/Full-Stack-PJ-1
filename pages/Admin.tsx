@@ -619,9 +619,7 @@ export default function Admin() {
 
         // Fetch restaurants
         try {
-          const restaurantsData = await makeAdminApiCall(
-            "/api/admin/restaurants",
-          );
+          const restaurantsData = await getAdminData("/api/admin/restaurants");
           if (restaurantsData.success && restaurantsData.data) {
             setRestaurants(
               restaurantsData.data.map((restaurant: any) => ({
@@ -2354,7 +2352,7 @@ export default function Admin() {
                         Category: {item.category}
                       </p>
                       <p className="text-lg font-bold text-orange-600 mb-2">
-                        ���{item.price}
+                        ₹{item.price}
                       </p>
                       <p className="text-xs text-gray-500 mb-3">
                         Restaurant ID: {item.restaurant_id.slice(-6)}
