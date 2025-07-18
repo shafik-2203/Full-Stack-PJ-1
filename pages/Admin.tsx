@@ -1028,7 +1028,7 @@ export default function Admin() {
       switch (section) {
         case "users":
           try {
-            const usersData = await makeAdminApiCall("/api/admin/users");
+            const usersData = await getAdminData("/api/admin/users");
             if (usersData.success && usersData.data) {
               setUsers(
                 usersData.data.map((user: any) => ({
