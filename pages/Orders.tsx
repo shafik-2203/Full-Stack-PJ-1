@@ -15,7 +15,7 @@ export default function Orders() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+    useEffect(() => {
     if (!user || !token) {
       setError("Please log in to view orders");
       setIsLoading(false);
@@ -147,15 +147,45 @@ export default function Orders() {
             <p className="text-white/80 text-lg">Track your food orders</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
+                    {/* Authentication Error */}
+          {error && error.includes("log in") ? (
+            <div className="text-center py-12">
+              <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-12 max-w-2xl mx-auto">
+                <div className="text-white text-8xl mb-6">🔒</div>
+                <h2 className="text-3xl font-bold text-white mb-4">
+                  Please Log In
+                </h2>
+                <p className="text-xl text-white/90 mb-8">
+                  You need to be logged in to view your orders.
+                </p>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-8 py-3 bg-white text-orange-500 rounded-lg font-semibold hover:bg-orange-100 transition-all mr-4"
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={() => navigate("/")}
+                  className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-orange-500 transition-all"
+                >
+                  Go Home
+                </button>
+              </div>
+            </div>
+          ) : error ? (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
               {error}
+              <button
+                onClick={fetchOrders}
+                className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Retry
+              </button>
             </div>
-          )}
+          ) : null}
 
           {/* Orders List */}
-          {orders.length === 0 ? (
+          {!error && orders.length === 0 ? (
             <div className="text-center py-12">
               <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-12 max-w-2xl mx-auto">
                 <div className="text-white text-8xl mb-6">📦</div>
@@ -174,7 +204,7 @@ export default function Orders() {
                 </button>
               </div>
             </div>
-          ) : (
+          ) : !error && orders.length > 0 ? (
             <div className="space-y-6">
               {orders.map((order) => (
                 <div
