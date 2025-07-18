@@ -715,7 +715,7 @@ export default function Admin() {
           window.location.hostname.includes("vercel.app"));
 
       if (isDeployedEnv) {
-        console.log("🎭 Ensuring mock admin data for deployed environment");
+        console.log("��� Ensuring mock admin data for deployed environment");
 
         // Set mock users if no users were loaded
         if (users.length === 0) {
@@ -1047,14 +1047,10 @@ export default function Admin() {
           }
           break;
         case "restaurants":
-          const restaurantsResponse = await fetch(
-            `${API_BASE_URL}/api/admin/restaurants`,
-            {
-              headers,
-            },
-          );
-          if (restaurantsResponse.ok) {
-            const restaurantsData = await restaurantsResponse.json();
+          try {
+            const restaurantsData = await getAdminData(
+              "/api/admin/restaurants",
+            );
             if (restaurantsData.success && restaurantsData.data) {
               setRestaurants(
                 restaurantsData.data.map((restaurant: any) => ({
@@ -1068,6 +1064,8 @@ export default function Admin() {
                 })),
               );
             }
+          } catch (error) {
+            console.log("Restaurants refresh failed, keeping existing data");
           }
           break;
         case "orders":
