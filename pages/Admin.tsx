@@ -800,11 +800,14 @@ export default function Admin() {
       const headers = getAuthHeaders();
       if (!headers.Authorization) return;
 
-      const response = await fetch(`/api/admin/restaurants/${restaurantId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ status: newStatus }),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/admin/restaurants/${restaurantId}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ isActive: newStatus === "active" }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
