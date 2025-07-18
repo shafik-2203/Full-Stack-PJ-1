@@ -696,9 +696,7 @@ export default function Admin() {
 
         // Fetch signup requests
         try {
-          const signupData = await makeAdminApiCall(
-            "/api/admin/signup-requests",
-          );
+          const signupData = await getAdminData("/api/admin/signup-requests");
           if (signupData.success && signupData.data) {
             setSignupRequests(signupData.data);
           }
