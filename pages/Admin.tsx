@@ -1069,12 +1069,8 @@ export default function Admin() {
           }
           break;
         case "orders":
-          const ordersResponse = await fetch(
-            `${API_BASE_URL}/api/admin/orders`,
-            { headers },
-          );
-          if (ordersResponse.ok) {
-            const ordersData = await ordersResponse.json();
+          try {
+            const ordersData = await getAdminData("/api/admin/orders");
             if (ordersData.success && ordersData.data) {
               setOrders(
                 ordersData.data.map((order: any) => ({
@@ -1087,6 +1083,8 @@ export default function Admin() {
                 })),
               );
             }
+          } catch (error) {
+            console.log("Orders refresh failed, keeping existing data");
           }
           break;
         case "payments":
@@ -1593,7 +1591,7 @@ export default function Admin() {
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-600">Revenue</p>
                     <p className="text-2xl font-bold text-gray-900">
-                      ₹
+                      ��
                       {payments
                         .reduce((sum, p) => sum + p.amount, 0)
                         .toLocaleString()}
