@@ -480,6 +480,19 @@ api.interceptors.response.use(
 );
 
 export const apiClient = {
+  // Health check function
+  healthCheck: async () => {
+    try {
+      console.log("🏥 Checking API health at:", API_BASE_URL);
+      const res = await api.get("/");
+      console.log("✅ API health check successful:", res.data);
+      return { success: true, data: res.data };
+    } catch (error) {
+      console.error("🔴 API health check failed:", error.message);
+      return { success: false, error: error.message };
+    }
+  },
+
   login: async (data) => {
     try {
       console.log("��� Attempting login for:", data.email);
