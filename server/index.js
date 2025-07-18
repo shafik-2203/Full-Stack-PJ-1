@@ -20,12 +20,43 @@ const PORT = process.env.PORT || 5001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CORS configuration for production
+// CORS configuration for all environments
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? [process.env.CORS_ORIGIN, "https://your-frontend.netlify.app"]
-      : ["http://localhost:5173", "http://localhost:3000"],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      // Local development
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:5173",
+
+      // Deployment domains
+      "https://fullstack-pj1-bd.onrender.com",
+      "https://your-frontend.netlify.app",
+      process.env.CORS_ORIGIN,
+    ];
+
+    // Allow any fly.dev subdomain
+    if (origin.includes(".fly.dev")) {
+      return callback(null, true);
+    }
+
+    // Allow any localhost with any port
+    if (origin.includes("localhost") || origin.includes("127.0.0.1")) {
+      return callback(null, true);
+    }
+
+    // Check against allowed origins
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      console.log(`🚫 CORS blocked origin: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
 };
