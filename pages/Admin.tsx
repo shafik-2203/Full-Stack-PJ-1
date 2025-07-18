@@ -707,18 +707,10 @@ export default function Admin() {
     setSectionLoading((prev) => ({ ...prev, [section]: true }));
 
     try {
-      const headers = getAuthHeaders();
-      if (!headers.Authorization) return;
-
-      const API_BASE_URL = "http://localhost:5001";
-
       switch (section) {
         case "users":
-          const usersResponse = await fetch(`${API_BASE_URL}/api/admin/users`, {
-            headers,
-          });
-          if (usersResponse.ok) {
-            const usersData = await usersResponse.json();
+          try {
+            const usersData = await makeAdminApiCall("/api/admin/users");
             if (usersData.success && usersData.data) {
               setUsers(
                 usersData.data.map((user: any) => ({
@@ -732,6 +724,8 @@ export default function Admin() {
                 })),
               );
             }
+          } catch (error) {
+            console.log("Users refresh failed, keeping existing data");
           }
           break;
         case "restaurants":
